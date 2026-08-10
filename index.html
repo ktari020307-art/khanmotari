@@ -124,6 +124,21 @@
   .feature p { min-height: 0; font-size: 15.5px; max-width: 46ch; }
   .feature .fstage { position: relative; align-self: stretch; min-height: 220px; }
   .feature canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .feature2::before { background: linear-gradient(180deg, #37E0FF, #B36BFF, #FFC24B); }
+  .aurora-prev {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(45% 55% at 25% 35%, rgba(55,224,255,0.85), transparent 60%),
+      radial-gradient(45% 55% at 72% 60%, rgba(179,107,255,0.8), transparent 60%),
+      radial-gradient(40% 45% at 55% 25%, rgba(255,194,75,0.6), transparent 60%),
+      #0a0b18;
+    filter: blur(6px) saturate(1.1);
+    animation: aur 12s ease-in-out infinite alternate;
+  }
+  @keyframes aur {
+    0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0 0; transform: scale(1.05); }
+    100% { background-position: 12% 8%, -10% -6%, 6% -8%, 0 0; transform: scale(1.15) rotate(2deg); }
+  }
   @media (max-width: 760px) {
     .feature { grid-template-columns: 1fr; }
     .feature .fstage { min-height: 180px; order: -1; }
@@ -140,9 +155,9 @@
     <div class="wrap inner">
       <p class="eyebrow">Motion Gallery · Vol.01</p>
       <h1><span class="grad">khanmotari</span><br>in Bewegung</h1>
-      <p class="intro">Sieben eigenständige Motion-Graphics-Studien — jede eine andere Technik und ein anderer Look. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG und Canvas direkt im Browser.</p>
+      <p class="intro">Acht eigenständige Motion-Graphics-Studien — von CSS-Effekten bis zum GPU-Shader. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG, Canvas und WebGL direkt im Browser.</p>
       <div class="meta-row">
-        <span><b>7</b> Stücke</span>
+        <span><b>8</b> Stücke</span>
         <span><b>0</b> Abhängigkeiten</span>
         <span><b>100%</b> Code</span>
       </div>
@@ -162,6 +177,18 @@
           <span class="go">Erlebnis öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </div>
         <div class="fstage"><canvas id="preview"></canvas></div>
+      </a>
+
+      <a class="piece feature feature2" href="pieces/08-aurora-engine.html" style="--c1:#37E0FF">
+        <div class="fbody">
+          <span class="badge">✦ GPU Shader</span>
+          <span class="no">08</span>
+          <h2>Aurora Engine</h2>
+          <p>Echtes WebGL: ein Fragment-Shader berechnet pro Frame jeden Pixel auf der Grafikkarte — fließendes Plasma aus domain-warped Noise, leuchtende Filamente und ein Feld, das deiner Maus folgt.</p>
+          <div class="tags"><span>WebGL</span><span>GLSL</span><span>Domain-Warp FBM</span><span>GPU</span></div>
+          <span class="go">Erlebnis öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+        <div class="fstage"><div class="aurora-prev"></div></div>
       </a>
 
       <a class="piece" href="pieces/01-motion-reel.html" style="--c1:#FF3D8B">

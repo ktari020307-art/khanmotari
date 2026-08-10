@@ -30,6 +30,7 @@ python3 -m http.server 8000
 | 05 | [Interactive Field](pieces/05-interactive-field.html) | Canvas · Feder-Physik | Interaktiv / Navy |
 | 06 | [Animated Icons](pieces/06-icon-set.html) | SVG + CSS Micro-Interactions | Design-System / hell |
 | 07 | [Particle Verse](pieces/07-particle-verse.html) ✦ | Canvas Flow-Field · Text-to-Particle | Kosmisch / interaktiv |
+| 08 | [Aurora Engine](pieces/08-aurora-engine.html) ✦ | WebGL Fragment-Shader (GLSL) | GPU-Plasma / interaktiv |
 
 ### 01 · Motion Reel
 Acht kleine Effekte in einem Raster: Gradient-Orb, Audio-Equalizer, Sinus-Welle,
@@ -71,6 +72,15 @@ Glow-Blending und Bewegungs-Trails erzeugen den kosmischen Look. Voll
 interaktiv: die Maus stößt Partikel ab, ein Klick löst eine Explosion aus,
 und die Steuerleiste schaltet zwischen *Form*, *Flow* und *Burst* um.
 Die Partikelzahl skaliert automatisch mit der Bildschirmgröße.
+
+### 08 · Aurora Engine ✦ (Flagship · WebGL)
+Die höchste Stufe: ein **WebGL-Fragment-Shader**, der pro Frame **jeden Pixel
+auf der GPU** berechnet. Ein fließendes Plasma-/Aurora-Feld entsteht aus
+**domain-warped Fractal Brownian Motion** (mehrfach ineinander verschachteltes
+Noise), angereichert mit leuchtenden Filamenten und einer Vignette. Die Maus
+verzerrt das Feld in Echtzeit über eine Ripple-Welle. Läuft mit einem
+Full-Screen-Triangle und drei Uniforms (`u_time`, `u_res`, `u_mouse`); bei
+fehlender WebGL-Unterstützung greift ein sauberer Fallback.
 
 ## Struktur
 
