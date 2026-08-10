@@ -103,6 +103,32 @@
   }
   footer b { color: var(--muted); font-weight: 500; }
 
+  /* featured flagship card */
+  .feature {
+    grid-column: 1 / -1;
+    display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: 8px;
+    padding: 0; overflow: hidden; min-height: 260px;
+    background:
+      radial-gradient(120% 140% at 100% 0%, rgba(179,107,255,0.22), transparent 55%),
+      radial-gradient(120% 140% at 0% 100%, rgba(56,224,255,0.18), transparent 55%),
+      var(--ground-2);
+  }
+  .feature::before { background: linear-gradient(180deg, #38E0FF, #B36BFF, #FFC24B); }
+  .feature .fbody { padding: 34px 34px 32px; }
+  .feature .badge {
+    display: inline-block; font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #06060F; font-weight: 600;
+    background: linear-gradient(100deg, #38E0FF, #B36BFF); border-radius: 20px; padding: 5px 12px; margin-bottom: 14px;
+  }
+  .feature h2 { font-size: clamp(28px, 4.6vw, 44px); }
+  .feature p { min-height: 0; font-size: 15.5px; max-width: 46ch; }
+  .feature .fstage { position: relative; align-self: stretch; min-height: 220px; }
+  .feature canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  @media (max-width: 760px) {
+    .feature { grid-template-columns: 1fr; }
+    .feature .fstage { min-height: 180px; order: -1; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .piece { transition: none; }
   }
@@ -114,9 +140,9 @@
     <div class="wrap inner">
       <p class="eyebrow">Motion Gallery · Vol.01</p>
       <h1><span class="grad">khanmotari</span><br>in Bewegung</h1>
-      <p class="intro">Sechs eigenständige Motion-Graphics-Studien — jede eine andere Technik und ein anderer Look. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG und Canvas direkt im Browser.</p>
+      <p class="intro">Sieben eigenständige Motion-Graphics-Studien — jede eine andere Technik und ein anderer Look. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG und Canvas direkt im Browser.</p>
       <div class="meta-row">
-        <span><b>6</b> Stücke</span>
+        <span><b>7</b> Stücke</span>
         <span><b>0</b> Abhängigkeiten</span>
         <span><b>100%</b> Code</span>
       </div>
@@ -125,6 +151,18 @@
 
   <main class="wrap">
     <div class="grid">
+
+      <a class="piece feature" href="pieces/07-particle-verse.html" style="--c1:#B36BFF">
+        <div class="fbody">
+          <span class="badge">✦ Flagship</span>
+          <span class="no">07</span>
+          <h2>Particle Verse</h2>
+          <p>Tausende Partikel strömen durch ein lebendiges Flow-Feld und formen auf Kommando den Schriftzug — khanmotari, MOTION, ∞. Additiver Glow, Bewegungs-Trails, voll interaktiv.</p>
+          <div class="tags"><span>Canvas</span><span>Flow-Field</span><span>Text-to-Particle</span><span>interaktiv</span></div>
+          <span class="go">Erlebnis öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+        <div class="fstage"><canvas id="preview"></canvas></div>
+      </a>
 
       <a class="piece" href="pieces/01-motion-reel.html" style="--c1:#FF3D8B">
         <span class="no">01</span>
@@ -187,5 +225,54 @@
     <span>Motion Gallery · <b>khanmotari</b></span>
     <span>HTML · CSS · SVG · Canvas</span>
   </footer>
+
+  <script>
+  /* Lightweight flow-field preview for the flagship card */
+  (function () {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const cv = document.getElementById("preview");
+    if (!cv) return;
+    const ctx = cv.getContext("2d", { alpha: true });
+    let W, H, dpr, ps = [];
+    function init() {
+      const r = cv.getBoundingClientRect();
+      if (r.width === 0) return;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = cv.width = r.width * dpr; H = cv.height = r.height * dpr;
+      const n = Math.min(420, Math.floor((r.width * r.height) / 240));
+      ps = Array.from({ length: n }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: 0, vy: 0, hue: 176 + Math.random() * 150
+      }));
+    }
+    let t = 0;
+    function angle(x, y) {
+      const s = 0.004;
+      return (Math.sin(x * s + t) + Math.cos(y * s - t * 0.8) + Math.sin((x + y) * s * 0.7 + t * 0.5)) * 1.9;
+    }
+    function frame() {
+      if (!W) { init(); requestAnimationFrame(frame); return; }
+      t += 0.008;
+      ctx.globalCompositeOperation = "source-over";
+      ctx.fillStyle = "rgba(16,17,31,0.16)";
+      ctx.fillRect(0, 0, W, H);
+      ctx.globalCompositeOperation = "lighter";
+      for (const p of ps) {
+        const a = angle(p.x, p.y);
+        p.vx = (p.vx + Math.cos(a) * 0.6) * 0.9;
+        p.vy = (p.vy + Math.sin(a) * 0.6) * 0.9;
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0) p.x = W; else if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; else if (p.y > H) p.y = 0;
+        ctx.fillStyle = "hsla(" + p.hue + ",85%,64%,0.9)";
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1.2 * dpr, 0, 6.2832); ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+    init();
+    window.addEventListener("resize", init);
+    requestAnimationFrame(frame);
+  })();
+  </script>
 </body>
 </html>

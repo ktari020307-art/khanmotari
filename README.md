@@ -29,6 +29,7 @@ python3 -m http.server 8000
 | 04 | [Scroll Experience](pieces/04-scroll-experience.html) | IntersectionObserver · Sticky · Parallax | Editorial / Indigo |
 | 05 | [Interactive Field](pieces/05-interactive-field.html) | Canvas · Feder-Physik | Interaktiv / Navy |
 | 06 | [Animated Icons](pieces/06-icon-set.html) | SVG + CSS Micro-Interactions | Design-System / hell |
+| 07 | [Particle Verse](pieces/07-particle-verse.html) ✦ | Canvas Flow-Field · Text-to-Particle | Kosmisch / interaktiv |
 
 ### 01 · Motion Reel
 Acht kleine Effekte in einem Raster: Gradient-Orb, Audio-Equalizer, Sinus-Welle,
@@ -60,6 +61,16 @@ Umschaltbar zwischen Abstoßen und Anziehen.
 Zwölf animierte SVG-Icons als **Micro-Interactions** — u. a. ein sich zeichnendes
 Häkchen, ein schlagendes Herz, eine läutende Glocke, ein Spinner und ein
 Menü, das per Hover zum X morpht. Alle Farben über CSS-Variablen anpassbar.
+
+### 07 · Particle Verse ✦ (Flagship)
+Das Herzstück: **tausende Partikel** strömen durch ein lebendiges Flow-Feld und
+**sammeln sich zu Schriftzügen** (`khanmotari` → `MOTION` → `∞`), bevor sie
+wieder ins Feld zerstäuben. Der Text wird zur Laufzeit gerendert, pixelweise
+abgetastet und in Zielpunkte übersetzt (**Text-to-Particle**). Additives
+Glow-Blending und Bewegungs-Trails erzeugen den kosmischen Look. Voll
+interaktiv: die Maus stößt Partikel ab, ein Klick löst eine Explosion aus,
+und die Steuerleiste schaltet zwischen *Form*, *Flow* und *Burst* um.
+Die Partikelzahl skaliert automatisch mit der Bildschirmgröße.
 
 ## Struktur
 
