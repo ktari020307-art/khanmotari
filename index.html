@@ -221,6 +221,20 @@
 
   .edit-note { margin-top: 14px; font-family: var(--mono); font-size: 11px; color: var(--faint); letter-spacing: 0.04em; }
 
+  /* connect / follow hub */
+  .connect-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;
+    margin: 40px auto 0; max-width: 760px; text-align: left; }
+  .plink { display: flex; align-items: center; gap: 15px; padding: 20px 22px; border-radius: 16px;
+    background: var(--ground-2); border: 1px solid var(--line);
+    transition: transform .2s ease, border-color .2s ease, background .2s ease; }
+  .plink:hover { transform: translateY(-3px); border-color: var(--cyan); background: rgba(56,224,255,0.05); }
+  .plink .ic { width: 44px; height: 44px; flex: 0 0 44px; border-radius: 12px; display: grid; place-items: center;
+    background: rgba(255,255,255,0.05); color: var(--ink); }
+  .plink .ic svg { width: 22px; height: 22px; }
+  .plink .pt { display: flex; flex-direction: column; min-width: 0; }
+  .plink .pt b { font-size: 15px; font-weight: 650; }
+  .plink .pt span { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
   @media (prefers-reduced-motion: reduce) {
     .piece, .btn { transition: none; }
   }
@@ -237,8 +251,8 @@
       <p class="role">Shehroz <span>· Strategie trifft Kreativität</span></p>
       <p class="tagline">Ich verbinde strategisches Denken mit kreativem Handwerk — und mache aus Ideen digitale Erlebnisse, die man nicht nur sieht, sondern spürt.</p>
       <div class="cta">
-        <a class="btn primary" href="#work">Arbeiten ansehen</a>
-        <a class="btn ghost" href="#contact">Kontakt</a>
+        <a class="btn primary" href="#connect">Folgen</a>
+        <a class="btn ghost" href="#work">Arbeiten ansehen</a>
       </div>
     </div>
     <div class="cue">Scroll ↓</div>
@@ -256,22 +270,22 @@
   <!-- ============ FOKUS ============ -->
   <section class="block" id="focus">
     <div class="wrap">
-      <p class="sec-label">Was ich mache</p>
+      <p class="sec-label">Wofür ich stehe</p>
       <div class="focus-grid">
         <div class="fcard">
           <span class="fn">01</span>
-          <h3>Strategie &amp; Positionierung</h3>
-          <p>Klarheit schaffen: wofür du stehst, für wen — und warum es zählt. Aus komplexen Themen wird eine klare Richtung.</p>
+          <h3>Strategie &amp; Klarheit</h3>
+          <p>Ich denke in Zusammenhängen und bringe komplexe Dinge auf den Punkt. Klarheit ist für mich der Anfang von allem.</p>
         </div>
         <div class="fcard">
           <span class="fn">02</span>
-          <h3>Kreative Umsetzung</h3>
-          <p>Von der Idee zum fertigen digitalen Erlebnis: Design, Motion und Web aus einer Hand — durchdacht und unverwechselbar.</p>
+          <h3>Kreatives Bauen</h3>
+          <p>Ideen bleiben bei mir nicht im Kopf — ich mache sie selbst greifbar. Gestaltung, Motion, Web: Hauptsache echt und unverwechselbar.</p>
         </div>
         <div class="fcard">
           <span class="fn">03</span>
-          <h3>Technologie &amp; Motion</h3>
-          <p>Moderne Web-Technik als Ausdrucksmittel: interaktiv, animiert, lebendig. Genau das, was die Arbeiten unten zeigen.</p>
+          <h3>Neugier &amp; Technik</h3>
+          <p>Ich liebe es, Neues auszuprobieren und an der Grenze des Möglichen zu bauen — genau das, was die Arbeiten unten zeigen.</p>
         </div>
       </div>
     </div>
@@ -381,19 +395,36 @@
     </div>
   </main>
 
-  <!-- ============ KONTAKT ============ -->
-  <section class="block contact" id="contact">
+  <!-- ============ CONNECT / FOLGEN ============ -->
+  <section class="block contact" id="connect">
     <div class="wrap">
-      <p class="sec-label" style="display:inline-block;">Kontakt</p>
-      <h2>Lass uns <span class="grad">reden</span>.</h2>
-      <p class="csub">Du hast ein Projekt, eine Idee — oder willst einfach connecten? Ich freue mich, von dir zu hören.</p>
-      <a class="email" href="mailto:hallo@khanmotari.de">hallo@khanmotari.de</a>
-      <div class="socials">
-        <a href="#" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="#" target="_blank" rel="noopener">Instagram</a>
-        <a href="#" target="_blank" rel="noopener">GitHub</a>
+      <p class="sec-label" style="display:inline-block;">Connect</p>
+      <h2>Folge mir &amp; <span class="grad">bleib in Kontakt</span>.</h2>
+      <p class="csub">Wenn dir gefällt, was du hier siehst — folg mir und verpass nichts. Hier findest du mich:</p>
+
+      <div class="connect-grid">
+        <a class="plink" href="#" target="_blank" rel="noopener">
+          <span class="ic" style="color:#0A66C2;"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></span>
+          <span class="pt"><b>LinkedIn</b><span>[dein-linkedin]</span></span>
+        </a>
+
+        <a class="plink" href="#" target="_blank" rel="noopener">
+          <span class="ic" style="color:#E1306C;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg></span>
+          <span class="pt"><b>Instagram</b><span>@[dein-handle]</span></span>
+        </a>
+
+        <a class="plink" href="#" target="_blank" rel="noopener">
+          <span class="ic"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117l11.966 15.644z"/></svg></span>
+          <span class="pt"><b>X / Twitter</b><span>@[dein-handle]</span></span>
+        </a>
+
+        <a class="plink" href="mailto:hallo@khanmotari.de">
+          <span class="ic" style="color:#38E0FF;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+          <span class="pt"><b>E-Mail</b><span>hallo@khanmotari.de</span></span>
+        </a>
       </div>
-      <p class="edit-note">Entwurf — E-Mail &amp; Links noch durch deine echten ersetzen.</p>
+
+      <p class="edit-note">Entwurf — echte Profile/Handles &amp; E-Mail noch eintragen (nenn sie mir).</p>
     </div>
   </section>
 
