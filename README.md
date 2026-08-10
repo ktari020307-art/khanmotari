@@ -104,7 +104,9 @@ pro Pixel, jeden Frame, auf der GPU.
 ```
 khanmotari/
 ├── index.html            # Portfolio-Startseite (Hero, Über-mich, Studio, Arbeiten, Connect)
-├── studio.html           # Name-Studio: interaktiver Namen-zu-Partikel-Generator mit Bild-Export
+├── studio.html           # Brand-Kit Studio: Namen-Generator mit Palette, Fonts & Bild-Export
+├── tools/
+│   └── monogram.html     # Monogramm-Generator: Initialen → Logo (PNG + SVG)
 ├── README.md
 └── pieces/
     ├── 01-motion-reel.html

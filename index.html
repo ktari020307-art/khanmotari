@@ -249,8 +249,19 @@
   .principle h3 i { font-family: var(--mono); font-style: normal; font-size: 12px; color: var(--cyan); }
   .principle p { color: var(--muted); font-size: 14.5px; }
 
+  /* tools section */
+  .tools-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(258px, 1fr)); gap: 16px; margin-top: 42px; text-align: left; }
+  .tool-card { position: relative; display: flex; flex-direction: column; background: var(--ground-2); border: 1px solid var(--line); border-radius: 18px; padding: 28px; overflow: hidden; transition: transform .2s ease, border-color .2s ease; }
+  .tool-card::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--c1); }
+  .tool-card:hover { transform: translateY(-4px); border-color: var(--c1); }
+  .tool-card .ic { font-size: 28px; margin-bottom: 14px; }
+  .tool-card h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px; }
+  .tool-card p { color: var(--muted); font-size: 14.5px; flex: 1; }
+  .tool-card.soon { opacity: 0.55; }
+  .tool-card.soon .go { color: var(--faint); }
+
   @media (prefers-reduced-motion: reduce) {
-    .piece, .btn { transition: none; }
+    .piece, .btn, .tool-card { transition: none; }
   }
 </style>
 </head>
@@ -273,13 +284,35 @@
     <div class="cue">Scroll ↓</div>
   </header>
 
-  <!-- ============ STUDIO (das Tool) ============ -->
-  <section class="block" id="studio" style="text-align:center;">
+  <!-- ============ TOOLS ============ -->
+  <section class="block" id="tools" style="text-align:center;">
     <div class="wrap">
-      <p class="sec-label" style="display:inline-block;">Kostenloses Brand-Kit</p>
-      <h2 style="font-size:clamp(28px,5.4vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;">Bau dir dein eigenes<br><span class="gt">Brand-Kit</span> — in Sekunden.</h2>
-      <p style="color:var(--muted);max-width:52ch;margin:18px auto 0;font-size:17px;">Tipp deinen Namen ein, wähl einen Stil — und nimm mit: dein Design als <b style="color:var(--ink);font-weight:500;">Post, Banner oder Wallpaper</b> zum Download, dazu eine passende <b style="color:var(--ink);font-weight:500;">Farbpalette</b> (Hex zum Kopieren) und eine <b style="color:var(--ink);font-weight:500;">Schrift-Empfehlung</b>. Alles kostenlos, direkt im Browser.</p>
-      <a class="btn primary" href="studio.html" style="display:inline-block;margin-top:30px;">✨ Brand-Kit erstellen</a>
+      <p class="sec-label" style="display:inline-block;">Zum Mitnehmen · kostenlos</p>
+      <h2 style="font-size:clamp(28px,5.4vw,52px);font-weight:800;letter-spacing:-0.03em;line-height:1.05;">Werkzeuge, die dir<br>etwas <span class="gt">mitgeben</span>.</h2>
+      <p style="color:var(--muted);max-width:52ch;margin:18px auto 0;font-size:17px;">Kein Zuschauen — mach dir etwas Eigenes und nimm es mit. Alles läuft direkt im Browser, ohne Anmeldung.</p>
+
+      <div class="tools-grid">
+        <a class="tool-card" href="studio.html" style="--c1:#38E0FF">
+          <span class="ic">✨</span>
+          <h3>Brand-Kit Studio</h3>
+          <p>Name eintippen, Stil wählen — und dein Design als Post, Banner oder Wallpaper speichern, samt Farbpalette (Hex zum Kopieren) und Schrift-Empfehlung.</p>
+          <span class="go">Öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+
+        <a class="tool-card" href="tools/monogram.html" style="--c1:#B36BFF">
+          <span class="ic">🔤</span>
+          <h3>Monogramm-Generator</h3>
+          <p>Deine Initialen werden zu einem eigenen Logo, das sich selbst zeichnet — in vier Stilen und drei Formen. Download als PNG und SVG, ohne Wasserzeichen.</p>
+          <span class="go">Öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </a>
+
+        <div class="tool-card soon" style="--c1:#4ADE9B">
+          <span class="ic">🖼️</span>
+          <h3>Wallpaper &amp; Icon-Kit</h3>
+          <p>Als Nächstes: abstrakte Wallpaper aus den Shader-Arbeiten und ein Icon-Set zum Download. In Arbeit.</p>
+          <span class="go">Bald</span>
+        </div>
+      </div>
     </div>
   </section>
 
