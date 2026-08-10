@@ -103,7 +103,8 @@ pro Pixel, jeden Frame, auf der GPU.
 
 ```
 khanmotari/
-├── index.html            # Galerie-Startseite (verlinkt alle Stücke)
+├── index.html            # Portfolio-Startseite (Hero, Über-mich, Studio, Arbeiten, Connect)
+├── studio.html           # Name-Studio: interaktiver Namen-zu-Partikel-Generator mit Bild-Export
 ├── README.md
 └── pieces/
     ├── 01-motion-reel.html
