@@ -1,9 +1,15 @@
-# khanmotari — Motion Gallery
+# khanmotari
 
-Eine Sammlung eigenständiger **Motion-Graphics-Studien**. Jedes Stück demonstriert
-eine andere Animationstechnik in einem anderen visuellen Stil — komplett in
-reinem **HTML, CSS, SVG und Canvas**. Kein Video, keine externen Bibliotheken,
-keine Build-Tools.
+Die **persönliche Marke / Portfolio-Seite** von khanmotari. Die Startseite
+(`index.html`) ist eine One-Page-Site mit Hero (WebGL-Shader-Hintergrund),
+Über-mich, Fokus, ausgewählten Arbeiten und Kontakt. Die „Arbeiten" sind
+neun eigenständige **Motion-Graphics-Studien** — jede demonstriert eine
+andere Animationstechnik, komplett in reinem **HTML, CSS, SVG, Canvas und
+WebGL**. Kein Video, keine externen Bibliotheken, keine Build-Tools.
+
+> **To-do:** Die Platzhalter in `index.html` (in eckigen Klammern `[...]`)
+> mit echten Angaben ersetzen — Name, Rolle, Über-mich-Text, Schwerpunkte,
+> E-Mail und Social-Links.
 
 ## Schnellstart
 
