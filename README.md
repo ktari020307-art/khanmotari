@@ -31,6 +31,7 @@ python3 -m http.server 8000
 | 06 | [Animated Icons](pieces/06-icon-set.html) | SVG + CSS Micro-Interactions | Design-System / hell |
 | 07 | [Particle Verse](pieces/07-particle-verse.html) ✦ | Canvas Flow-Field · Text-to-Particle | Kosmisch / interaktiv |
 | 08 | [Aurora Engine](pieces/08-aurora-engine.html) ✦ | WebGL Fragment-Shader (GLSL) | GPU-Plasma / interaktiv |
+| 09 | [Hyperspace](pieces/09-hyperspace.html) ✦ | WebGL Raymarching · Gyroid SDF | 3D-Flug / interaktiv |
 
 ### 01 · Motion Reel
 Acht kleine Effekte in einem Raster: Gradient-Orb, Audio-Equalizer, Sinus-Welle,
@@ -81,6 +82,16 @@ Noise), angereichert mit leuchtenden Filamenten und einer Vignette. Die Maus
 verzerrt das Feld in Echtzeit über eine Ripple-Welle. Läuft mit einem
 Full-Screen-Triangle und drei Uniforms (`u_time`, `u_res`, `u_mouse`); bei
 fehlender WebGL-Unterstützung greift ein sauberer Fallback.
+
+### 09 · Hyperspace ✦ (Flagship · Raymarching)
+Der Gipfel: **echtes 3D ohne ein einziges Polygon**. Ein Raymarching-Shader
+schießt von jedem Pixel einen Strahl und nähert sich per **Signed Distance
+Field** (einer unendlich wiederholten, sich verdrehenden **Gyroid-Struktur**)
+Schritt für Schritt an die Oberfläche an. Entlang des Strahls wird
+**volumetrisches Glühen** aufsummiert, dazu Tiefen-Nebel, eine Cosinus-Palette
+und eine Vignette. Die Kamera fliegt endlos vorwärts, die Maus steuert die
+Blickrichtung. Dieselbe Technik wie in der Shader-Demoscene — 78 March-Schritte
+pro Pixel, jeden Frame, auf der GPU.
 
 ## Struktur
 

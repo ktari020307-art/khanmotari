@@ -139,6 +139,23 @@
     0%   { background-position: 0% 0%, 0% 0%, 0% 0%, 0 0; transform: scale(1.05); }
     100% { background-position: 12% 8%, -10% -6%, 6% -8%, 0 0; transform: scale(1.15) rotate(2deg); }
   }
+  .feature3::before { background: linear-gradient(180deg, #B36BFF, #37E0FF, #FFC24B); }
+  .tunnel-prev {
+    position: absolute; inset: -20%;
+    background:
+      repeating-radial-gradient(circle at 50% 50%,
+        #05060e 0px, #1a1140 10px, #37105a 18px, #05060e 30px);
+    animation: tunnel 6s linear infinite;
+  }
+  .tunnel-prev::after {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(55,224,255,0.35), rgba(179,107,255,0.25) 35%, transparent 65%);
+    mix-blend-mode: screen;
+  }
+  @keyframes tunnel {
+    from { transform: scale(1) rotate(0); }
+    to   { transform: scale(1.6) rotate(12deg); }
+  }
   @media (max-width: 760px) {
     .feature { grid-template-columns: 1fr; }
     .feature .fstage { min-height: 180px; order: -1; }
@@ -155,9 +172,9 @@
     <div class="wrap inner">
       <p class="eyebrow">Motion Gallery · Vol.01</p>
       <h1><span class="grad">khanmotari</span><br>in Bewegung</h1>
-      <p class="intro">Acht eigenständige Motion-Graphics-Studien — von CSS-Effekten bis zum GPU-Shader. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG, Canvas und WebGL direkt im Browser.</p>
+      <p class="intro">Neun eigenständige Motion-Graphics-Studien — von CSS-Effekten bis zu raymarched 3D-Shadern. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG, Canvas und WebGL direkt im Browser.</p>
       <div class="meta-row">
-        <span><b>8</b> Stücke</span>
+        <span><b>9</b> Stücke</span>
         <span><b>0</b> Abhängigkeiten</span>
         <span><b>100%</b> Code</span>
       </div>
@@ -189,6 +206,18 @@
           <span class="go">Erlebnis öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
         </div>
         <div class="fstage"><div class="aurora-prev"></div></div>
+      </a>
+
+      <a class="piece feature feature3" href="pieces/09-hyperspace.html" style="--c1:#B36BFF">
+        <div class="fbody">
+          <span class="badge">✦ Raymarched 3D</span>
+          <span class="no">09</span>
+          <h2>Hyperspace</h2>
+          <p>Kein Polygon, kein Modell: ein Raymarching-Shader schießt pro Pixel einen Strahl in einen mathematischen Raum und findet eine unendliche, sich verdrehende 3D-Struktur — durch die die Kamera endlos fliegt. Volumetrisches Glühen, Tiefen-Nebel, maus-gesteuert.</p>
+          <div class="tags"><span>WebGL</span><span>Raymarching</span><span>Gyroid SDF</span><span>3D</span></div>
+          <span class="go">Erlebnis öffnen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        </div>
+        <div class="fstage"><div class="tunnel-prev"></div></div>
       </a>
 
       <a class="piece" href="pieces/01-motion-reel.html" style="--c1:#FF3D8B">
