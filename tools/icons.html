@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Icon-Kit</title>
+<style>
+  :root { --bg:#0A0B12; --ink:#F3F4FB; --muted:#9BA0BE; --faint:#565C82; --line:rgba(255,255,255,0.12); --ground-2:#12131F;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace; --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:radial-gradient(130% 100% at 50% -10%, #14172a, var(--bg) 60%); color:var(--ink); font-family:var(--sans); -webkit-font-smoothing:antialiased; min-height:100dvh; }
+  .top { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; }
+  .brand { font-weight:800; font-size:18px; letter-spacing:-0.02em; }
+  .brand b { background:linear-gradient(100deg,#38E0FF,#B36BFF,#FFC24B); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .back { font-family:var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:40px; padding:9px 15px; text-decoration:none; transition:.2s; }
+  .back:hover { color:var(--ink); border-color:#38E0FF; }
+  .wrap { max-width:920px; margin:0 auto; padding:8px 22px 60px; }
+  .head { text-align:center; margin-bottom:28px; }
+  .head .label { font-family:var(--mono); font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:#38E0FF; }
+  .head h1 { font-size:clamp(24px,5vw,34px); font-weight:800; letter-spacing:-0.02em; margin-top:8px; }
+  .head p { color:var(--muted); font-size:15px; margin-top:8px; }
+  .bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:26px; }
+  .cap { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); }
+  .sw { width:26px; height:26px; border-radius:7px; border:1px solid rgba(255,255,255,0.15); cursor:pointer; transition:transform .15s; }
+  .sw:hover { transform:translateY(-2px); }
+  .sw.on { outline:2px solid #fff; outline-offset:2px; }
+  input[type=color] { width:34px; height:30px; border:1px solid var(--line); border-radius:8px; background:transparent; cursor:pointer; padding:2px; }
+  .chip { font-family:var(--mono); font-size:12px; color:var(--muted); background:rgba(255,255,255,0.045); border:1px solid var(--line); border-radius:30px; padding:7px 13px; cursor:pointer; transition:.18s; }
+  .chip.on { color:#06060F; background:linear-gradient(100deg,#38E0FF,#B36BFF); border-color:transparent; font-weight:700; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:14px; }
+  .icard { background:var(--ground-2); border:1px solid var(--line); border-radius:16px; padding:20px 16px 14px; text-align:center; transition:border-color .2s, transform .2s; }
+  .icard:hover { border-color:#38E0FF; transform:translateY(-3px); }
+  .iview { height:56px; display:grid; place-items:center; cursor:pointer; }
+  .iview svg { width:40px; height:40px; }
+  .iname { font-family:var(--mono); font-size:11px; color:var(--muted); margin:8px 0 10px; letter-spacing:0.04em; }
+  .ibtns { display:flex; gap:6px; justify-content:center; }
+  .mini { font-family:var(--mono); font-size:10.5px; letter-spacing:0.03em; color:var(--muted); background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:20px; padding:6px 10px; cursor:pointer; transition:.18s; }
+  .mini:hover { color:var(--ink); border-color:rgba(255,255,255,0.28); }
+  .status { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); font-family:var(--mono); font-size:12px; color:#06060F; background:linear-gradient(100deg,#38E0FF,#B36BFF); padding:10px 18px; border-radius:40px; opacity:0; transition:opacity .25s; pointer-events:none; }
+  .status.show { opacity:1; }
+  .follow { text-align:center; margin-top:34px; }
+  .follow a { font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted); text-decoration:none; border:1px solid var(--line); border-radius:40px; padding:11px 18px; transition:.2s; }
+  .follow a:hover { color:var(--ink); border-color:#B36BFF; }
+</style>
+</head>
+<body>
+  <div class="top"><div class="brand">khan<b>motari</b></div><a class="back" href="../index.html">‹ Zurück</a></div>
+  <div class="wrap">
+    <div class="head">
+      <div class="label">Icon-Kit</div>
+      <h1>12 Icons — in deiner Farbe, sofort einsatzbereit</h1>
+      <p>Farbe wählen, Icon anklicken zum Kopieren — oder als SVG herunterladen. Sauberes Vektor-SVG, ohne Wasserzeichen.</p>
+    </div>
+    <div class="bar">
+      <span class="cap">Farbe</span>
+      <div id="swatches" style="display:flex;gap:6px;"></div>
+      <input type="color" id="picker" value="#38E0FF">
+      <span class="cap" style="margin-left:12px;">Größe</span>
+      <div id="sizes" style="display:flex;gap:6px;"></div>
+    </div>
+    <div class="grid" id="grid"></div>
+    <div class="follow"><a href="../index.html#connect">khanmotari folgen ›</a></div>
+  </div>
+  <div class="status" id="status"></div>
+
+<script>
+(function(){
+  "use strict";
+  const ICONS=[
+    {n:"check",  k:"stroke", m:'<path d="M5 12.5 L10 17.5 L19 6.5"/>'},
+    {n:"heart",  k:"fill",   m:'<path d="M12 20 C12 20 3 14 3 8.5 A4.5 4.5 0 0 1 12 6 A4.5 4.5 0 0 1 21 8.5 C21 14 12 20 12 20 Z"/>'},
+    {n:"bell",   k:"stroke", m:'<path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 19a2 2 0 0 0 4 0"/>'},
+    {n:"spinner",k:"stroke", m:'<path d="M12 3 A9 9 0 1 1 5.6 6.2"/>'},
+    {n:"download",k:"stroke",m:'<path d="M12 4 V15"/><path d="M7 11 L12 16 L17 11"/><path d="M5 20 H19"/>'},
+    {n:"wifi",   k:"stroke", m:'<path d="M3 9 A14 14 0 0 1 21 9"/><path d="M6 12.5 A9 9 0 0 1 18 12.5"/><path d="M9 16 A4.5 4.5 0 0 1 15 16"/><circle cx="12" cy="19" r="1.2" fill="currentColor" stroke="none"/>'},
+    {n:"menu",   k:"stroke", m:'<path d="M4 7 H20"/><path d="M4 12 H20"/><path d="M4 17 H20"/>'},
+    {n:"arrow",  k:"stroke", m:'<path d="M4 12 H18"/><path d="M13 7 L18 12 L13 17"/>'},
+    {n:"eye",    k:"stroke", m:'<path d="M2 12 S6 5 12 5 S22 12 22 12 S18 19 12 19 S2 12 2 12 Z"/><circle cx="12" cy="12" r="3"/>'},
+    {n:"star",   k:"fill",   m:'<path d="M12 3 L14.6 9.1 L21 9.7 L16.1 14 L17.6 20.3 L12 16.9 L6.4 20.3 L7.9 14 L3 9.7 L9.4 9.1 Z"/>'},
+    {n:"plus",   k:"stroke", m:'<path d="M12 5 V19"/><path d="M5 12 H19"/>'},
+    {n:"sound",  k:"fill",   m:'<rect x="4" y="6" width="3" height="12" rx="1.5"/><rect x="9.5" y="6" width="3" height="12" rx="1.5"/><rect x="15" y="6" width="3" height="12" rx="1.5"/>'}
+  ];
+  const SWATCHES=["#ECEDF5","#38E0FF","#B36BFF","#FFC24B","#FF3D8B","#4ADE9B"];
+  const SIZES=[24,48,64];
+  let color="#38E0FF", size=48;
+
+  function iconSVG(ic,col,px){
+    const root = ic.k==="fill"
+      ? 'fill="'+col+'" stroke="none"'
+      : 'fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"';
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="'+px+'" height="'+px+'" viewBox="0 0 24 24" '+root+'>'+ic.m.replace(/currentColor/g,col)+'</svg>';
+  }
+
+  const grid=document.getElementById("grid");
+  const status=document.getElementById("status");
+  let toastT;
+  function toast(m){ status.textContent=m; status.classList.add("show"); clearTimeout(toastT); toastT=setTimeout(()=>status.classList.remove("show"),1600); }
+
+  function renderGrid(){
+    grid.innerHTML="";
+    ICONS.forEach(ic=>{
+      const card=document.createElement("div"); card.className="icard";
+      card.innerHTML='<div class="iview" title="Klicken zum Kopieren">'+iconSVG(ic,color,40)+'</div>'+
+        '<div class="iname">'+ic.n+'</div>'+
+        '<div class="ibtns"><button class="mini copy">Kopieren</button><button class="mini dl">SVG ↓</button></div>';
+      const doCopy=()=>{ const svg=iconSVG(ic,color,size); if(navigator.clipboard) navigator.clipboard.writeText(svg).then(()=>toast(ic.n+" · SVG kopiert ✓"),()=>toast("Kopieren nicht möglich")); else toast("Kopieren nicht unterstützt"); };
+      card.querySelector(".iview").addEventListener("click",doCopy);
+      card.querySelector(".copy").addEventListener("click",doCopy);
+      card.querySelector(".dl").addEventListener("click",()=>{
+        const blob=new Blob([iconSVG(ic,color,size)],{type:"image/svg+xml"});
+        const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="icon-"+ic.n+".svg"; a.click(); toast(ic.n+".svg gespeichert");
+      });
+      grid.appendChild(card);
+    });
+  }
+
+  const sw=document.getElementById("swatches");
+  SWATCHES.forEach((hex,i)=>{ const s=document.createElement("div"); s.className="sw"+(hex===color?" on":""); s.style.background=hex; s.title=hex;
+    s.addEventListener("click",()=>{ color=hex; document.getElementById("picker").value=hex; [...sw.children].forEach(c=>c.classList.toggle("on",c===s)); renderGrid(); }); sw.appendChild(s); });
+  document.getElementById("picker").addEventListener("input",e=>{ color=e.target.value; [...sw.children].forEach(c=>c.classList.remove("on")); renderGrid(); });
+
+  const sz=document.getElementById("sizes");
+  SIZES.forEach((v,i)=>{ const b=document.createElement("button"); b.className="chip"+(v===size?" on":""); b.textContent=v+"px";
+    b.addEventListener("click",()=>{ size=v; [...sz.children].forEach(c=>c.classList.toggle("on",c===b)); toast("Export-Größe: "+v+"px"); }); sz.appendChild(b); });
+
+  renderGrid();
+})();
+</script>
+</body>
+</html>

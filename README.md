@@ -106,7 +106,9 @@ khanmotari/
 ├── index.html            # Portfolio-Startseite (Hero, Über-mich, Studio, Arbeiten, Connect)
 ├── studio.html           # Brand-Kit Studio: Namen-Generator mit Palette, Fonts & Bild-Export
 ├── tools/
-│   └── monogram.html     # Monogramm-Generator: Initialen → Logo (PNG + SVG)
+│   ├── monogram.html     # Monogramm-Generator: Initialen → Logo (PNG + SVG)
+│   ├── wallpaper.html    # Wallpaper-Generator: WebGL-Kunst als Wallpaper (PNG, versch. Formate)
+│   └── icons.html        # Icon-Kit: 12 SVG-Icons in eigener Farbe/Größe (Copy + Download)
 ├── README.md
 └── pieces/
     ├── 01-motion-reel.html
