@@ -1,8 +1,9 @@
 name: Deploy to GitHub Pages
 
+# Manual-only: run this from the Actions tab AFTER enabling Pages with
+# Source = "GitHub Actions" in Settings. (Auto-enable via the workflow token
+# is blocked by GitHub for the initial Pages setup.)
 on:
-  push:
-    branches: ["claude/new-session-gzpe4g"]
   workflow_dispatch:
 
 # Allow the workflow to enable Pages and publish to it
@@ -28,9 +29,6 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
-        with:
-          # Turn Pages on automatically (build type = GitHub Actions)
-          enablement: true
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
