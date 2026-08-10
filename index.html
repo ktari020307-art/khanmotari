@@ -235,6 +235,20 @@
   .plink .pt b { font-size: 15px; font-weight: 650; }
   .plink .pt span { font-family: var(--mono); font-size: 12px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+  /* rich content */
+  .gt { background: linear-gradient(100deg, var(--cyan), #B36BFF 60%, #FFC24B);
+    -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .about .lead + .lead { margin-top: 18px; }
+  .pullquote { margin: 44px 0 0; font-size: clamp(22px, 3.8vw, 36px); font-weight: 700;
+    letter-spacing: -0.02em; line-height: 1.24; max-width: 24ch;
+    padding-left: 22px; border-left: 3px solid var(--cyan); }
+  .principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 36px; }
+  .principle { border: 1px solid var(--line); border-radius: 16px; padding: 26px; background: var(--ground-2); }
+  .principle h3 { font-size: 18px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 8px;
+    display: flex; align-items: baseline; gap: 10px; }
+  .principle h3 i { font-family: var(--mono); font-style: normal; font-size: 12px; color: var(--cyan); }
+  .principle p { color: var(--muted); font-size: 14.5px; }
+
   @media (prefers-reduced-motion: reduce) {
     .piece, .btn { transition: none; }
   }
@@ -263,7 +277,9 @@
     <div class="wrap">
       <p class="sec-label">Über mich</p>
       <p class="stmt">Ich bin <em>khanmotari</em> — dort, wo Strategie auf Kreativität trifft.</p>
-      <p class="lead">Ich denke in Konzepten und baue sie selbst. Statt nur zu beraten, mache ich Ideen greifbar — von der klaren Positionierung bis zum fertigen, interaktiven Erlebnis. <b>Neugier ist mein Antrieb, Handwerk mein Werkzeug.</b> Was mich reizt: Dinge zu schaffen, die es so noch nicht gab.</p>
+      <p class="lead">Die meisten Menschen sind entweder Denker oder Macher. Mich hat nie gereizt, mich zu entscheiden. Ich denke strategisch — in Zusammenhängen, Zielen, dem großen Bild — und ich <b>baue selbst</b>, so lange, bis aus einer Idee etwas wird, das man anfassen und erleben kann.</p>
+      <p class="lead">Was mich antreibt, ist Neugier. Die Frage „ginge das nicht besser?" lässt mich nicht los. Ich probiere aus, verwerfe, baue neu — und höre erst auf, wenn es sich richtig anfühlt. Genau diese Haltung steckt in jedem Stück, das du weiter unten findest: alles selbst gebaut, alles aus dem Wunsch, etwas zu schaffen, das es so noch nicht gab.</p>
+      <p class="pullquote">Nicht nur beraten, <span class="gt">wie es gehen könnte</span> — sondern zeigen, dass es geht.</p>
     </div>
   </section>
 
@@ -291,14 +307,39 @@
     </div>
   </section>
 
+  <!-- ============ PRINZIPIEN ============ -->
+  <section class="block" id="prinzipien">
+    <div class="wrap">
+      <p class="sec-label">Prinzipien</p>
+      <div class="principles">
+        <div class="principle">
+          <h3><i>01</i> Klarheit vor Komplexität</h3>
+          <p>Das Schwierige einfach zu machen ist die eigentliche Arbeit — nicht das Einfache kompliziert.</p>
+        </div>
+        <div class="principle">
+          <h3><i>02</i> Machen schlägt reden</h3>
+          <p>Eine gebaute Idee überzeugt mehr als hundert Folien. Ich zeige lieber, als zu versprechen.</p>
+        </div>
+        <div class="principle">
+          <h3><i>03</i> An der Grenze bauen</h3>
+          <p>Das Beste entsteht knapp außerhalb der Komfortzone. Wenn es sicher wirkt, ist es meist zu klein gedacht.</p>
+        </div>
+        <div class="principle">
+          <h3><i>04</i> Details sind kein Luxus</h3>
+          <p>Handwerk zählt. Der Unterschied zwischen „okay" und „wow" steckt fast immer im Detail.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ ARBEITEN ============ -->
   <main class="block wrap" id="work">
     <div class="work-head">
       <div>
         <p class="sec-label">Ausgewählte Arbeiten</p>
-        <h2>Neun Motion-Experimente</h2>
+        <h2>Neun Experimente in Bewegung</h2>
       </div>
-      <p>Reine Web-Technik — von CSS-Animation bis zum raymarched 3D-Shader. Klick dich rein.</p>
+      <p>Keine Templates, keine Bibliotheken — jedes Stück von Grund auf selbst gebaut, vom simplen CSS-Effekt bis zum 3D-Shader, der auf der Grafikkarte läuft. Es ist die kürzeste Antwort auf die Frage „was meinst du mit selbst bauen?". Klick dich rein.</p>
     </div>
     <div class="grid">
 
