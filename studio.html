@@ -3,51 +3,56 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>khanmotari — Name Studio</title>
+<title>khanmotari — Brand Studio</title>
 <style>
   :root {
-    --ink: #F3F4FB; --muted: #9BA0BE; --faint: #565C82;
+    --ink: #F3F4FB; --muted: #9BA0BE; --faint: #565C82; --line: rgba(255,255,255,0.12);
     --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
     --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; }
   body { background: #06060F; color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; overflow: hidden; touch-action: none; }
-  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
+  canvas#c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; z-index: 0; }
 
   .ui { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
-
-  .top { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 22px 26px; }
+  .top { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; }
   .brand { font-weight: 800; font-size: 18px; letter-spacing: -0.02em; }
   .brand b { background: linear-gradient(100deg,#38E0FF,#B36BFF,#FFC24B); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .back { pointer-events: auto; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid rgba(255,255,255,0.12); border-radius: 40px; padding: 9px 16px; transition: .2s; text-decoration: none; }
+  .back { pointer-events: auto; font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--line); border-radius: 40px; padding: 9px 15px; text-decoration: none; transition: .2s; }
   .back:hover { color: var(--ink); border-color: #38E0FF; }
 
-  .panel { position: absolute; top: 74px; left: 50%; transform: translateX(-50%); width: min(520px, 92vw); pointer-events: auto; text-align: center; }
-  .panel .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: #38E0FF; margin-bottom: 12px; }
-  .field { display: flex; gap: 8px; }
-  .field input {
-    flex: 1; font-family: var(--sans); font-size: 18px; font-weight: 600; color: var(--ink);
-    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px;
-    padding: 15px 18px; outline: none; transition: border-color .2s;
+  .panel { position: absolute; top: 70px; left: 50%; transform: translateX(-50%); width: min(520px, 92vw); pointer-events: auto; text-align: center; }
+  .panel .label { font-family: var(--mono); font-size: 11px; letter-spacing: 0.26em; text-transform: uppercase; color: #38E0FF; margin-bottom: 10px; }
+  .panel input {
+    width: 100%; font-family: var(--sans); font-size: 18px; font-weight: 600; color: var(--ink); text-align: center;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; outline: none; transition: border-color .2s;
   }
-  .field input:focus { border-color: #38E0FF; }
-  .field input::placeholder { color: var(--faint); font-weight: 500; }
+  .panel input:focus { border-color: #38E0FF; }
+  .panel input::placeholder { color: var(--faint); font-weight: 500; }
 
-  .dock { position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; pointer-events: auto; }
-  .dock button {
-    font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
-    color: var(--muted); background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.1);
-    padding: 12px 18px; border-radius: 40px; cursor: pointer; transition: .2s; backdrop-filter: blur(8px); white-space: nowrap;
-  }
-  .dock button:hover { color: var(--ink); border-color: rgba(255,255,255,0.25); }
-  .dock button.primary { color: #06060F; background: linear-gradient(100deg,#38E0FF,#B36BFF); border: none; font-weight: 700; }
+  /* brand-kit panel */
+  .kit { position: absolute; left: 50%; bottom: 20px; transform: translateX(-50%); width: min(760px, 94vw);
+    pointer-events: auto; background: rgba(12,13,22,0.72); border: 1px solid var(--line); border-radius: 18px;
+    padding: 16px 18px; backdrop-filter: blur(14px); display: flex; flex-direction: column; gap: 12px; max-height: 62vh; overflow: auto; }
+  .krow { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cap { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); width: 62px; flex: 0 0 62px; }
+  .chip { font-family: var(--mono); font-size: 12px; letter-spacing: 0.03em; color: var(--muted); background: rgba(255,255,255,0.045);
+    border: 1px solid var(--line); border-radius: 30px; padding: 8px 14px; cursor: pointer; transition: .18s; white-space: nowrap; }
+  .chip:hover { color: var(--ink); }
+  .chip.on { color: #06060F; background: linear-gradient(100deg,#38E0FF,#B36BFF); border-color: transparent; font-weight: 700; }
+  .sw { width: 30px; height: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; position: relative; transition: transform .15s; }
+  .sw:hover { transform: translateY(-2px); }
+  .fonts { font-size: 13px; color: var(--ink); }
+  .fonts b { color: var(--muted); font-weight: 500; font-family: var(--mono); font-size: 11px; }
+  .btn { font-family: var(--mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted);
+    background: rgba(255,255,255,0.05); border: 1px solid var(--line); border-radius: 40px; padding: 11px 16px; cursor: pointer; transition: .2s; white-space: nowrap; }
+  .btn:hover { color: var(--ink); border-color: rgba(255,255,255,0.28); }
+  .btn.primary { color: #06060F; background: linear-gradient(100deg,#38E0FF,#B36BFF); border: none; font-weight: 700; }
+  .status { font-family: var(--mono); font-size: 11px; color: var(--faint); min-height: 14px; }
+  .grow { flex: 1; }
 
-  .follow { position: absolute; bottom: 26px; right: 26px; pointer-events: auto; }
-  .follow a { font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); text-decoration: none; border: 1px solid rgba(255,255,255,0.12); border-radius: 40px; padding: 12px 18px; transition: .2s; }
-  .follow a:hover { color: var(--ink); border-color: #B36BFF; }
-
-  @media (max-width: 560px) { .follow { display: none; } .panel { top: 66px; } }
+  @media (max-width: 560px) { .cap { width: 100%; flex-basis: 100%; } .panel { top: 62px; } }
 </style>
 </head>
 <body>
@@ -60,19 +65,22 @@
   </div>
 
   <div class="panel">
-    <div class="label">Dein Name in Bewegung</div>
-    <div class="field">
-      <input id="txt" type="text" maxlength="16" value="khanmotari" placeholder="Tipp deinen Namen…" autocomplete="off" spellcheck="false">
+    <div class="label">Dein Brand-Kit</div>
+    <input id="txt" type="text" maxlength="16" value="khanmotari" placeholder="Tipp deinen Namen…" autocomplete="off" spellcheck="false">
+  </div>
+
+  <div class="kit">
+    <div class="krow"><span class="cap">Stil</span><div id="vibes" class="krow grow"></div></div>
+    <div class="krow"><span class="cap">Palette</span><div id="swatches" class="krow"></div><span class="grow"></span><span class="fonts"><b>Schriften:</b> <span id="fonts"></span></span></div>
+    <div class="krow">
+      <span class="cap">Format</span><div id="formats" class="krow"></div>
+      <span class="grow"></span>
+      <button id="scatter" class="btn">Explodieren</button>
+      <button id="share" class="btn">Teilen</button>
+      <button id="dl" class="btn primary">↓ Speichern</button>
     </div>
+    <div class="status" id="status">Tipp: Klick eine Farbe an, um den Hex-Code zu kopieren.</div>
   </div>
-
-  <div class="dock">
-    <button id="scatter">Explodieren</button>
-    <button id="color">Farbe</button>
-    <button id="dl" class="primary">↓ Als Bild speichern</button>
-  </div>
-
-  <div class="follow"><a href="index.html#connect">khanmotari folgen ›</a></div>
 </div>
 
 <script>
@@ -82,51 +90,51 @@
   const cv = document.getElementById("c");
   const ctx = cv.getContext("2d", { alpha: false });
   const TAU = Math.PI * 2;
+  const FONTSTACK = getComputedStyle(document.body).fontFamily;
 
-  let W = 0, H = 0, scale = 1;
-  let P = 0, particles = [], targets = [];
-  let text = "khanmotari";
+  const VIBES = [
+    { name: "Techy",   stops: [[56,224,255],[179,107,255],[255,194,75]], palette: ["#38E0FF","#B36BFF","#FFC24B","#0A0B12","#F3F4FB"], fonts: "Space Grotesk + IBM Plex Sans" },
+    { name: "Bold",    stops: [[255,61,139],[56,224,255],[255,61,139]],  palette: ["#FF3D8B","#38E0FF","#7B6CF6","#0A0B12","#ECEDF5"], fonts: "Archivo Black + Inter" },
+    { name: "Elegant", stops: [[245,196,83],[179,107,255],[255,143,163]],palette: ["#F5C453","#B36BFF","#FF8FA3","#0E0B14","#F4F0EA"], fonts: "Playfair Display + Lato" },
+    { name: "Playful", stops: [[74,222,155],[255,106,61],[168,85,247]],  palette: ["#4ADE9B","#FF6A3D","#A855F7","#0C0D16","#ECEDF5"], fonts: "Poppins + Nunito" },
+    { name: "Warm",    stops: [[255,143,163],[255,194,75],[255,93,70]],  palette: ["#FF8FA3","#FFC24B","#FF5D46","#140F0E","#F5EFE6"], fonts: "Fraunces + Work Sans" }
+  ];
+  const FORMATS = [
+    { name: "Post 1:1",   w: 1080, h: 1080 },
+    { name: "Banner",     w: 1584, h: 396  },
+    { name: "Wallpaper",  w: 1080, h: 1920 }
+  ];
+  let vibe = 0, fmt = 0;
+
+  let W = 0, H = 0, scale = 1, P = 0, particles = [], targets = [];
   const mouse = { x: -9999, y: -9999, active: false };
 
-  const PALETTES = [
-    [[56,224,255],[179,107,255],[255,194,75]],   // aurora
-    [[255,61,139],[56,224,255],[255,61,139]],     // neon
-    [[74,222,155],[255,106,61],[168,85,247]],     // mint
-    [[255,214,120],[255,120,80],[255,60,140]]     // sunset
-  ];
-  let palIdx = 0;
-
-  function colorAt(t) {
-    const P3 = PALETTES[palIdx];
-    const seg = t < 0.5 ? 0 : 1;
-    const local = t < 0.5 ? t * 2 : (t - 0.5) * 2;
-    const a = P3[seg], b = P3[seg + 1];
-    return [
-      Math.round(a[0] + (b[0]-a[0]) * local),
-      Math.round(a[1] + (b[1]-a[1]) * local),
-      Math.round(a[2] + (b[2]-a[2]) * local)
-    ];
+  function lerpStops(stops, t) {
+    const k = stops.length - 1;
+    const seg = Math.min(Math.floor(t * k), k - 1);
+    const local = t * k - seg;
+    const a = stops[seg], b = stops[seg + 1];
+    return [Math.round(a[0]+(b[0]-a[0])*local), Math.round(a[1]+(b[1]-a[1])*local), Math.round(a[2]+(b[2]-a[2])*local)];
   }
+  function currentLabel() { const v = document.getElementById("txt").value; return (v && v.trim()) ? v.trim() : "khanmotari"; }
 
-  function fitFont(g, t, maxW, maxH) {
-    let size = Math.min(maxW * 0.2, maxH * 0.4);
+  function fitFontG(g, t, maxW, maxH) {
+    let size = Math.min(maxW * 0.2, maxH * 0.42);
     for (let k = 0; k < 8; k++) {
-      g.font = "800 " + size + "px " + getComputedStyle(document.body).fontFamily;
+      g.font = "800 " + size + "px " + FONTSTACK;
       const w = g.measureText(t).width;
-      if (w > maxW * 0.86) size *= (maxW * 0.86) / w; else break;
+      if (w > maxW * 0.84) size *= (maxW * 0.84) / w; else break;
     }
     return size;
   }
 
   function buildTargets() {
     const tmp = document.createElement("canvas");
-    tmp.width = Math.max(1, Math.floor(W));
-    tmp.height = Math.max(1, Math.floor(H));
+    tmp.width = Math.max(1, Math.floor(W)); tmp.height = Math.max(1, Math.floor(H));
     const g = tmp.getContext("2d");
-    const label = (text && text.trim()) ? text.trim() : "khanmotari";
-    const size = fitFont(g, label, W, H);
-    g.font = "800 " + size + "px " + getComputedStyle(document.body).fontFamily;
-    g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "middle";
+    const label = currentLabel();
+    const size = fitFontG(g, label, W, H);
+    g.font = "800 " + size + "px " + FONTSTACK; g.fillStyle = "#fff"; g.textAlign = "center"; g.textBaseline = "middle";
     g.fillText(label, W / 2, H / 2);
     const img = g.getImageData(0, 0, tmp.width, tmp.height).data;
     const step = W < 640 ? 5 : 4;
@@ -135,10 +143,6 @@
       for (let x = 0; x < tmp.width; x += step)
         if (img[(y * tmp.width + x) * 4 + 3] > 128) pts.push({ x, y });
     targets = pts.length ? pts : [{ x: W/2, y: H/2 }];
-    assign();
-  }
-
-  function assign() {
     const n = targets.length;
     for (let i = 0; i < P; i++) {
       const p = targets[(i * n / P) | 0];
@@ -151,10 +155,8 @@
     P = Math.max(800, Math.min(3600, Math.floor((W * H) / 850)));
     if (W < 640) P = Math.min(P, 1700);
     particles = new Array(P);
-    for (let i = 0; i < P; i++) {
-      particles[i] = { x: Math.random()*W, y: Math.random()*H, vx: 0, vy: 0, tx: W/2, ty: H/2,
-        c: i / P, gold: Math.random() < 0.06 };
-    }
+    for (let i = 0; i < P; i++)
+      particles[i] = { x: Math.random()*W, y: Math.random()*H, vx: 0, vy: 0, tx: W/2, ty: H/2, c: i / P };
   }
 
   function resize() {
@@ -164,14 +166,12 @@
     cv.style.width = W + "px"; cv.style.height = H + "px";
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     makeParticles(); buildTargets();
-    ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "#06060F"; ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = "source-over"; ctx.fillStyle = "#06060F"; ctx.fillRect(0, 0, W, H);
   }
 
   function burst(cx, cy, power) {
     for (let i = 0; i < P; i++) {
-      const p = particles[i];
-      const dx = p.x - cx, dy = p.y - cy, d = Math.hypot(dx, dy) || 1;
+      const p = particles[i]; const dx = p.x - cx, dy = p.y - cy, d = Math.hypot(dx, dy) || 1;
       if (d < 320) { const f = (1 - d/320) * power; p.vx += dx/d*f; p.vy += dy/d*f; }
     }
   }
@@ -182,83 +182,136 @@
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = "rgba(6,6,15,0.14)"; ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = "lighter";
-
+    const stops = VIBES[vibe].stops;
     for (let i = 0; i < P; i++) {
       const p = particles[i];
       let ax = (p.tx - p.x) * 0.03, ay = (p.ty - p.y) * 0.03;
-      ax += Math.cos(perfNow * 0.002 + i) * 0.05;
-      ay += Math.sin(perfNow * 0.002 + i) * 0.05;
+      ax += Math.cos(perfNow * 0.002 + i) * 0.05; ay += Math.sin(perfNow * 0.002 + i) * 0.05;
       if (mouse.active) {
         const dx = p.x - mouse.x, dy = p.y - mouse.y, d = Math.hypot(dx, dy);
         if (d < 120) { const f = (1 - d/120) * 4; ax += dx/(d||1)*f; ay += dy/(d||1)*f; }
       }
-      p.vx = (p.vx + ax) * 0.84; p.vy = (p.vy + ay) * 0.84;
-      p.x += p.vx; p.y += p.vy;
-
-      const disp = Math.hypot(p.x - p.tx, p.y - p.ty);
-      const t = Math.min(disp / 46, 1);
-      const rad = 1.3 + t * 3;
-      let col;
-      if (p.gold) col = [255, 200, 90]; else col = colorAt(p.c);
-      const light = 0.28 + t * 0.72;
-      ctx.fillStyle = "rgba(" + col[0] + "," + col[1] + "," + col[2] + "," + (light * 0.4) + ")";
+      p.vx = (p.vx + ax) * 0.84; p.vy = (p.vy + ay) * 0.84; p.x += p.vx; p.y += p.vy;
+      const disp = Math.hypot(p.x - p.tx, p.y - p.ty); const t = Math.min(disp / 46, 1);
+      const rad = 1.3 + t * 3; const col = lerpStops(stops, p.c); const light = 0.28 + t * 0.72;
+      ctx.fillStyle = "rgba(" + col[0]+","+col[1]+","+col[2]+","+(light*0.4)+")";
       ctx.beginPath(); ctx.arc(p.x, p.y, rad * 2.4, 0, TAU); ctx.fill();
-      ctx.fillStyle = "rgba(" + col[0] + "," + col[1] + "," + col[2] + "," + light + ")";
+      ctx.fillStyle = "rgba(" + col[0]+","+col[1]+","+col[2]+","+light+")";
       ctx.beginPath(); ctx.arc(p.x, p.y, rad, 0, TAU); ctx.fill();
     }
-
-    // live watermark (so screenshots/recordings carry the brand)
     ctx.globalCompositeOperation = "source-over";
-    ctx.font = "600 12px " + "ui-monospace, monospace";
-    ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
-    ctx.fillStyle = "rgba(255,255,255,0.3)";
-    ctx.fillText("khanmotari", W - 18, H - 16);
-
+    ctx.font = "600 12px ui-monospace, monospace"; ctx.textAlign = "right"; ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "rgba(255,255,255,0.3)"; ctx.fillText("khanmotari", W - 18, H - 16);
     if (!reduce) requestAnimationFrame(frame);
   }
+
+  // ---- export: render a formatted poster ----
+  function renderPoster() {
+    const F = FORMATS[fmt]; const w = F.w, h = F.h;
+    const c = document.createElement("canvas"); c.width = w; c.height = h;
+    const g = c.getContext("2d");
+    g.fillStyle = "#06060F"; g.fillRect(0, 0, w, h);
+    const label = currentLabel();
+    const size = fitFontG(g, label, w, h * 0.92);
+    const tmp = document.createElement("canvas"); tmp.width = w; tmp.height = h;
+    const tg = tmp.getContext("2d");
+    tg.font = "800 " + size + "px " + FONTSTACK; tg.fillStyle = "#fff"; tg.textAlign = "center"; tg.textBaseline = "middle";
+    tg.fillText(label, w / 2, h * 0.46);
+    const data = tg.getImageData(0, 0, w, h).data;
+    const step = Math.max(3, Math.round(w / 360));
+    const stops = VIBES[vibe].stops;
+    g.globalCompositeOperation = "lighter";
+    for (let y = 0; y < h; y += step)
+      for (let x = 0; x < w; x += step)
+        if (data[(y * w + x) * 4 + 3] > 128) {
+          const col = lerpStops(stops, x / w); const rr = Math.max(2, w * 0.0016);
+          g.fillStyle = "rgba(" + col[0]+","+col[1]+","+col[2]+",0.22)";
+          g.beginPath(); g.arc(x, y, rr * 2.4, 0, TAU); g.fill();
+          g.fillStyle = "rgba(" + col[0]+","+col[1]+","+col[2]+",0.95)";
+          g.beginPath(); g.arc(x, y, rr, 0, TAU); g.fill();
+        }
+    g.globalCompositeOperation = "source-over";
+    const pad = Math.round(w * 0.03), sw = Math.round(Math.min(w, h) * 0.05);
+    VIBES[vibe].palette.slice(0, 5).forEach((hex, i) => { g.fillStyle = hex; g.fillRect(pad + i * (sw + 6), h - pad - sw, sw, sw); });
+    g.fillStyle = "rgba(255,255,255,0.82)"; g.textAlign = "right"; g.textBaseline = "alphabetic";
+    g.font = "600 " + Math.round(w * 0.02) + "px ui-monospace, monospace";
+    g.fillText("made with khanmotari", w - pad, h - pad - Math.round(sw*0.35));
+    return c;
+  }
+
+  const status = document.getElementById("status");
+  function say(m) { status.textContent = m; }
+
+  // ---- UI build ----
+  const vibesEl = document.getElementById("vibes");
+  VIBES.forEach((v, i) => {
+    const b = document.createElement("button"); b.className = "chip" + (i === 0 ? " on" : ""); b.textContent = v.name;
+    b.addEventListener("click", () => { vibe = i; [...vibesEl.children].forEach((c,j)=>c.classList.toggle("on", j===i)); renderKit(); });
+    vibesEl.appendChild(b);
+  });
+  const formatsEl = document.getElementById("formats");
+  FORMATS.forEach((f, i) => {
+    const b = document.createElement("button"); b.className = "chip" + (i === 0 ? " on" : ""); b.textContent = f.name;
+    b.addEventListener("click", () => { fmt = i; [...formatsEl.children].forEach((c,j)=>c.classList.toggle("on", j===i)); });
+    formatsEl.appendChild(b);
+  });
+  const swatchesEl = document.getElementById("swatches");
+  const fontsEl = document.getElementById("fonts");
+  function renderKit() {
+    swatchesEl.innerHTML = "";
+    VIBES[vibe].palette.forEach((hex) => {
+      const s = document.createElement("div"); s.className = "sw"; s.style.background = hex; s.title = hex;
+      s.addEventListener("click", () => {
+        if (navigator.clipboard) navigator.clipboard.writeText(hex).then(()=>say(hex + " kopiert ✓"), ()=>say("Hex: " + hex));
+        else say("Hex: " + hex);
+      });
+      swatchesEl.appendChild(s);
+    });
+    fontsEl.textContent = VIBES[vibe].fonts;
+  }
+  renderKit();
 
   // input
   const input = document.getElementById("txt");
   let deb;
-  input.addEventListener("input", () => {
-    clearTimeout(deb);
-    deb = setTimeout(() => { text = input.value; buildTargets(); }, 220);
-  });
-  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { text = input.value; buildTargets(); input.blur(); } });
+  input.addEventListener("input", () => { clearTimeout(deb); deb = setTimeout(buildTargets, 220); });
+  input.addEventListener("keydown", (e) => { if (e.key === "Enter") { buildTargets(); input.blur(); } });
 
   // pointer
   window.addEventListener("pointermove", (e) => { mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true; });
   window.addEventListener("pointerleave", () => { mouse.active = false; });
   cv.addEventListener("pointerdown", (e) => burst(e.clientX, e.clientY, 11));
 
-  // controls
+  // actions
   document.getElementById("scatter").addEventListener("click", () => burst(W/2, H/2, 17));
-  document.getElementById("color").addEventListener("click", () => { palIdx = (palIdx + 1) % PALETTES.length; });
+  function fileName() { return "khanmotari-" + (currentLabel().replace(/[^a-z0-9]/gi,"-").toLowerCase() || "name") + ".png"; }
   document.getElementById("dl").addEventListener("click", () => {
-    const ex = document.createElement("canvas");
-    ex.width = cv.width; ex.height = cv.height;
-    const g = ex.getContext("2d");
-    g.drawImage(cv, 0, 0);
-    g.font = "600 " + Math.round(cv.width * 0.017) + "px ui-monospace, monospace";
-    g.textAlign = "right"; g.textBaseline = "alphabetic"; g.fillStyle = "rgba(255,255,255,0.82)";
-    g.fillText("made with khanmotari", cv.width - 26, cv.height - 26);
-    const safe = (text || "name").trim().replace(/[^a-z0-9]/gi, "-").toLowerCase() || "name";
-    const a = document.createElement("a");
-    a.href = ex.toDataURL("image/png"); a.download = "khanmotari-" + safe + ".png"; a.click();
+    const c = renderPoster(); const a = document.createElement("a");
+    a.href = c.toDataURL("image/png"); a.download = fileName(); a.click();
+    say("Bild gespeichert · " + FORMATS[fmt].name + " (" + FORMATS[fmt].w + "×" + FORMATS[fmt].h + ")");
+  });
+  document.getElementById("share").addEventListener("click", () => {
+    const c = renderPoster();
+    c.toBlob((blob) => {
+      if (!blob) return;
+      const file = new File([blob], fileName(), { type: "image/png" });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: "khanmotari", text: "Erstellt mit khanmotari" }).catch(()=>{});
+      } else {
+        const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = fileName(); a.click();
+        say("Teilen wird hier nicht unterstützt — Bild wurde stattdessen gespeichert.");
+      }
+    }, "image/png");
   });
 
   // boot
   resize();
   window.addEventListener("resize", resize);
-
   if (reduce) {
-    // static formed frame
     ctx.globalCompositeOperation = "lighter";
-    for (let i = 0; i < P; i++) {
-      const p = particles[i]; const col = p.gold ? [255,200,90] : colorAt(p.c);
-      ctx.fillStyle = "rgba(" + col[0] + "," + col[1] + "," + col[2] + ",0.9)";
-      ctx.beginPath(); ctx.arc(p.tx, p.ty, 1.4, 0, TAU); ctx.fill();
-    }
+    const stops = VIBES[vibe].stops;
+    for (let i = 0; i < P; i++) { const p = particles[i]; const col = lerpStops(stops, p.c);
+      ctx.fillStyle = "rgba("+col[0]+","+col[1]+","+col[2]+",0.9)"; ctx.beginPath(); ctx.arc(p.tx, p.ty, 1.4, 0, TAU); ctx.fill(); }
   } else {
     requestAnimationFrame(frame);
   }
