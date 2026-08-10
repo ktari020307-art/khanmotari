@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Motion Gallery</title>
+<style>
+  :root {
+    --ground: #0A0B12;
+    --ground-2: #10111C;
+    --surface: #14162296;
+    --ink: #ECEDF5;
+    --muted: #8B8FA8;
+    --faint: #565A73;
+    --line: #24263A;
+    --mag: #FF3D8B;
+    --cyan: #38E0FF;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* header */
+  header { position: relative; padding: 88px 0 44px; overflow: hidden; }
+  header .glow {
+    position: absolute; width: 60vmax; height: 60vmax; border-radius: 50%;
+    top: -34vmax; left: 50%; transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,61,139,0.16), transparent 60%);
+    filter: blur(40px); z-index: 0;
+  }
+  header .inner { position: relative; z-index: 1; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.32em;
+    text-transform: uppercase; color: var(--cyan); margin-bottom: 18px;
+  }
+  h1 {
+    font-size: clamp(44px, 9vw, 92px); font-weight: 900; letter-spacing: -0.04em; line-height: 0.95;
+  }
+  h1 .grad {
+    background: linear-gradient(100deg, var(--mag), var(--cyan));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .intro { margin-top: 22px; max-width: 56ch; color: var(--muted); font-size: 17px; }
+  .intro b { color: var(--ink); font-weight: 500; }
+
+  .meta-row {
+    display: flex; flex-wrap: wrap; gap: 22px; margin-top: 28px;
+    font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: 0.06em;
+  }
+  .meta-row b { color: var(--muted); font-weight: 500; }
+
+  /* gallery */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px;
+    padding: 32px 0 100px;
+  }
+  .piece {
+    position: relative; display: block;
+    background: var(--ground-2); border: 1px solid var(--line); border-radius: 16px;
+    padding: 26px 26px 24px; overflow: hidden;
+    transition: transform 0.22s ease, border-color 0.22s ease;
+  }
+  .piece::before {
+    content: ""; position: absolute; inset: 0 auto 0 0; width: 4px;
+    background: var(--c1); opacity: 0.9;
+  }
+  .piece:hover { transform: translateY(-4px); border-color: var(--c1); }
+  .piece .no {
+    font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: 0.1em;
+  }
+  .piece h2 { font-size: 22px; font-weight: 750; letter-spacing: -0.02em; margin: 8px 0 6px; }
+  .piece p { color: var(--muted); font-size: 14.5px; min-height: 42px; }
+  .swatch { display: flex; gap: 6px; margin: 16px 0 14px; }
+  .swatch i { width: 22px; height: 8px; border-radius: 4px; display: block; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags span {
+    font-family: var(--mono); font-size: 10.5px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 20px; padding: 4px 10px; letter-spacing: 0.04em;
+  }
+  .go {
+    margin-top: 16px; display: inline-flex; align-items: center; gap: 7px;
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--c1);
+  }
+  .go svg { width: 14px; height: 14px; transition: transform 0.2s; }
+  .piece:hover .go svg { transform: translateX(4px); }
+
+  footer {
+    border-top: 1px solid var(--line); padding: 28px 0 56px;
+    font-family: var(--mono); font-size: 12px; color: var(--faint);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+  footer b { color: var(--muted); font-weight: 500; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .piece { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="glow"></div>
+    <div class="wrap inner">
+      <p class="eyebrow">Motion Gallery · Vol.01</p>
+      <h1><span class="grad">khanmotari</span><br>in Bewegung</h1>
+      <p class="intro">Sechs eigenständige Motion-Graphics-Studien — jede eine andere Technik und ein anderer Look. <b>Kein Video, keine Bibliotheken:</b> alles läuft in reinem HTML, CSS, SVG und Canvas direkt im Browser.</p>
+      <div class="meta-row">
+        <span><b>6</b> Stücke</span>
+        <span><b>0</b> Abhängigkeiten</span>
+        <span><b>100%</b> Code</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+
+      <a class="piece" href="pieces/01-motion-reel.html" style="--c1:#FF3D8B">
+        <span class="no">01</span>
+        <h2>Motion Reel</h2>
+        <p>Acht kleine Animations-Effekte in einem Raster — von Gradient-Orb bis Partikelfeld.</p>
+        <div class="swatch"><i style="background:#FF3D8B"></i><i style="background:#38E0FF"></i></div>
+        <div class="tags"><span>CSS</span><span>SVG</span><span>Canvas</span></div>
+        <span class="go">Ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+      <a class="piece" href="pieces/02-brand-reveal.html" style="--c1:#F5C453">
+        <span class="no">02</span>
+        <h2>Brand Reveal</h2>
+        <p>Cinematischer Marken-Auftritt mit Aurora, Blur-to-Focus-Text und Light-Sweep.</p>
+        <div class="swatch"><i style="background:#F5C453"></i><i style="background:#FF8FA3"></i></div>
+        <div class="tags"><span>Ladesequenz</span><span>CSS-Keyframes</span></div>
+        <span class="go">Ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+      <a class="piece" href="pieces/03-logo-draw.html" style="--c1:#2F6BFF">
+        <span class="no">03</span>
+        <h2>Self-Drawing Mark</h2>
+        <p>Ein geometrisches KM-Monogramm, das sich Strich für Strich selbst zeichnet.</p>
+        <div class="swatch"><i style="background:#2F6BFF"></i><i style="background:#FF5D46"></i></div>
+        <div class="tags"><span>SVG</span><span>stroke-dashoffset</span></div>
+        <span class="go">Ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+      <a class="piece" href="pieces/04-scroll-experience.html" style="--c1:#FF6A3D">
+        <span class="no">04</span>
+        <h2>Scroll Experience</h2>
+        <p>Eine Bewegungs-Erzählung: Reveals, ein Sticky-Kapitel, Parallax und Count-Up.</p>
+        <div class="swatch"><i style="background:#FF6A3D"></i><i style="background:#4ADE9B"></i></div>
+        <div class="tags"><span>IntersectionObserver</span><span>Sticky</span></div>
+        <span class="go">Ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+      <a class="piece" href="pieces/05-interactive-field.html" style="--c1:#4ADE9B">
+        <span class="no">05</span>
+        <h2>Interactive Field</h2>
+        <p>Ein Feld aus Punkten mit Feder-Physik — reagiert auf die Maus, Klick erzeugt Schockwellen.</p>
+        <div class="swatch"><i style="background:#4ADE9B"></i><i style="background:#FF6A3D"></i><i style="background:#A855F7"></i></div>
+        <div class="tags"><span>Canvas</span><span>Physik</span><span>interaktiv</span></div>
+        <span class="go">Ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+      <a class="piece" href="pieces/06-icon-set.html" style="--c1:#4F46E5">
+        <span class="no">06</span>
+        <h2>Animated Icons</h2>
+        <p>Zwölf animierte SVG-Icons — Micro-Interactions für Buttons, Menüs und Ladezustände.</p>
+        <div class="swatch"><i style="background:#4F46E5"></i><i style="background:#F43F5E"></i><i style="background:#F59E0B"></i></div>
+        <div class="tags"><span>SVG</span><span>CSS</span><span>hover</span></div>
+        <span class="go">Ansehen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+      </a>
+
+    </div>
+  </main>
+
+  <footer class="wrap">
+    <span>Motion Gallery · <b>khanmotari</b></span>
+    <span>HTML · CSS · SVG · Canvas</span>
+  </footer>
+</body>
+</html>

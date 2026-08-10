@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Animated Icon Set</title>
+<style>
+  :root {
+    --ground: #EDEFF3;
+    --panel: #FFFFFF;
+    --ink: #1B2030;
+    --muted: #6B7288;
+    --faint: #A7AEC0;
+    --indigo: #4F46E5;
+    --rose: #F43F5E;
+    --amber: #F59E0B;
+    --line: #E2E5EC;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background:
+      radial-gradient(120% 90% at 50% -20%, #FFFFFF, var(--ground) 70%);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 940px; margin: 0 auto; padding: 72px 24px 80px; }
+
+  header { text-align: center; margin-bottom: 52px; }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--indigo); margin-bottom: 16px;
+  }
+  h1 { font-size: clamp(30px, 6vw, 48px); font-weight: 800; letter-spacing: -0.03em; }
+  h1 span { color: var(--indigo); }
+  .sub { color: var(--muted); margin-top: 12px; font-size: 16px; }
+
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 16px;
+  }
+  .cell {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 16px;
+    padding: 26px 18px 16px; text-align: center;
+    box-shadow: 0 12px 30px -22px rgba(27,32,48,0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .cell:hover { transform: translateY(-3px); box-shadow: 0 20px 40px -22px rgba(27,32,48,0.5); }
+  .box { height: 56px; display: grid; place-items: center; margin-bottom: 16px; }
+  .icon { width: 40px; height: 40px; }
+  .icon .s { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .name { font-size: 13px; font-weight: 600; }
+  .tag { font-family: var(--mono); font-size: 10px; color: var(--faint); letter-spacing: 0.06em; margin-top: 3px; }
+
+  /* 1 · Checkmark draw (loop) */
+  .i-check .s { stroke: var(--indigo); stroke-dasharray: 1; stroke-dashoffset: 1; animation: check 2.6s ease infinite; }
+  @keyframes check {
+    0% { stroke-dashoffset: 1; opacity: 0; }
+    12% { opacity: 1; }
+    45% { stroke-dashoffset: 0; opacity: 1; }
+    82% { stroke-dashoffset: 0; opacity: 1; }
+    96% { stroke-dashoffset: 0; opacity: 0; }
+    100% { stroke-dashoffset: 1; opacity: 0; }
+  }
+
+  /* 2 · Heart beat */
+  .i-heart .s { stroke: var(--rose); fill: var(--rose); transform-origin: center; transform-box: fill-box; animation: beat 1.4s ease-in-out infinite; }
+  @keyframes beat { 0%,100%{transform:scale(1)} 15%{transform:scale(1.22)} 30%{transform:scale(1)} 45%{transform:scale(1.15)} }
+
+  /* 3 · Bell ring */
+  .i-bell .s { transform-origin: top center; transform-box: fill-box; animation: ring 2.4s ease-in-out infinite; }
+  @keyframes ring { 0%,60%,100%{transform:rotate(0)} 66%{transform:rotate(14deg)} 72%{transform:rotate(-11deg)} 78%{transform:rotate(7deg)} 84%{transform:rotate(-4deg)} 90%{transform:rotate(0)} }
+
+  /* 4 · Spinner */
+  .i-spin .s { stroke: var(--indigo); transform-origin: center; animation: rot 1s linear infinite; }
+  @keyframes rot { to { transform: rotate(360deg); } }
+
+  /* 5 · Download bounce */
+  .i-dl .arrow { transform-origin: center; animation: dl 1.8s ease-in-out infinite; }
+  @keyframes dl { 0%,100%{transform:translateY(-3px)} 50%{transform:translateY(3px)} }
+
+  /* 6 · Wifi sequence */
+  .i-wifi .s { opacity: 0.2; }
+  .i-wifi .w1 { animation: wf 1.8s infinite; }
+  .i-wifi .w2 { animation: wf 1.8s infinite 0.25s; }
+  .i-wifi .w3 { animation: wf 1.8s infinite 0.5s; }
+  @keyframes wf { 0%,70%,100%{opacity:0.2} 20%,50%{opacity:1} }
+
+  /* 7 · Menu → X (hover) */
+  .i-menu .s { transition: transform 0.35s cubic-bezier(.6,.2,.2,1), opacity 0.2s; transform-origin: center; }
+  .cell:hover .i-menu .top { transform: translateY(7px) rotate(45deg); }
+  .cell:hover .i-menu .mid { opacity: 0; }
+  .cell:hover .i-menu .bot { transform: translateY(-7px) rotate(-45deg); }
+
+  /* 8 · Arrow slide loop */
+  .i-arrow .grp { animation: slide 1.4s ease-in-out infinite; }
+  @keyframes slide { 0%,100%{transform:translateX(-3px)} 50%{transform:translateX(4px)} }
+
+  /* 9 · Eye blink */
+  .i-eye .lid { animation: blink 3s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  @keyframes blink { 0%,92%,100%{transform:scaleY(1)} 96%{transform:scaleY(0.1)} }
+
+  /* 10 · Star pop */
+  .i-star .s { stroke: var(--amber); fill: var(--amber); transform-origin: center; transform-box: fill-box; animation: pop 2.2s ease-in-out infinite; }
+  @keyframes pop { 0%,100%{transform:scale(1) rotate(0)} 50%{transform:scale(1.18) rotate(72deg)} }
+
+  /* 11 · Plus rotate */
+  .i-plus .s { stroke: var(--indigo); transform-origin: center; animation: prot 3s ease-in-out infinite; }
+  @keyframes prot { 0%,100%{transform:rotate(0)} 50%{transform:rotate(90deg)} }
+
+  /* 12 · Sound bars */
+  .i-sound rect { fill: var(--ink); animation: snd 0.9s ease-in-out infinite; transform-box: fill-box; transform-origin: bottom; }
+  .i-sound rect:nth-child(2){animation-delay:.15s} .i-sound rect:nth-child(3){animation-delay:.3s} .i-sound rect:nth-child(4){animation-delay:.45s}
+  @keyframes snd { 0%,100%{transform:scaleY(0.4)} 50%{transform:scaleY(1)} }
+
+  footer { text-align: center; margin-top: 48px; font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  footer b { color: var(--muted); font-weight: 500; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .icon *, .cell { animation: none !important; transition: none !important; }
+    .i-check .s { stroke-dashoffset: 0; opacity: 1; }
+    .i-wifi .s { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Toolkit · Micro-Interactions</p>
+    <h1>Animated <span>Icons</span></h1>
+    <p class="sub">Zwölf animierte SVG-Icons für <b>khanmotari</b> — jedes eine Motion-Idee. Fahr über die Karten.</p>
+  </header>
+
+  <div class="grid">
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-check" viewBox="0 0 24 24"><path class="s" pathLength="1" d="M5 12.5 L10 17.5 L19 6.5"/></svg></div>
+      <div class="name">Check</div><div class="tag">draw · loop</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-heart" viewBox="0 0 24 24"><path class="s" d="M12 20 C12 20 3 14 3 8.5 A4.5 4.5 0 0 1 12 6 A4.5 4.5 0 0 1 21 8.5 C21 14 12 20 12 20 Z"/></svg></div>
+      <div class="name">Heart</div><div class="tag">beat</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-bell" viewBox="0 0 24 24"><g class="s"><path d="M6 9a6 6 0 0 1 12 0c0 5 2 6 2 6H4s2-1 2-6Z"/><path d="M10 19a2 2 0 0 0 4 0"/></g></svg></div>
+      <div class="name">Bell</div><div class="tag">ring</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-spin" viewBox="0 0 24 24"><path class="s" d="M12 3 A9 9 0 1 1 5.6 6.2" pathLength="1" stroke-dasharray="0.75 0.25"/></svg></div>
+      <div class="name">Spinner</div><div class="tag">rotate</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-dl" viewBox="0 0 24 24"><g class="s"><g class="arrow"><path d="M12 4 V15"/><path d="M7 11 L12 16 L17 11"/></g><path d="M5 20 H19"/></g></svg></div>
+      <div class="name">Download</div><div class="tag">bounce</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-wifi" viewBox="0 0 24 24"><g stroke="var(--indigo)" fill="none" stroke-width="2.2" stroke-linecap="round"><path class="s w3" d="M3 9 A14 14 0 0 1 21 9"/><path class="s w2" d="M6 12.5 A9 9 0 0 1 18 12.5"/><path class="s w1" d="M9 16 A4.5 4.5 0 0 1 15 16"/><circle cx="12" cy="19" r="1.2" fill="var(--indigo)" stroke="none" style="opacity:1"/></g></svg></div>
+      <div class="name">Wifi</div><div class="tag">sequence</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-menu" viewBox="0 0 24 24"><path class="s top" d="M4 7 H20"/><path class="s mid" d="M4 12 H20"/><path class="s bot" d="M4 17 H20"/></svg></div>
+      <div class="name">Menu → X</div><div class="tag">hover · morph</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-arrow" viewBox="0 0 24 24"><g class="grp s"><path d="M4 12 H18"/><path d="M13 7 L18 12 L13 17"/></g></svg></div>
+      <div class="name">Arrow</div><div class="tag">slide</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-eye" viewBox="0 0 24 24"><g class="s"><path class="lid" d="M2 12 S6 5 12 5 S22 12 22 12 S18 19 12 19 S2 12 2 12 Z"/><circle cx="12" cy="12" r="3"/></g></svg></div>
+      <div class="name">Eye</div><div class="tag">blink</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-star" viewBox="0 0 24 24"><path class="s" d="M12 3 L14.6 9.1 L21 9.7 L16.1 14 L17.6 20.3 L12 16.9 L6.4 20.3 L7.9 14 L3 9.7 L9.4 9.1 Z"/></svg></div>
+      <div class="name">Star</div><div class="tag">pop · spin</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-plus" viewBox="0 0 24 24"><g class="s"><path d="M12 5 V19"/><path d="M5 12 H19"/></g></svg></div>
+      <div class="name">Plus</div><div class="tag">rotate</div>
+    </div>
+
+    <div class="cell">
+      <div class="box"><svg class="icon i-sound" viewBox="0 0 24 24"><rect x="4" y="6" width="3" height="12" rx="1.5"/><rect x="9.5" y="6" width="3" height="12" rx="1.5"/><rect x="15" y="6" width="3" height="12" rx="1.5"/><rect x="20" y="6" width="0" height="0"/></svg></div>
+      <div class="name">Sound</div><div class="tag">equalizer</div>
+    </div>
+
+  </div>
+
+  <footer>12 Icons · reines SVG + CSS · <b>khanmotari</b></footer>
+</div>
+</body>
+</html>

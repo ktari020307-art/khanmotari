@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Motion Reel — Kleine Animations-Projekte</title>
+<style>
+  :root {
+    --ground: #0A0A14;
+    --surface: #12131F;
+    --surface-2: #1A1B2B;
+    --line: #262838;
+    --ink: #ECEDF5;
+    --muted: #8B8FA8;
+    --faint: #565A73;
+    --mag: #FF3D8B;
+    --cyan: #38E0FF;
+    --mag-soft: rgba(255, 61, 139, 0.15);
+    --cyan-soft: rgba(56, 224, 255, 0.15);
+    --mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 96px 0 64px;
+    text-align: center;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    margin: 0 0 28px;
+  }
+  .kinetic {
+    font-family: var(--sans);
+    font-weight: 900;
+    font-size: clamp(64px, 16vw, 180px);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin: 0;
+    position: relative;
+    display: inline-block;
+    color: var(--ink);
+  }
+  /* RGB split via layered pseudo-elements */
+  .kinetic::before,
+  .kinetic::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    mix-blend-mode: screen;
+  }
+  .kinetic::before { color: var(--mag); animation: split-a 3s ease-in-out infinite; }
+  .kinetic::after  { color: var(--cyan); animation: split-b 3s ease-in-out infinite; }
+  @keyframes split-a {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(-5px, 2px); }
+    40% { transform: translate(4px, -3px); }
+    60% { transform: translate(-3px, 1px); }
+  }
+  @keyframes split-b {
+    0%, 100% { transform: translate(0, 0); }
+    20% { transform: translate(5px, -2px); }
+    40% { transform: translate(-4px, 3px); }
+    60% { transform: translate(3px, -1px); }
+  }
+  .lede {
+    max-width: 46ch;
+    margin: 32px auto 0;
+    color: var(--muted);
+    font-size: 17px;
+  }
+  .lede b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- GALLERY ---------- */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 40px 0 96px;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .stage {
+    aspect-ratio: 16 / 10;
+    position: relative;
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(120% 120% at 50% 0%, var(--surface-2), var(--surface) 70%);
+    overflow: hidden;
+  }
+  .meta {
+    padding: 16px 18px 18px;
+    border-top: 1px solid var(--line);
+  }
+  .meta h3 {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+  .meta .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--faint);
+    text-transform: uppercase;
+  }
+  .num {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--faint);
+    z-index: 5;
+  }
+
+  /* ===== 01 · Gradient Orb ===== */
+  .orb {
+    width: 130px; height: 130px; border-radius: 50%;
+    background: conic-gradient(from 0deg, var(--mag), var(--cyan), var(--mag));
+    filter: blur(2px);
+    animation: orb-spin 6s linear infinite, orb-pulse 3s ease-in-out infinite;
+    box-shadow: 0 0 60px var(--mag-soft), 0 0 80px var(--cyan-soft);
+  }
+  .orb::after {
+    content: ""; position: absolute; inset: 0; margin: auto;
+    width: 92px; height: 92px; border-radius: 50%;
+    background: var(--surface-2);
+  }
+  @keyframes orb-spin { to { transform: rotate(360deg); } }
+  @keyframes orb-pulse { 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.08);} }
+
+  /* ===== 02 · Equalizer (JS) ===== */
+  .eq { display: flex; align-items: flex-end; gap: 7px; height: 90px; }
+  .eq span {
+    width: 10px; border-radius: 5px;
+    background: linear-gradient(var(--cyan), var(--mag));
+    height: 20%;
+    transition: height 0.12s ease;
+  }
+
+  /* ===== 03 · SVG Wave ===== */
+  .wave-svg { width: 100%; height: 100%; }
+  .wave-svg path { fill: none; stroke-width: 3; stroke-linecap: round; }
+
+  /* ===== 04 · Loader / kinetic ring ===== */
+  .loader { width: 110px; height: 110px; position: relative; }
+  .loader i {
+    position: absolute; inset: 0; border-radius: 50%;
+    border: 3px solid transparent;
+  }
+  .loader i:nth-child(1){ border-top-color: var(--mag); animation: spin 1.4s cubic-bezier(.5,.1,.5,.9) infinite; }
+  .loader i:nth-child(2){ inset: 16px; border-top-color: var(--cyan); animation: spin 1.1s cubic-bezier(.5,.1,.5,.9) infinite reverse; }
+  .loader i:nth-child(3){ inset: 32px; border-top-color: var(--ink); animation: spin 0.9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== 05 · Particle constellation (canvas) ===== */
+  canvas.field { width: 100%; height: 100%; display: block; }
+
+  /* ===== 06 · 3D Cube ===== */
+  .scene { perspective: 600px; width: 100px; height: 100px; }
+  .cube {
+    width: 100%; height: 100%; position: relative;
+    transform-style: preserve-3d;
+    animation: cube-spin 9s linear infinite;
+  }
+  .cube div {
+    position: absolute; width: 100px; height: 100px;
+    border: 1px solid var(--cyan);
+    background: rgba(56,224,255,0.06);
+  }
+  .cube .fr { transform: translateZ(50px); }
+  .cube .bk { transform: rotateY(180deg) translateZ(50px); border-color: var(--mag); background: rgba(255,61,139,0.06); }
+  .cube .rt { transform: rotateY(90deg) translateZ(50px); }
+  .cube .lf { transform: rotateY(-90deg) translateZ(50px); border-color: var(--mag); }
+  .cube .tp { transform: rotateX(90deg) translateZ(50px); }
+  .cube .bt { transform: rotateX(-90deg) translateZ(50px); border-color: var(--mag); }
+  @keyframes cube-spin {
+    from { transform: rotateX(-20deg) rotateY(0); }
+    to   { transform: rotateX(-20deg) rotateY(360deg); }
+  }
+
+  /* ===== 07 · Typewriter ===== */
+  .type-box { font-family: var(--mono); font-size: 20px; color: var(--ink); }
+  .type-box .cursor {
+    display: inline-block; width: 9px; height: 22px;
+    background: var(--cyan); margin-left: 2px; vertical-align: middle;
+    animation: blink 1s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ===== 08 · Magnetic hover button ===== */
+  .magbtn {
+    font-family: var(--mono); font-size: 14px; letter-spacing: 0.05em;
+    text-transform: uppercase; color: var(--ground);
+    background: var(--cyan); border: none; cursor: pointer;
+    padding: 16px 30px; border-radius: 40px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 0 0 rgba(56,224,255,0);
+  }
+  .magbtn:hover { box-shadow: 0 12px 40px var(--cyan-soft); }
+  .hint {
+    position: absolute; bottom: 12px;
+    font-family: var(--mono); font-size: 10px; color: var(--faint);
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 32px 0 48px;
+    color: var(--faint);
+    font-family: var(--mono);
+    font-size: 12px;
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+  }
+  footer b { color: var(--muted); font-weight: 500; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Studio Reel · Vol.01</p>
+    <h1 class="kinetic" data-text="MOTION">MOTION</h1>
+    <p class="lede">Acht kleine Animations-Projekte — jedes in reinem <b>CSS</b>, <b>SVG</b> oder <b>Canvas</b>. Kein Video, kein Plugin: alles läuft live im Browser und ist voll editierbar.</p>
+  </header>
+
+  <main class="grid">
+
+    <article class="card">
+      <div class="stage"><span class="num">01</span><div class="orb"></div></div>
+      <div class="meta"><h3>Gradient Orb</h3><span class="tag">CSS · conic-gradient</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">02</span><div class="eq" id="eq"></div></div>
+      <div class="meta"><h3>Audio Equalizer</h3><span class="tag">JS · requestAnimationFrame</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">03</span>
+        <svg class="wave-svg" viewBox="0 0 320 200" preserveAspectRatio="none">
+          <path id="w1" stroke="var(--cyan)" opacity="0.9"></path>
+          <path id="w2" stroke="var(--mag)" opacity="0.7"></path>
+        </svg>
+      </div>
+      <div class="meta"><h3>Sine Wave</h3><span class="tag">SVG · animierte Pfade</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">04</span>
+        <div class="loader"><i></i><i></i><i></i></div>
+      </div>
+      <div class="meta"><h3>Kinetic Loader</h3><span class="tag">CSS · nested rings</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">05</span><canvas class="field" id="field"></canvas></div>
+      <div class="meta"><h3>Particle Field</h3><span class="tag">Canvas · Konstellation</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">06</span>
+        <div class="scene"><div class="cube">
+          <div class="fr"></div><div class="bk"></div><div class="rt"></div>
+          <div class="lf"></div><div class="tp"></div><div class="bt"></div>
+        </div></div>
+      </div>
+      <div class="meta"><h3>3D Cube</h3><span class="tag">CSS · transform-3d</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">07</span>
+        <div class="type-box"><span id="tw"></span><span class="cursor"></span></div>
+      </div>
+      <div class="meta"><h3>Typewriter</h3><span class="tag">JS · Text-Reveal</span></div>
+    </article>
+
+    <article class="card">
+      <div class="stage"><span class="num">08</span>
+        <button class="magbtn" id="mag">Hover mich</button>
+        <span class="hint">← Maus bewegen</span>
+      </div>
+      <div class="meta"><h3>Magnetic Button</h3><span class="tag">JS · Micro-Interaction</span></div>
+    </article>
+
+  </main>
+
+  <footer>
+    <span>Motion Reel · <b>khanmotari</b></span>
+    <span>8 Projekte · CSS / SVG / Canvas</span>
+  </footer>
+</div>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 02 · Equalizer */
+  (function () {
+    const eq = document.getElementById("eq");
+    const N = 9;
+    const bars = [];
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement("span");
+      eq.appendChild(s);
+      bars.push({ el: s, phase: i * 0.6 });
+    }
+    let t = 0;
+    function frame() {
+      t += 0.08;
+      for (const b of bars) {
+        const v = (Math.sin(t + b.phase) * 0.5 + 0.5) * (Math.sin(t * 1.7 + b.phase) * 0.3 + 0.7);
+        b.el.style.height = (15 + v * 80) + "%";
+      }
+      if (!reduce) requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
+  /* 03 · Sine waves */
+  (function () {
+    const w1 = document.getElementById("w1");
+    const w2 = document.getElementById("w2");
+    let t = 0;
+    function build(phase, amp, mid) {
+      let d = "M 0 " + mid.toFixed(1);
+      for (let x = 0; x <= 320; x += 8) {
+        const y = mid + Math.sin(x * 0.03 + phase) * amp;
+        d += " L " + x + " " + y.toFixed(1);
+      }
+      return d;
+    }
+    function frame() {
+      t += 0.05;
+      w1.setAttribute("d", build(t, 34, 100));
+      w2.setAttribute("d", build(t + 1.4, 24, 108));
+      if (!reduce) requestAnimationFrame(frame);
+    }
+    frame();
+  })();
+
+  /* 05 · Particle constellation */
+  (function () {
+    const cv = document.getElementById("field");
+    const ctx = cv.getContext("2d");
+    let W, H, pts;
+    function init() {
+      const r = cv.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      W = cv.width = r.width * dpr;
+      H = cv.height = r.height * dpr;
+      const count = Math.round((r.width * r.height) / 6000);
+      pts = Array.from({ length: count }, () => ({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.4 * dpr,
+        vy: (Math.random() - 0.5) * 0.4 * dpr
+      }));
+    }
+    function frame() {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of pts) {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1;
+        if (p.y < 0 || p.y > H) p.vy *= -1;
+      }
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const a = pts[i], b = pts[j];
+          const dx = a.x - b.x, dy = a.y - b.y;
+          const d = Math.hypot(dx, dy);
+          const max = 90 * (window.devicePixelRatio || 1);
+          if (d < max) {
+            ctx.strokeStyle = "rgba(56,224,255," + (1 - d / max) * 0.5 + ")";
+            ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+          }
+        }
+      }
+      for (const p of pts) {
+        ctx.fillStyle = "#FF3D8B";
+        ctx.beginPath(); ctx.arc(p.x, p.y, 1.6 * (window.devicePixelRatio||1), 0, 7); ctx.fill();
+      }
+      if (!reduce) requestAnimationFrame(frame);
+    }
+    init(); frame();
+    window.addEventListener("resize", init);
+  })();
+
+  /* 07 · Typewriter */
+  (function () {
+    const el = document.getElementById("tw");
+    const words = ["Design.", "Bewegung.", "Code.", "khanmotari."];
+    let wi = 0, ci = 0, deleting = false;
+    function tick() {
+      const word = words[wi];
+      if (!deleting) {
+        el.textContent = word.slice(0, ++ci);
+        if (ci === word.length) { deleting = true; return setTimeout(tick, 1300); }
+      } else {
+        el.textContent = word.slice(0, --ci);
+        if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
+      }
+      setTimeout(tick, deleting ? 55 : 110);
+    }
+    if (reduce) { el.textContent = words[0]; } else { tick(); }
+  })();
+
+  /* 08 · Magnetic button */
+  (function () {
+    const btn = document.getElementById("mag");
+    const stage = btn.parentElement;
+    stage.addEventListener("pointermove", (e) => {
+      const r = btn.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      const dx = (e.clientX - cx) * 0.4, dy = (e.clientY - cy) * 0.4;
+      btn.style.transform = "translate(" + dx + "px," + dy + "px)";
+    });
+    stage.addEventListener("pointerleave", () => { btn.style.transform = "translate(0,0)"; });
+  })();
+</script>
+</body>
+</html>

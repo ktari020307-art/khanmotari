@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Interactive Field</title>
+<style>
+  :root {
+    --ground: #07080F;
+    --ink: #ECEDF6;
+    --muted: #7E82A0;
+    --faint: #4A4E69;
+    --accent: #4ADE9B;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    touch-action: none;
+  }
+  canvas { position: fixed; inset: 0; display: block; }
+
+  .ui { position: fixed; inset: 0; pointer-events: none; z-index: 2; }
+
+  .top {
+    position: absolute; top: 28px; left: 28px;
+  }
+  .top .brand {
+    font-weight: 800; font-size: 22px; letter-spacing: -0.02em;
+  }
+  .top .brand span { color: var(--accent); }
+  .top .hint {
+    font-family: var(--mono); font-size: 12px; color: var(--muted);
+    letter-spacing: 0.08em; margin-top: 6px;
+  }
+
+  .controls {
+    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px; pointer-events: auto;
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+    padding: 8px; border-radius: 44px; backdrop-filter: blur(8px);
+  }
+  .controls button {
+    font-family: var(--mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); background: transparent; border: none; cursor: pointer;
+    padding: 10px 18px; border-radius: 36px; transition: color 0.2s, background 0.2s;
+  }
+  .controls button:hover { color: var(--ink); }
+  .controls button.active { color: var(--ground); background: var(--accent); }
+
+  .counter {
+    position: absolute; top: 28px; right: 28px; text-align: right;
+    font-family: var(--mono); font-size: 12px; color: var(--faint); letter-spacing: 0.1em;
+  }
+  .counter b { color: var(--muted); font-weight: 500; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .top .hint::after { content: " · Bewegung reduziert"; }
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="ui">
+  <div class="top">
+    <div class="brand">khan<span>motari</span></div>
+    <div class="hint">Maus bewegen · klicken für eine Schockwelle</div>
+  </div>
+  <div class="counter"><b id="pulses">0</b> Pulse</div>
+  <div class="controls">
+    <button id="repel" class="active">Abstoßen</button>
+    <button id="attract">Anziehen</button>
+    <button id="reset">Reset</button>
+  </div>
+</div>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const cv = document.getElementById("c");
+  const ctx = cv.getContext("2d");
+
+  let W, H, dpr, dots = [];
+  const GAP = 34;           // grid spacing (css px)
+  const R = 140;            // cursor influence radius (css px)
+  let mode = 1;             // 1 = repel, -1 = attract
+  const mouse = { x: -9999, y: -9999, active: false };
+  const ripples = [];
+  let pulseCount = 0;
+
+  function build() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = cv.width = innerWidth * dpr;
+    H = cv.height = innerHeight * dpr;
+    cv.style.width = innerWidth + "px";
+    cv.style.height = innerHeight + "px";
+    ctx.scale(dpr, dpr);
+    dots = [];
+    const cols = Math.ceil(innerWidth / GAP) + 1;
+    const rows = Math.ceil(innerHeight / GAP) + 1;
+    const offX = (innerWidth - (cols - 1) * GAP) / 2;
+    const offY = (innerHeight - (rows - 1) * GAP) / 2;
+    for (let r = 0; r < rows; r++) {
+      for (let cX = 0; cX < cols; cX++) {
+        const hx = offX + cX * GAP, hy = offY + r * GAP;
+        dots.push({ hx, hy, x: hx, y: hy, vx: 0, vy: 0 });
+      }
+    }
+  }
+
+  // 3-stop colour ramp: mint → coral → violet, by displacement
+  const STOPS = [[74, 222, 155], [255, 106, 61], [168, 85, 247]];
+  function colorFor(t) {
+    const seg = t < 0.5 ? 0 : 1;
+    const local = t < 0.5 ? t * 2 : (t - 0.5) * 2;
+    const a = STOPS[seg], b = STOPS[seg + 1];
+    const r = Math.round(a[0] + (b[0] - a[0]) * local);
+    const g = Math.round(a[1] + (b[1] - a[1]) * local);
+    const bl = Math.round(a[2] + (b[2] - a[2]) * local);
+    return "rgb(" + r + "," + g + "," + bl + ")";
+  }
+
+  function frame() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    const k = 0.06, friction = 0.86;
+
+    for (const d of dots) {
+      // spring back home
+      let ax = (d.hx - d.x) * k;
+      let ay = (d.hy - d.y) * k;
+
+      // cursor force
+      if (mouse.active) {
+        const dx = d.x - mouse.x, dy = d.y - mouse.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        if (dist < R) {
+          const f = (1 - dist / R) * 5.5 * mode;
+          ax += (dx / dist) * f;
+          ay += (dy / dist) * f;
+        }
+      }
+
+      // ripple ring force
+      for (const rp of ripples) {
+        const dx = d.x - rp.x, dy = d.y - rp.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const band = Math.abs(dist - rp.r);
+        if (band < 40) {
+          const f = (1 - band / 40) * rp.power;
+          ax += (dx / dist) * f;
+          ay += (dy / dist) * f;
+        }
+      }
+
+      d.vx = (d.vx + ax) * friction;
+      d.vy = (d.vy + ay) * friction;
+      d.x += d.vx; d.y += d.vy;
+
+      // displacement → color + size
+      const disp = Math.hypot(d.x - d.hx, d.y - d.hy);
+      const t = Math.min(disp / 45, 1);
+      const rad = 1.4 + t * 3.2;
+      ctx.globalAlpha = 0.28 + t * 0.72;
+      ctx.fillStyle = colorFor(t);
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, rad, 0, 6.2832);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // advance ripples
+    for (let i = ripples.length - 1; i >= 0; i--) {
+      ripples[i].r += 14;
+      ripples[i].power *= 0.94;
+      if (ripples[i].r > Math.hypot(innerWidth, innerHeight)) ripples.splice(i, 1);
+    }
+
+    requestAnimationFrame(frame);
+  }
+
+  // pointer
+  window.addEventListener("pointermove", (e) => {
+    mouse.x = e.clientX; mouse.y = e.clientY; mouse.active = true;
+  });
+  window.addEventListener("pointerleave", () => { mouse.active = false; });
+  window.addEventListener("pointerdown", (e) => {
+    ripples.push({ x: e.clientX, y: e.clientY, r: 0, power: 26 });
+    pulseCount++;
+    document.getElementById("pulses").textContent = pulseCount;
+  });
+
+  // controls
+  const bRepel = document.getElementById("repel");
+  const bAttract = document.getElementById("attract");
+  bRepel.addEventListener("click", () => { mode = 1; bRepel.classList.add("active"); bAttract.classList.remove("active"); });
+  bAttract.addEventListener("click", () => { mode = -1; bAttract.classList.add("active"); bRepel.classList.remove("active"); });
+  document.getElementById("reset").addEventListener("click", () => {
+    for (const d of dots) { d.x = d.hx; d.y = d.hy; d.vx = d.vy = 0; }
+    ripples.length = 0;
+  });
+
+  window.addEventListener("resize", build);
+  build();
+  if (reduce) {
+    // draw a single static frame
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    for (const d of dots) { ctx.globalAlpha = 0.35; ctx.fillStyle = "hsl(160,70%,50%)"; ctx.beginPath(); ctx.arc(d.x, d.y, 1.6, 0, 6.2832); ctx.fill(); }
+  } else {
+    frame();
+  }
+</script>
+</body>
+</html>
