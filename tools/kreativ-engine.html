@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Kreativ-Engine für Video</title>
+<style>
+  :root { --bg:#0A0B12; --ground-2:#12131F; --ink:#F3F4FB; --muted:#9BA0BE; --faint:#565C82; --line:rgba(255,255,255,0.12);
+    --cyan:#38E0FF; --violet:#B36BFF; --gold:#FFC24B;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace; --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:radial-gradient(130% 90% at 50% -10%, #16182c, var(--bg) 58%); color:var(--ink);
+    font-family:var(--sans); -webkit-font-smoothing:antialiased; min-height:100dvh; line-height:1.5; }
+
+  .top { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; }
+  .brand { font-weight:800; font-size:18px; letter-spacing:-0.02em; }
+  .brand b { background:linear-gradient(100deg,var(--cyan),var(--violet),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .back { font-family:var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);
+    border:1px solid var(--line); border-radius:40px; padding:9px 15px; text-decoration:none; transition:.2s; }
+  .back:hover { color:var(--ink); border-color:var(--cyan); }
+
+  .wrap { max-width:1080px; margin:0 auto; padding:6px 22px 70px; }
+
+  .head { text-align:center; margin-bottom:30px; }
+  .head .label { font-family:var(--mono); font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cyan); }
+  .head h1 { font-size:clamp(26px,5.4vw,42px); font-weight:800; letter-spacing:-0.03em; margin-top:10px; line-height:1.05; }
+  .head h1 span { background:linear-gradient(100deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .head p { color:var(--muted); font-size:16px; margin:14px auto 0; max-width:56ch; }
+
+  .bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; }
+  .cap { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); }
+  .chip { font-family:var(--mono); font-size:12px; color:var(--muted); background:rgba(255,255,255,0.045);
+    border:1px solid var(--line); border-radius:30px; padding:8px 14px; cursor:pointer; transition:.18s; white-space:nowrap; }
+  .chip:hover { color:var(--ink); }
+  .chip.on { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border-color:transparent; font-weight:700; }
+
+  .actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:22px 0 30px; }
+  .btn { font-family:var(--mono); font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:40px; padding:14px 20px; cursor:pointer; transition:.2s; }
+  .btn:hover { color:var(--ink); border-color:rgba(255,255,255,0.3); }
+  .btn.primary { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border:none; font-weight:700; font-size:13px; padding:15px 26px; }
+  .btn.primary:hover { transform:translateY(-2px); }
+
+  /* creative constraint banner */
+  .zwang { position:relative; border:1px solid rgba(255,194,75,0.35); border-radius:18px; padding:22px 24px; margin-bottom:20px;
+    background:linear-gradient(100deg, rgba(255,194,75,0.09), rgba(179,107,255,0.07)); }
+  .zwang .zl { font-family:var(--mono); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:9px; }
+  .zwang .zt { font-size:clamp(18px,3vw,25px); font-weight:700; letter-spacing:-0.015em; line-height:1.24; }
+  .zwang .zs { color:var(--muted); font-size:14.5px; margin-top:9px; max-width:70ch; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:16px; }
+  .card { position:relative; background:var(--ground-2); border:1px solid var(--line); border-radius:18px; padding:22px 22px 18px; overflow:hidden; }
+  .card::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--c); opacity:.9; }
+  .card.locked { border-color:var(--c); }
+  .chead { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; }
+  .chead .kind { font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--c); }
+  .ctrl { display:flex; gap:6px; }
+  .icb { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; cursor:pointer; transition:.18s;
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); color:var(--muted); font-size:13px; line-height:1; }
+  .icb:hover { color:var(--ink); border-color:rgba(255,255,255,0.3); }
+  .icb.active { color:#06060F; background:var(--c); border-color:transparent; }
+  .card h3 { font-size:19px; font-weight:700; letter-spacing:-0.015em; line-height:1.22; }
+  .card p { color:var(--muted); font-size:14.5px; margin-top:8px; }
+  .card .ex { margin-top:12px; padding-top:12px; border-top:1px dashed rgba(255,255,255,0.1);
+    font-size:13.5px; color:var(--muted); }
+  .card .ex b { color:var(--ink); font-weight:500; font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; display:block; margin-bottom:5px; color:var(--faint); }
+
+  .method { margin-top:44px; border-top:1px solid var(--line); padding-top:34px; }
+  .method h2 { font-size:22px; font-weight:750; letter-spacing:-0.02em; margin-bottom:8px; }
+  .method > p { color:var(--muted); font-size:15px; max-width:62ch; }
+  .steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:14px; margin-top:20px; }
+  .step { background:var(--ground-2); border:1px solid var(--line); border-radius:14px; padding:18px; }
+  .step b { font-family:var(--mono); font-size:11px; color:var(--cyan); letter-spacing:0.1em; display:block; margin-bottom:7px; }
+  .step p { color:var(--muted); font-size:14px; }
+
+  .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); font-family:var(--mono); font-size:12px;
+    color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); padding:11px 20px; border-radius:40px;
+    opacity:0; transition:opacity .25s; pointer-events:none; z-index:9; }
+  .toast.show { opacity:1; }
+
+  .follow { text-align:center; margin-top:40px; }
+  .follow a { font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
+    text-decoration:none; border:1px solid var(--line); border-radius:40px; padding:11px 18px; transition:.2s; }
+  .follow a:hover { color:var(--ink); border-color:var(--violet); }
+
+  @media (prefers-reduced-motion: reduce) { .btn.primary:hover { transform:none; } }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">khan<b>motari</b></div>
+    <a class="back" href="../index.html">‹ Zurück</a>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <div class="label">Kreativ-Engine</div>
+      <h1>Damit kein Video<br>aussieht wie <span>das letzte</span>.</h1>
+      <p>Jedes Konzept entsteht aus sechs Bausteinen, die sonst nie zusammenkommen — plus einem Kreativ-Zwang, der dich aus dem Gewohnten zwingt. Was passt, sperrst du. Den Rest würfelst du neu.</p>
+    </div>
+
+    <div class="bar">
+      <span class="cap">Format</span>
+      <div id="formats" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;"></div>
+    </div>
+
+    <div class="actions">
+      <button id="roll" class="btn primary">⚡ Neues Konzept</button>
+      <button id="unlock" class="btn">Alle Sperren lösen</button>
+      <button id="copy" class="btn">Briefing kopieren</button>
+    </div>
+
+    <div class="zwang" id="zwang"></div>
+    <div class="grid" id="grid"></div>
+
+    <div class="method">
+      <h2>So nutzt du die Engine</h2>
+      <p>Die Engine ersetzt nicht dein Urteil — sie bricht deine Routine. Der Trick ist nicht der Zufall, sondern die erzwungene Kombination: Wenn du eine Struktur bekommst, die nicht zu deinem Reflex passt, musst du kreativ werden.</p>
+      <div class="steps">
+        <div class="step"><b>01 · Würfeln</b><p>Format wählen, Konzept generieren. Nicht sofort verwerfen — auch das Unpassende zuerst zu Ende denken.</p></div>
+        <div class="step"><b>02 · Sperren</b><p>Was funkt, mit dem Schloss fixieren. Alles andere neu würfeln, bis die Kombination sitzt.</p></div>
+        <div class="step"><b>03 · Übersetzen</b><p>Baustein für Baustein auf dein konkretes Thema übertragen. Erst hier entsteht dein Video.</p></div>
+        <div class="step"><b>04 · Zwang halten</b><p>Der Kreativ-Zwang ist nicht optional. Genau er verhindert, dass du zurück in das alte Muster fällst.</p></div>
+      </div>
+    </div>
+
+    <div class="follow"><a href="../index.html#connect">khanmotari folgen ›</a></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const FORMATS = [
+    { n:"Reel / Short", hint:"15–45 Sek. · vertikal · erste Sekunde entscheidet" },
+    { n:"YouTube", hint:"3–10 Min. · horizontal · Spannungsbogen über Kapitel" },
+    { n:"Werbespot", hint:"20–60 Sek. · eine Botschaft, kompromisslos zugespitzt" },
+    { n:"Brand-Film", hint:"60–120 Sek. · Haltung vor Produkt, Bilder vor Text" },
+    { n:"Testimonial", hint:"30–90 Sek. · echte Stimme, keine Hochglanz-Inszenierung" }
+  ];
+
+  const HOOKS = [
+    { t:"Kalter Einstieg", d:"Keine Vorrede, kein Setup. Die erste Sekunde ist bereits der Höhepunkt der Handlung.", e:"Statt „Hi, heute zeige ich euch…“ — direkt der Moment, in dem etwas kippt." },
+    { t:"Die falsche Fährte", d:"Die ersten Sekunden führen bewusst in eine Richtung, die sich danach als falsch entpuppt.", e:"Wirkt wie ein Reisevideo — bis der Schwenk zeigt, dass es ein Büro ist." },
+    { t:"Das Ende zuerst", d:"Du zeigst das Ergebnis, bevor irgendjemand weiß, worum es geht. Danach zurück auf Anfang.", e:"Fertiges Resultat in Sekunde eins, dann harter Schnitt: „14 Tage vorher.“" },
+    { t:"Der sichtbare Fehler", d:"Etwas geht schief — und du schneidest es nicht raus, sondern stellst es an den Anfang.", e:"Der missglückte erste Versuch als Aufhänger statt als Blooper am Ende." },
+    { t:"Eine Sekunde Stille", d:"Wenn alle anderen laut starten, startest du mit absoluter Stille. Der Bruch erzeugt Aufmerksamkeit.", e:"Kein Ton, nur Bild — bis der erste Laut umso härter trifft." },
+    { t:"Die Zahl, die nicht passt", d:"Eine konkrete, unerwartete Zahl steht allein im Raum, ohne Erklärung.", e:"„3.“ — Pause. Erst zehn Sekunden später wird klar, wofür sie steht." },
+    { t:"Extremer Close-up", d:"Ein Detail so nah, dass man es nicht einordnen kann. Die Auflösung kommt verzögert.", e:"Textur, Materialkante, Bewegung — erst der Rückzug erklärt das Bild." },
+    { t:"Der Widerspruch", d:"Bild und Ton behaupten Gegensätzliches. Das Gehirn muss auflösen und bleibt dran.", e:"Ruhige Bilder, während die Stimme von Chaos erzählt." },
+    { t:"Die unfertige Handlung", d:"Jemand beginnt etwas und beendet es nicht. Der offene Kreis hält fest.", e:"Der Satz bricht mitten im Wort ab, das Video läuft weiter." },
+    { t:"Perspektivwechsel", d:"Erzählt aus der Sicht von etwas, das normalerweise nicht erzählt: Objekt, Raum, Gegenseite.", e:"Die Kamera ist der Gegenstand, um den es geht." },
+    { t:"Der sofortige Beweis", d:"Keine Behauptung, kein Versprechen — direkt der sichtbare Beleg.", e:"Nicht sagen, dass es funktioniert. In Sekunde eins zeigen, dass es funktioniert." },
+    { t:"Die verbotene Aussage", d:"Etwas offen aussprechen, das in deinem Feld sonst umgangen wird.", e:"Der Satz, den alle denken und keiner postet — als erste Zeile." },
+    { t:"Countdown rückwärts", d:"Beginne beim letzten Schritt und arbeite dich sichtbar zurück.", e:"„Schritt 5“ steht im Bild, bevor jemand Schritt 1 gesehen hat." },
+    { t:"Direkte Enttarnung", d:"Sprich aus, was der Zuschauer in dieser Sekunde denkt oder tut.", e:"„Du wolltest gerade weiterwischen.“" },
+    { t:"Bewegung als Einstieg", d:"Das Video startet mitten in einer Kamerabewegung, die schon läuft.", e:"Kein statisches Eröffnungsbild — der Zuschauer springt auf einen fahrenden Zug." }
+  ];
+
+  const STRUKTUREN = [
+    { t:"Der Loop", d:"Das Ende führt nahtlos zurück zum Anfang. Wer nicht aufpasst, sieht es zweimal.", e:"Letztes Bild = erstes Bild, aber mit neuer Bedeutung." },
+    { t:"Zwei Zeitebenen", d:"Vorher und Nachher laufen verschränkt, nicht nacheinander.", e:"Jeder Schnitt springt zwischen den Ebenen und lädt beide auf." },
+    { t:"Die Liste, die kippt", d:"Eine saubere Aufzählung — und der letzte Punkt bricht das Muster komplett.", e:"Vier normale Punkte, der fünfte stellt alles infrage." },
+    { t:"Eskalation", d:"Jeder Abschnitt steigert den vorherigen, bis es fast zu viel wird.", e:"Klein anfangen, konsequent überziehen, im Maximum enden." },
+    { t:"Ein Take", d:"Alles in einer durchgehenden Einstellung, ohne einen einzigen Schnitt.", e:"Die Bewegung der Kamera ersetzt die Montage." },
+    { t:"Gegenüberstellung", d:"Zwei Welten, zwei Wege, zwei Zustände — permanent parallel geführt.", e:"Links das eine, rechts das andere, nie kommentiert." },
+    { t:"Der Beweisgang", d:"These aufstellen, live testen, Ergebnis zeigen — ohne Absicherung im Voraus.", e:"Der Ausgang ist offen, auch für dich." },
+    { t:"Rückwärts erzählt", d:"Die Chronologie läuft von hinten nach vorn. Ursachen kommen nach den Folgen.", e:"Jede Szene erklärt rückwirkend die vorherige." },
+    { t:"Fragmente", d:"Bewusst unvollständige Bruchstücke, die sich erst am Ende zusammensetzen.", e:"Sechs Splitter, die im letzten Bild ein Ganzes ergeben." },
+    { t:"Der Kreis", d:"Das Anfangsbild kehrt am Ende wieder — verändert durch alles dazwischen.", e:"Gleicher Bildausschnitt, anderes Gefühl." },
+    { t:"Kapitel mit Bruch", d:"Klar getrennte Kapitel — und eines fällt bewusst aus Form und Stil.", e:"Drei Kapitel im gleichen Look, das vierte komplett anders." },
+    { t:"Dialog mit dem Zuschauer", d:"Das Video reagiert auf Einwände, die es selbst provoziert.", e:"„Du denkst jetzt…“ — und dann die Antwort darauf." }
+  ];
+
+  const BILD = [
+    { t:"Statisch bis zur Irritation", d:"Die Kamera bewegt sich nie. Nur ein einziges Detail im Bild verändert sich.", e:"Die Ruhe erzeugt Spannung, weil man auf Bewegung wartet." },
+    { t:"Kamera als Person", d:"Die Kamera bewegt sich durch den Raum, als hätte sie einen eigenen Blick.", e:"Sie zögert, dreht sich um, geht näher heran." },
+    { t:"Nur Hände", d:"Gesichter kommen nie vor. Alles wird über Hände, Objekte und Gesten erzählt.", e:"Zwingt zu präziser Bildsprache statt Mimik-Erklärung." },
+    { t:"Eine Farbe dominiert", d:"Ein Farbton beherrscht jedes Bild — Ausstattung, Licht, Grading.", e:"Der Wiedererkennungswert entsteht über Farbe, nicht über Logo." },
+    { t:"Licht erzählt", d:"Der Wechsel von hell zu dunkel trägt die Dramaturgie, nicht der Text.", e:"Die Aussage kippt, wenn das Licht kippt." },
+    { t:"Formatwechsel", d:"Das Bildformat ändert sich mitten im Video und markiert einen Bruch.", e:"Von eng und vertikal zu weit und breit im entscheidenden Moment." },
+    { t:"Extreme Perspektive", d:"Konsequent von ganz unten oder ganz oben gefilmt — nie auf Augenhöhe.", e:"Die ungewohnte Achse macht Vertrautes fremd." },
+    { t:"Reflexionen", d:"Erzählt über Spiegel, Scheiben, Displays und Oberflächen statt direkt.", e:"Man sieht die Szene immer nur indirekt." },
+    { t:"Realer Raum, künstliches Licht", d:"Alltäglicher Ort, bewusst überinszeniert ausgeleuchtet.", e:"Ein Treppenhaus, beleuchtet wie ein Filmset." },
+    { t:"Split-Screen", d:"Zwei Bildhälften laufen gleichzeitig und kommentieren sich gegenseitig.", e:"Erst am Ende verschmelzen sie zu einem Bild." },
+    { t:"Objekt-POV", d:"Die Kamera sitzt am Gegenstand und zeigt die Welt aus seiner Sicht.", e:"Ungewohnte Höhe, ungewohnte Bewegung, sofortige Aufmerksamkeit." },
+    { t:"Rohe Handkamera", d:"Bewusst unruhig, ungeschönt, dokumentarisch — Gegenteil von Hochglanz.", e:"Wirkt echt, weil es nicht perfekt ist." }
+  ];
+
+  const SCHNITT = [
+    { t:"Match-Cut", d:"Form oder Bewegung eines Shots führt formgleich in den nächsten.", e:"Ein Kreis wird zum nächsten Kreis, ohne dass es aufgesetzt wirkt." },
+    { t:"Einmal bewusst daneben", d:"Auf den Beat geschnitten — und an einer Stelle absichtlich nicht.", e:"Der eine Fehltritt macht den Rhythmus spürbar." },
+    { t:"Lang, lang, Stakkato", d:"Ruhige lange Einstellungen, dann plötzlich eine Kaskade harter Schnitte.", e:"Der Kontrast erzeugt den Ausschlag, nicht das Tempo an sich." },
+    { t:"J-Cut", d:"Der Ton der nächsten Szene beginnt, während das alte Bild noch läuft.", e:"Zieht den Zuschauer in die nächste Szene, bevor er sie sieht." },
+    { t:"Jump-Cuts als Stil", d:"Sprünge im selben Bildausschnitt, sichtbar und gewollt.", e:"Zeit wird sichtbar zusammengestaucht." },
+    { t:"Speed-Ramping", d:"Innerhalb einer Bewegung von schnell auf langsam und zurück.", e:"Der wichtigste Moment wird gedehnt, der Rest gerafft." },
+    { t:"Ein einziger harter Schnitt", d:"Das ganze Video hat genau eine Schnittstelle — und die sitzt.", e:"Die Zurückhaltung macht diesen einen Schnitt zum Ereignis." },
+    { t:"Freeze mit Text", d:"Das Bild friert ein, Text setzt die Aussage, dann läuft es weiter.", e:"Sparsam eingesetzt: maximal zweimal im Video." },
+    { t:"Rückwärts-Passage", d:"Ein Abschnitt läuft rückwärts und bricht die Leserichtung.", e:"Der Rückwärtslauf markiert einen Gedankensprung." },
+    { t:"Whip-Pan-Übergang", d:"Schnelle Kameraschwenks kaschieren den Schnitt und verbinden Orte.", e:"Zwei Räume wirken wie einer." },
+    { t:"Ton führt, Bild folgt", d:"Jeder Schnitt sitzt auf einem Geräusch, nicht auf der Musik.", e:"Türen, Schritte, Klicks geben den Takt." }
+  ];
+
+  const TWIST = [
+    { t:"Erwartungsbruch im letzten Drittel", d:"Alles läuft nach Schema — bis das Video die eigene Regel bricht.", e:"Der Zuschauer merkt, dass er das Format falsch gelesen hat." },
+    { t:"Das Video kommentiert sich selbst", d:"Es weiß, dass es ein Video ist, und spricht das aus.", e:"Selbstironie statt Hochglanz-Ernst." },
+    { t:"Format-Tarnung", d:"Sieht aus wie etwas völlig anderes — Doku, Interface, Überwachung, Anleitung.", e:"Die Form transportiert die Botschaft mit." },
+    { t:"Das Detail für den zweiten Blick", d:"Etwas ist von Anfang an im Bild, fällt aber erst beim zweiten Sehen auf.", e:"Belohnt Wiederholung und erzeugt Kommentare." },
+    { t:"Das fehlende Element", d:"Etwas, das in diesem Format immer vorkommt, fehlt komplett.", e:"Kein Gesicht, keine Musik, kein Text — und genau das fällt auf." },
+    { t:"Ins Absurde übertrieben", d:"Eine banale Wahrheit wird so weit überzeichnet, bis sie komisch wird.", e:"Die Übertreibung macht den Punkt schärfer als jede Erklärung." },
+    { t:"Erzählerwechsel", d:"Mitten im Video übernimmt eine andere Stimme oder Sicht.", e:"Der Bruch stellt das bisher Gesagte infrage." },
+    { t:"Nichts erklären", d:"Keine Erläuterung, kein Voice-over. Nur zeigen und aushalten.", e:"Vertrauen in die Bilder statt Absicherung durch Text." },
+    { t:"Ein Requisit trägt alles", d:"Ein einziger Gegenstand ist in jeder Szene und verbindet das Ganze.", e:"Er verändert Bedeutung, während die Story läuft." },
+    { t:"Die eigene Regel brechen", d:"Nimm die Konvention, die in deinen Videos immer gilt — und kippe sie.", e:"Wenn du immer sprichst: schweig. Wenn du immer schneidest: bleib." }
+  ];
+
+  const TON = [
+    { t:"Nur Originalton", d:"Kein Musikbett. Die Realität des Ortes trägt das Video.", e:"Raumklang wird zum Stilmittel statt zum Störfaktor." },
+    { t:"Ein Geräusch als Leitmotiv", d:"Ein wiederkehrender Klang strukturiert das ganze Video.", e:"Er kündigt jeden Wechsel an, bevor das Bild wechselt." },
+    { t:"Musik bricht ab", d:"Genau beim wichtigsten Satz setzt die Musik komplett aus.", e:"Die Stille macht die Aussage unüberhörbar." },
+    { t:"Ton vor Bild", d:"Die Klangwelt etabliert die Szene, bevor man sie sieht.", e:"Zwei Sekunden Ton auf Schwarz reichen." },
+    { t:"Geflüstert statt laut", d:"Voice-over bewusst leise — der Zuschauer muss sich hineinlehnen.", e:"Gegen die Lautstärke-Spirale der Plattformen." },
+    { t:"Alltagston wird Beat", d:"Geräusche aus der Szene werden rhythmisiert und zur Musik.", e:"Tastatur, Schritte, Verschluss — im Takt geschnitten." },
+    { t:"Stille als Betonung", d:"Mehrere bewusste Tonlöcher, die den Fluss unterbrechen.", e:"Was fehlt, wirkt stärker als was klingt." }
+  ];
+
+  const ZWANG = [
+    { t:"Erzähl es ohne ein einziges gesprochenes Wort.", s:"Keine Stimme, kein erklärender Text. Wenn die Bilder es nicht tragen, ist die Idee noch nicht fertig." },
+    { t:"Das Wichtigste passiert außerhalb des Bildes.", s:"Zeige die Reaktion, nie das Ereignis. Der Kopf des Zuschauers macht den Rest." },
+    { t:"Nutze genau drei Einstellungen. Nicht mehr.", s:"Die Beschränkung zwingt jede einzelne Einstellung, eine Aufgabe zu erfüllen." },
+    { t:"Das Video muss zweimal gesehen werden, um zu funktionieren.", s:"Baue eine Ebene ein, die beim ersten Mal unsichtbar bleibt." },
+    { t:"Die erste Sekunde darf nichts erklären.", s:"Keine Einordnung, kein Kontext. Nur ein Zustand, der Fragen aufwirft." },
+    { t:"Kein einziger Text im Bild.", s:"Keine Caption, kein Lower-Third. Alles muss über Bild und Ton laufen." },
+    { t:"Dreh alles an einem einzigen Ort.", s:"Ein Raum, keine Ortswechsel. Variation entsteht durch Licht, Achse und Zeit." },
+    { t:"Kein Schnitt in den ersten zehn Sekunden.", s:"Halte aus, wo alle anderen hektisch schneiden. Ruhe fällt heute mehr auf als Tempo." },
+    { t:"Am Ende gibt es keinen Call-to-Action.", s:"Lass es offen. Wer wirklich getroffen ist, handelt ohne Aufforderung." },
+    { t:"Beginne mit dem Bild, das sonst dein letztes wäre.", s:"Die Dramaturgie muss sich neu ordnen — und wird dabei automatisch anders." },
+    { t:"Ein Requisit muss in jedem Bild sein.", s:"Es wird zur Klammer und zwingt dich, Szenen zu verbinden statt aneinanderzureihen." },
+    { t:"Verwende keine einzige Kamerabewegung.", s:"Alles statisch. Bewegung darf nur im Bild passieren, nie durch die Kamera." },
+    { t:"Die Auflösung kommt erst nach der Hälfte.", s:"Halte die Spannung länger, als es sich angenehm anfühlt." },
+    { t:"Zeige nie ein Gesicht frontal.", s:"Rücken, Hände, Silhouetten, Details — Nähe entsteht auch ohne Blickkontakt." }
+  ];
+
+  const DIMS = [
+    { key:"hook",     kind:"Aufhänger",      data:HOOKS,      c:"#38E0FF" },
+    { key:"struktur", kind:"Struktur",       data:STRUKTUREN, c:"#B36BFF" },
+    { key:"bild",     kind:"Bildsprache",    data:BILD,       c:"#4ADE9B" },
+    { key:"schnitt",  kind:"Schnitt-Rhythmus", data:SCHNITT,  c:"#FFC24B" },
+    { key:"twist",    kind:"Kreativ-Kick",   data:TWIST,      c:"#FF6A3D" },
+    { key:"ton",      kind:"Ton & Sound",    data:TON,        c:"#FF3D8B" }
+  ];
+
+  let fmtIdx = 0;
+  const state = {};   // key -> index
+  const locks = {};   // key -> bool
+  let zwangIdx = 0;
+
+  function pick(arr, current) {
+    if (arr.length < 2) return 0;
+    let i = current;
+    while (i === current) i = Math.floor(Math.random() * arr.length);
+    return i;
+  }
+
+  const grid = document.getElementById("grid");
+  const zwangEl = document.getElementById("zwang");
+  const toastEl = document.getElementById("toast");
+  let toastT;
+  function toast(m) { toastEl.textContent = m; toastEl.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(()=>toastEl.classList.remove("show"), 1700); }
+
+  function renderZwang() {
+    const z = ZWANG[zwangIdx];
+    zwangEl.innerHTML = '<div class="zl">Kreativ-Zwang · nicht verhandelbar</div>' +
+      '<div class="zt">' + z.t + '</div><div class="zs">' + z.s + '</div>';
+  }
+
+  function renderCards() {
+    grid.innerHTML = "";
+    DIMS.forEach(dim => {
+      const item = dim.data[state[dim.key]];
+      const card = document.createElement("div");
+      card.className = "card" + (locks[dim.key] ? " locked" : "");
+      card.style.setProperty("--c", dim.c);
+      card.innerHTML =
+        '<div class="chead"><span class="kind">' + dim.kind + '</span>' +
+        '<span class="ctrl">' +
+          '<button class="icb lock' + (locks[dim.key] ? " active" : "") + '" title="Sperren">' + (locks[dim.key] ? "🔒" : "🔓") + '</button>' +
+          '<button class="icb re" title="Neu würfeln">↻</button>' +
+        '</span></div>' +
+        '<h3>' + item.t + '</h3><p>' + item.d + '</p>' +
+        '<div class="ex"><b>Konkret</b>' + item.e + '</div>';
+      card.querySelector(".lock").addEventListener("click", () => { locks[dim.key] = !locks[dim.key]; renderCards(); });
+      card.querySelector(".re").addEventListener("click", () => { state[dim.key] = pick(dim.data, state[dim.key]); locks[dim.key] = false; renderCards(); });
+      grid.appendChild(card);
+    });
+  }
+
+  function rollAll() {
+    DIMS.forEach(d => { if (!locks[d.key]) state[d.key] = pick(d.data, state[d.key]); });
+    zwangIdx = pick(ZWANG, zwangIdx);
+    renderZwang(); renderCards();
+  }
+
+  function briefText() {
+    const f = FORMATS[fmtIdx];
+    const lines = [];
+    lines.push("VIDEO-KONZEPT · " + f.n);
+    lines.push(f.hint);
+    lines.push("");
+    lines.push("KREATIV-ZWANG");
+    lines.push("» " + ZWANG[zwangIdx].t);
+    lines.push("  " + ZWANG[zwangIdx].s);
+    lines.push("");
+    DIMS.forEach(d => {
+      const it = d.data[state[d.key]];
+      lines.push(d.kind.toUpperCase() + ": " + it.t);
+      lines.push("  " + it.d);
+      lines.push("  Konkret: " + it.e);
+      lines.push("");
+    });
+    lines.push("— generiert mit der Kreativ-Engine von khanmotari");
+    return lines.join("\n");
+  }
+
+  // format chips
+  const fmtHost = document.getElementById("formats");
+  FORMATS.forEach((f, i) => {
+    const b = document.createElement("button");
+    b.className = "chip" + (i === 0 ? " on" : "");
+    b.textContent = f.n; b.title = f.hint;
+    b.addEventListener("click", () => { fmtIdx = i; [...fmtHost.children].forEach(c => c.classList.toggle("on", c === b)); toast(f.hint); });
+    fmtHost.appendChild(b);
+  });
+
+  document.getElementById("roll").addEventListener("click", rollAll);
+  document.getElementById("unlock").addEventListener("click", () => { DIMS.forEach(d => locks[d.key] = false); renderCards(); toast("Alle Sperren gelöst"); });
+  document.getElementById("copy").addEventListener("click", () => {
+    const t = briefText();
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(() => toast("Briefing kopiert ✓"), () => toast("Kopieren nicht möglich"));
+    else toast("Kopieren wird hier nicht unterstützt");
+  });
+
+  // init
+  DIMS.forEach(d => { state[d.key] = Math.floor(Math.random() * d.data.length); locks[d.key] = false; });
+  zwangIdx = Math.floor(Math.random() * ZWANG.length);
+  renderZwang(); renderCards();
+})();
+</script>
+</body>
+</html>
