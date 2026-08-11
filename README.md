@@ -107,7 +107,7 @@ khanmotari/
 ├── kurs.html             # 5-Tage-Kurs (Educational Email Course, Mechanik 2 der Studie)
 ├── studio.html           # Brand-Kit Studio: Namen-Generator mit Palette, Fonts & Bild-Export
 ├── tools/
-│   ├── templates.html    # Motion-Templates: 6 Vorlagen mit Shader-Hintergrund, PNG- und Video-Export
+│   ├── templates.html    # Motion-Studio: Szenen-Sequenz aus 8 Vorlagen, Marken-Presets, Video-Export
 │   ├── brand-cockpit.html # Personal-Brand-Cockpit: Deep-Research-Wissen → personalisiertes Strategie-Dossier
 │   ├── blueprint.html    # Drehplan-Generator: Thema → fertiger, sekundengenauer Drehplan
 │   ├── kreativ-engine.html # Kreativ-Engine: generiert Video-Konzepte aus 6 Bausteinen + Kreativ-Zwang

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>khanmotari — Motion-Templates</title>
+<title>khanmotari — Motion-Studio</title>
 <style>
   :root { --bg:#0A0B12; --g2:#12131F; --ink:#F3F4FB; --muted:#9BA0BE; --faint:#565C82; --line:rgba(255,255,255,0.12);
     --cyan:#38E0FF; --violet:#B36BFF; --gold:#FFC24B;
@@ -18,50 +18,62 @@
     border:1px solid var(--line); border-radius:40px; padding:9px 15px; text-decoration:none; transition:.2s; }
   .back:hover { color:var(--ink); border-color:var(--cyan); }
 
-  .wrap { max-width:1140px; margin:0 auto; padding:4px 20px 70px; }
-  .head { text-align:center; margin-bottom:24px; }
+  .wrap { max-width:1180px; margin:0 auto; padding:4px 20px 70px; }
+  .head { text-align:center; margin-bottom:22px; }
   .head .label { font-family:var(--mono); font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cyan); }
   .head h1 { font-size:clamp(24px,4.8vw,38px); font-weight:800; letter-spacing:-0.03em; margin-top:9px; line-height:1.06; }
   .head h1 span { background:linear-gradient(100deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  .head p { color:var(--muted); font-size:15.5px; margin:12px auto 0; max-width:56ch; }
+  .head p { color:var(--muted); font-size:15.5px; margin:12px auto 0; max-width:58ch; }
 
-  .layout { display:grid; grid-template-columns:1fr 340px; gap:20px; align-items:start; }
-  @media (max-width:900px){ .layout{ grid-template-columns:1fr; } }
+  .layout { display:grid; grid-template-columns:1fr 356px; gap:18px; align-items:start; }
+  @media (max-width:940px){ .layout{ grid-template-columns:1fr; } }
 
-  .stage { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; align-items:center; gap:14px; }
-  .cvwrap { width:100%; display:grid; place-items:center; }
-  canvas#c { max-width:100%; max-height:62vh; border-radius:12px; display:block; box-shadow:0 20px 50px -30px rgba(0,0,0,.9); }
+  .stage { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  canvas#c { max-width:100%; max-height:56vh; border-radius:12px; display:block; box-shadow:0 20px 50px -30px rgba(0,0,0,.9); }
+
+  .timeline { width:100%; display:flex; gap:3px; height:34px; }
+  .tlseg { flex:1 1 auto; border-radius:7px; border:1px solid var(--line); background:rgba(255,255,255,0.04);
+    display:grid; place-items:center; cursor:pointer; position:relative; overflow:hidden; transition:.15s;
+    font-family:var(--mono); font-size:10.5px; color:var(--muted); white-space:nowrap; padding:0 6px; }
+  .tlseg.sel { border-color:var(--cyan); color:var(--ink); background:rgba(56,224,255,0.09); }
+  .tlseg .fill { position:absolute; inset:0 auto 0 0; width:0; background:linear-gradient(100deg,rgba(56,224,255,.24),rgba(179,107,255,.24)); }
+  .tlseg span { position:relative; z-index:1; }
+
   .stagebar { display:flex; gap:8px; flex-wrap:wrap; justify-content:center; }
+  .note { font-family:var(--mono); font-size:10.5px; color:var(--faint); line-height:1.7; text-align:center; }
 
-  .panel { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:18px; display:flex; flex-direction:column; gap:16px; }
-  .grp .cap { font-family:var(--mono); font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--faint); margin-bottom:8px; display:block; }
-  .row { display:flex; gap:7px; flex-wrap:wrap; }
+  .panel { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:15px; max-height:calc(100vh - 120px); overflow:auto; }
+  .grp .cap { font-family:var(--mono); font-size:10px; letter-spacing:0.15em; text-transform:uppercase; color:var(--faint); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; gap:8px; }
+  .grp .cap b { color:var(--muted); font-weight:500; }
+  .row { display:flex; gap:6px; flex-wrap:wrap; }
   .chip { font-family:var(--mono); font-size:11.5px; color:var(--muted); background:rgba(255,255,255,0.045);
     border:1px solid var(--line); border-radius:30px; padding:7px 12px; cursor:pointer; transition:.18s; white-space:nowrap; }
   .chip:hover { color:var(--ink); }
   .chip.on { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border-color:transparent; font-weight:700; }
-  .fld { display:flex; flex-direction:column; gap:6px; margin-bottom:9px; }
+  .fld { display:flex; flex-direction:column; gap:5px; margin-bottom:8px; }
   .fld label { font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); }
-  .fld input { font-family:var(--sans); font-size:14.5px; color:var(--ink); background:rgba(255,255,255,0.05);
+  .fld input[type=text] { font-family:var(--sans); font-size:14.5px; color:var(--ink); background:rgba(255,255,255,0.05);
     border:1px solid var(--line); border-radius:10px; padding:10px 12px; outline:none; transition:border-color .2s; }
   .fld input:focus { border-color:var(--cyan); }
-  .sw { display:flex; gap:6px; }
+  input[type=range] { width:100%; accent-color:#38E0FF; }
+  .sw { display:flex; gap:6px; align-items:center; flex-wrap:wrap; }
   .sw i { width:26px; height:26px; border-radius:8px; border:1px solid rgba(255,255,255,0.15); cursor:pointer; display:block; transition:transform .15s; }
   .sw i:hover { transform:translateY(-2px); }
   .sw i.on { outline:2px solid #fff; outline-offset:2px; }
+  input[type=color] { width:34px; height:30px; border:1px solid var(--line); border-radius:8px; background:transparent; cursor:pointer; padding:2px; }
 
   .btn { font-family:var(--mono); font-size:12px; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);
-    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:40px; padding:12px 17px; cursor:pointer; transition:.2s; }
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:40px; padding:12px 16px; cursor:pointer; transition:.2s; }
   .btn:hover { color:var(--ink); border-color:rgba(255,255,255,0.3); }
   .btn.primary { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border:none; font-weight:700; }
+  .btn.sm { padding:8px 12px; font-size:11px; }
   .btn:disabled { opacity:.45; cursor:not-allowed; }
-  .note { font-family:var(--mono); font-size:10.5px; color:var(--faint); line-height:1.7; }
 
   .toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%); font-family:var(--mono); font-size:12px;
     color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); padding:11px 20px; border-radius:40px;
     opacity:0; transition:opacity .25s; pointer-events:none; z-index:9; }
   .toast.show { opacity:1; }
-  .follow { text-align:center; margin-top:32px; }
+  .follow { text-align:center; margin-top:30px; }
   .follow a { font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
     text-decoration:none; border:1px solid var(--line); border-radius:40px; padding:11px 18px; transition:.2s; }
   .follow a:hover { color:var(--ink); border-color:var(--violet); }
@@ -72,28 +84,68 @@
 
   <div class="wrap">
     <div class="head">
-      <div class="label">Motion-Templates</div>
-      <h1>Fertige Vorlagen mit <span>echter Bewegung</span>.</h1>
-      <p>Text eintippen, Stil wählen — und als Bild oder Videodatei mitnehmen. Direkt in CapCut, Premiere oder DaVinci ziehen.</p>
+      <div class="label">Motion-Studio</div>
+      <h1>Szenen aneinanderreihen —<br>und als <span>ein Video</span> mitnehmen.</h1>
+      <p>Der Hintergrund läuft durch, die Inhalte wechseln. Deine Farben einmal setzen, sie gelten überall. Export als Bild oder als komplette Videosequenz.</p>
     </div>
 
     <div class="layout">
       <div class="stage">
-        <div class="cvwrap"><canvas id="c"></canvas></div>
+        <canvas id="c"></canvas>
+        <div class="timeline" id="timeline"></div>
         <div class="stagebar">
-          <button id="replay" class="btn">↻ Abspielen</button>
-          <button id="png" class="btn">↓ Bild (PNG)</button>
-          <button id="vid" class="btn primary">● Video aufnehmen</button>
+          <button id="play" class="btn">⏵ Abspielen</button>
+          <button id="png" class="btn">↓ Bild</button>
+          <button id="vid" class="btn primary">● Sequenz aufnehmen</button>
         </div>
         <div class="note" id="vidnote"></div>
       </div>
 
       <div class="panel">
-        <div class="grp"><span class="cap">Vorlage</span><div class="row" id="tpl"></div></div>
+        <div class="grp">
+          <span class="cap">Szenen <b id="dauerGes"></b></span>
+          <div class="row" id="szenen"></div>
+          <div class="row" style="margin-top:8px;">
+            <button class="btn sm" id="add">+ Szene</button>
+            <button class="btn sm" id="dup">Duplizieren</button>
+            <button class="btn sm" id="del">Löschen</button>
+            <button class="btn sm" id="links">←</button>
+            <button class="btn sm" id="rechts">→</button>
+          </div>
+        </div>
+
+        <div class="grp">
+          <span class="cap">Vorlage dieser Szene</span>
+          <div class="row" id="tpl"></div>
+        </div>
+
+        <div class="grp">
+          <span class="cap">Dauer <b id="dauerVal"></b></span>
+          <input type="range" id="dauer" min="1.5" max="8" step="0.5" value="3">
+        </div>
+
+        <div class="grp"><span class="cap">Texte</span><div id="fields"></div></div>
+
         <div class="grp"><span class="cap">Format</span><div class="row" id="fmt"></div></div>
         <div class="grp"><span class="cap">Hintergrund</span><div class="row" id="bg"></div></div>
-        <div class="grp"><span class="cap">Farbwelt</span><div class="sw" id="theme"></div></div>
-        <div class="grp"><span class="cap">Texte</span><div id="fields"></div></div>
+
+        <div class="grp">
+          <span class="cap">Farbwelt</span>
+          <div class="sw" id="theme"></div>
+          <div class="sw" style="margin-top:9px;">
+            <input type="color" id="cA" value="#38E0FF" title="Akzent 1">
+            <input type="color" id="cB" value="#B36BFF" title="Akzent 2">
+            <input type="color" id="cC" value="#FFC24B" title="Akzent 3">
+            <span style="font-family:var(--mono);font-size:10.5px;color:var(--faint);">eigene Farben</span>
+          </div>
+        </div>
+
+        <div class="grp">
+          <span class="cap">Deine Marke</span>
+          <div class="fld"><label for="mark">Wasserzeichen unten rechts</label>
+            <input type="text" id="mark" value="khanmotari"></div>
+          <div class="row"><button class="btn sm" id="save">Marke merken</button></div>
+        </div>
       </div>
     </div>
 
@@ -106,380 +158,387 @@
   "use strict";
   const SANS = 'system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, sans-serif';
   const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
-  const TAU = Math.PI*2;
+  const TAU = Math.PI*2, FADE_OUT = 0.4;
 
-  /* ---------- Konfiguration ---------- */
-  const FORMATE = [
-    { n:"9:16", w:1080, h:1920 },
-    { n:"1:1",  w:1080, h:1080 },
-    { n:"16:9", w:1920, h:1080 }
-  ];
+  const FORMATE = [ {n:"9:16",w:1080,h:1920}, {n:"1:1",w:1080,h:1080}, {n:"16:9",w:1920,h:1080} ];
   const THEMEN = [
-    { n:"Aurora",  a:"#38E0FF", b:"#B36BFF", c:"#FFC24B", ink:"#FFFFFF", base:"#06060F" },
-    { n:"Neon",    a:"#FF3D8B", b:"#38E0FF", c:"#FF3D8B", ink:"#FFFFFF", base:"#08040E" },
-    { n:"Mint",    a:"#4ADE9B", b:"#38E0FF", c:"#FFC24B", ink:"#FFFFFF", base:"#04100C" },
-    { n:"Sunset",  a:"#FFC24B", b:"#FF6A3D", c:"#FF3D8B", ink:"#FFFFFF", base:"#120806" },
-    { n:"Mono",    a:"#FFFFFF", b:"#9BA0BE", c:"#FFFFFF", ink:"#FFFFFF", base:"#000000" }
+    { n:"Aurora", a:"#38E0FF", b:"#B36BFF", c:"#FFC24B", base:"#06060F" },
+    { n:"Neon",   a:"#FF3D8B", b:"#38E0FF", c:"#FF3D8B", base:"#08040E" },
+    { n:"Mint",   a:"#4ADE9B", b:"#38E0FF", c:"#FFC24B", base:"#04100C" },
+    { n:"Sunset", a:"#FFC24B", b:"#FF6A3D", c:"#FF3D8B", base:"#120806" },
+    { n:"Mono",   a:"#FFFFFF", b:"#9BA0BE", c:"#FFFFFF", base:"#000000" }
   ];
   const BGS = ["Partikel","Aurora","Tunnel","Verlauf","Schlicht"];
 
   const TEMPLATES = [
-    { id:"hook",  n:"Hook",        f:[["t1","Hauptzeile","Die meisten machen hier einen Fehler."]] },
-    { id:"lower", n:"Namensbanner",f:[["t1","Name","Khan"],["t2","Rolle","Marketer & Kreativkopf"]] },
-    { id:"zitat", n:"Zitat",       f:[["t1","Zitat","Jeder soll sehen, was ein einziger Kopf erreichen kann."],["t2","Quelle","khanmotari"]] },
-    { id:"zahl",  n:"Zahl",        f:[["t1","Zahl","72"],["t2","Einheit","%"],["t3","Beschreibung","Abschlussquote bei Kohortenprogrammen"]] },
-    { id:"titel", n:"Titel",       f:[["t1","Titel","khanmotari"],["t2","Untertitel","Motion · Design · Marke"]] },
-    { id:"cta",   n:"Endkarte",    f:[["t1","Aufforderung","Folge für mehr"],["t2","Handle","@khanmotari"]] }
+    { id:"hook",  n:"Hook",     f:[["t1","Hauptzeile","Die meisten machen hier einen Fehler."]] },
+    { id:"liste", n:"Liste",    f:[["t1","Überschrift","Drei Dinge, die zählen"],["t2","Punkt 1","Das Asset hinter dem Content"],["t3","Punkt 2","Die Nische, nicht die Reichweite"],["t4","Punkt 3","Ein Kanal, der dir gehört"]] },
+    { id:"lower", n:"Namensbanner", f:[["t1","Name","Khan"],["t2","Rolle","Marketer & Kreativkopf"]] },
+    { id:"zitat", n:"Zitat",    f:[["t1","Zitat","Jeder soll sehen, was ein einziger Kopf erreichen kann."],["t2","Quelle","khanmotari"]] },
+    { id:"zahl",  n:"Zahl",     f:[["t1","Zahl","72"],["t2","Einheit","%"],["t3","Beschreibung","Abschlussquote bei Kohortenprogrammen"]] },
+    { id:"titel", n:"Titel",    f:[["t1","Titel","khanmotari"],["t2","Untertitel","Motion · Design · Marke"]] },
+    { id:"count", n:"Countdown",f:[["t1","Startzahl","3"],["t2","Schlusswort","Los."]] },
+    { id:"cta",   n:"Endkarte", f:[["t1","Aufforderung","Folge für mehr"],["t2","Handle","@khanmotari"]] }
   ];
+  const TPL = {}; TEMPLATES.forEach(t=>TPL[t.id]=t);
 
-  let tplIdx=0, fmtIdx=0, bgIdx=0, thIdx=0;
-  const daten = {};
-  TEMPLATES.forEach(t => t.f.forEach(([k,,v]) => { daten[t.id+"_"+k] = v; }));
-  function val(k){ return daten[TEMPLATES[tplIdx].id+"_"+k] || ""; }
+  function neueSzene(id){
+    const t = TPL[id] || TEMPLATES[0];
+    const d = {}; t.f.forEach(([k,,v])=>d[k]=v);
+    return { tpl:t.id, data:d, dur:3 };
+  }
+
+  /* ---------- Zustand ---------- */
+  let fmtIdx=0, bgIdx=0, thIdx=0;
+  let farbe = { a:THEMEN[0].a, b:THEMEN[0].b, c:THEMEN[0].c, base:THEMEN[0].base };
+  let marke = "khanmotari";
+  let szenen = [ neueSzene("hook"), neueSzene("liste"), neueSzene("cta") ];
+  let sel = 0, playing = true, tStart = performance.now(), FADE = 1;
+
+  try {
+    const s = JSON.parse(localStorage.getItem("km_marke")||"null");
+    if(s){ if(s.farbe) farbe = s.farbe; if(s.marke) marke = s.marke; }
+  } catch(e){}
+
+  function total(){ return szenen.reduce((a,s)=>a+s.dur,0); }
+  function szeneBei(t){
+    let acc=0;
+    for(let i=0;i<szenen.length;i++){
+      if(t < acc + szenen[i].dur) return { i, lokal: t-acc };
+      acc += szenen[i].dur;
+    }
+    const l=szenen.length-1; return { i:l, lokal: szenen[l].dur };
+  }
 
   /* ---------- Canvas ---------- */
-  const cv = document.getElementById("c");
-  const ctx = cv.getContext("2d");
-  let W=0, H=0;
-
+  const cv = document.getElementById("c"), ctx = cv.getContext("2d");
+  let W=0,H=0;
   function setSize(){
-    const F = FORMATE[fmtIdx];
-    const longSide = 760;                       // Vorschau-Auflösung
-    const s = longSide / Math.max(F.w, F.h);
-    W = Math.round(F.w * s); H = Math.round(F.h * s);
-    cv.width = W; cv.height = H;
-    cv.style.aspectRatio = F.w + " / " + F.h;
-    buildShader();
+    const F=FORMATE[fmtIdx], longSide=760, s=longSide/Math.max(F.w,F.h);
+    W=Math.round(F.w*s); H=Math.round(F.h*s);
+    cv.width=W; cv.height=H; cv.style.aspectRatio=F.w+" / "+F.h;
+    buildGL(); initParts();
   }
+  function ga(v){ ctx.globalAlpha = Math.max(0, Math.min(1, v)) * FADE; }
+  function hexA(hex,a){ const n=parseInt(hex.slice(1),16); return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")"; }
+  function rgb(hex){ const n=parseInt(hex.slice(1),16); return [((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255]; }
+  function ease(x){ return 1-Math.pow(1-Math.min(Math.max(x,0),1),3); }
+  function grad(x0,y0,x1,y1){ const g=ctx.createLinearGradient(x0,y0,x1,y1); g.addColorStop(0,farbe.a); g.addColorStop(1,farbe.b); return g; }
 
-  /* ---------- Hintergründe ---------- */
-  let parts = [];
+  /* ---------- Hintergrund ---------- */
+  let parts=[];
   function initParts(){
-    const n = Math.round((W*H)/2600);
-    parts = Array.from({length:n}, () => ({
-      x:Math.random()*W, y:Math.random()*H,
-      vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35,
-      r:Math.random()*1.6+.5, c:Math.random()
-    }));
+    const n=Math.round((W*H)/2600);
+    parts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:Math.random()*1.6+.5,c:Math.random()}));
   }
-  function drawParticles(t, T){
-    ctx.fillStyle = T.base; ctx.fillRect(0,0,W,H);
-    ctx.globalCompositeOperation = "lighter";
+  function drawParticles(){
+    ctx.fillStyle=farbe.base; ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation="lighter";
     for(const p of parts){
-      p.x += p.vx; p.y += p.vy;
+      p.x+=p.vx; p.y+=p.vy;
       if(p.x<0)p.x=W; else if(p.x>W)p.x=0;
       if(p.y<0)p.y=H; else if(p.y>H)p.y=0;
-      const col = p.c<0.5 ? T.a : T.b;
-      ctx.globalAlpha = .18; ctx.fillStyle = col;
+      const col=p.c<.5?farbe.a:farbe.b;
+      ctx.globalAlpha=.18; ctx.fillStyle=col;
       ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3.2,0,TAU); ctx.fill();
-      ctx.globalAlpha = .85;
-      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill();
+      ctx.globalAlpha=.85; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,TAU); ctx.fill();
     }
-    ctx.globalAlpha = 1; ctx.globalCompositeOperation = "source-over";
+    ctx.globalAlpha=1; ctx.globalCompositeOperation="source-over";
   }
-  function drawVerlauf(t, T){
-    ctx.fillStyle = T.base; ctx.fillRect(0,0,W,H);
-    const cx = W*(.5+Math.sin(t*.35)*.16), cy = H*(.42+Math.cos(t*.28)*.14);
-    let g = ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.8);
-    g.addColorStop(0, hexA(T.a,.55)); g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
-    const cx2 = W*(.5-Math.cos(t*.31)*.2), cy2 = H*(.6-Math.sin(t*.24)*.16);
-    g = ctx.createRadialGradient(cx2,cy2,0,cx2,cy2,Math.max(W,H)*.7);
-    g.addColorStop(0, hexA(T.b,.5)); g.addColorStop(1, "rgba(0,0,0,0)");
-    ctx.fillStyle = g; ctx.fillRect(0,0,W,H);
-  }
-  function hexA(hex,a){
-    const n = parseInt(hex.slice(1),16);
-    return "rgba("+((n>>16)&255)+","+((n>>8)&255)+","+(n&255)+","+a+")";
+  function drawVerlauf(t){
+    ctx.fillStyle=farbe.base; ctx.fillRect(0,0,W,H);
+    let cx=W*(.5+Math.sin(t*.35)*.16), cy=H*(.42+Math.cos(t*.28)*.14);
+    let g=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.8);
+    g.addColorStop(0,hexA(farbe.a,.55)); g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
+    cx=W*(.5-Math.cos(t*.31)*.2); cy=H*(.6-Math.sin(t*.24)*.16);
+    g=ctx.createRadialGradient(cx,cy,0,cx,cy,Math.max(W,H)*.7);
+    g.addColorStop(0,hexA(farbe.b,.5)); g.addColorStop(1,"rgba(0,0,0,0)");
+    ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   }
 
-  // WebGL-Hintergründe (Aurora, Tunnel) offscreen
-  let gcv=null, gl=null, prog=null, uni=null, glOK=true, glMode=-1;
-  const VERT = "attribute vec2 p; void main(){ gl_Position=vec4(p,0.,1.); }";
-  const F_AURORA = [
-    "precision highp float; uniform vec2 u_r; uniform float u_t; uniform vec3 u_a,u_b,u_c;",
+  let gcv=null,gl=null,prog=null,uni=null,glOK=true,glMode=-1;
+  const VERT="attribute vec2 p; void main(){ gl_Position=vec4(p,0.,1.); }";
+  const F_AURORA=["precision highp float; uniform vec2 u_r; uniform float u_t; uniform vec3 u_a,u_b,u_c;",
     "float h(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}",
     "float n(vec2 p){vec2 i=floor(p),f=fract(p);float a=h(i),b=h(i+vec2(1,0)),c=h(i+vec2(0,1)),d=h(i+vec2(1,1));vec2 u=f*f*(3.-2.*f);return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}",
     "float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p*=2.;a*=.5;}return v;}",
     "void main(){vec2 uv=(gl_FragCoord.xy-.5*u_r)/u_r.y;float t=u_t*.05;",
     "vec2 q=vec2(fbm(uv+t),fbm(uv+vec2(5.2,1.3)-t));",
     "vec2 r=vec2(fbm(uv+3.5*q+vec2(1.7,9.2)+t*1.2),fbm(uv+3.5*q+vec2(8.3,2.8)-t));",
-    "float f=fbm(uv+3.5*r);",
-    "vec3 col=mix(vec3(0.02,0.03,0.08),u_a,clamp(f*1.5,0.,1.));",
-    "col=mix(col,u_b,clamp(pow(f,2.)*1.3,0.,1.));",
-    "col=mix(col,u_c,clamp(pow(f,3.4)*1.4,0.,1.));",
-    "col*=smoothstep(1.7,.1,length(uv));gl_FragColor=vec4(pow(clamp(col,0.,1.3),vec3(.92)),1.);}"
-  ].join("\n");
-  const F_TUNNEL = [
-    "precision highp float; uniform vec2 u_r; uniform float u_t; uniform vec3 u_a,u_b,u_c;",
+    "float f=fbm(uv+3.5*r);vec3 col=mix(vec3(.02,.03,.08),u_a,clamp(f*1.5,0.,1.));",
+    "col=mix(col,u_b,clamp(pow(f,2.)*1.3,0.,1.));col=mix(col,u_c,clamp(pow(f,3.4)*1.4,0.,1.));",
+    "col*=smoothstep(1.7,.1,length(uv));gl_FragColor=vec4(pow(clamp(col,0.,1.3),vec3(.92)),1.);}"].join("\n");
+  const F_TUNNEL=["precision highp float; uniform vec2 u_r; uniform float u_t; uniform vec3 u_a,u_b,u_c;",
     "mat2 rot(float a){float s=sin(a),c=cos(a);return mat2(c,-s,s,c);}",
     "float map(vec3 p){p.xy*=rot(p.z*.14+u_t*.1);vec3 q=p*2.4;return (abs(dot(sin(q),cos(q.zxy)))/2.4-.05)*.55;}",
-    "void main(){vec2 uv=(gl_FragCoord.xy-.5*u_r)/u_r.y;",
-    "vec3 ro=vec3(0,0,u_t*1.2),rd=normalize(vec3(uv,1.));",
-    "float t=0.,g=0.,d=0.;",
-    "for(int i=0;i<62;i++){vec3 p=ro+rd*t;d=map(p);g+=.02/(1.+d*d*42.);if(d<.001||t>26.)break;t+=d;}",
+    "void main(){vec2 uv=(gl_FragCoord.xy-.5*u_r)/u_r.y;vec3 ro=vec3(0,0,u_t*1.2),rd=normalize(vec3(uv,1.));",
+    "float t=0.,g=0.,d=0.;for(int i=0;i<62;i++){vec3 p=ro+rd*t;d=map(p);g+=.02/(1.+d*d*42.);if(d<.001||t>26.)break;t+=d;}",
     "vec3 col=vec3(.02,.03,.08)+mix(u_a,u_b,fract(t*.05))*g+u_c*(g*g*.09);",
-    "col*=exp(-t*.055)*smoothstep(1.55,.12,length(uv));",
-    "gl_FragColor=vec4(pow(clamp(col,0.,1.5),vec3(.9)),1.);}"
-  ].join("\n");
+    "col*=exp(-t*.055)*smoothstep(1.55,.12,length(uv));gl_FragColor=vec4(pow(clamp(col,0.,1.5),vec3(.9)),1.);}"].join("\n");
 
-  function buildShader(){
+  function buildGL(){
     if(!glOK) return;
-    if(!gcv){ gcv = document.createElement("canvas"); }
-    gcv.width = W; gcv.height = H;
-    gl = gcv.getContext("webgl",{preserveDrawingBuffer:true}) || gcv.getContext("experimental-webgl",{preserveDrawingBuffer:true});
+    if(!gcv) gcv=document.createElement("canvas");
+    gcv.width=W; gcv.height=H;
+    gl=gcv.getContext("webgl",{preserveDrawingBuffer:true})||gcv.getContext("experimental-webgl",{preserveDrawingBuffer:true});
     if(!gl){ glOK=false; return; }
-    glMode = -1;
+    glMode=-1;
   }
   function useShader(mode){
-    if(glMode === mode) return true;
-    const src = mode===0 ? F_AURORA : F_TUNNEL;
-    function sh(ty,s){ const o=gl.createShader(ty); gl.shaderSource(o,s); gl.compileShader(o);
-      return gl.getShaderParameter(o,gl.COMPILE_STATUS)?o:null; }
-    const vs=sh(gl.VERTEX_SHADER,VERT), fs=sh(gl.FRAGMENT_SHADER,src);
+    if(glMode===mode) return true;
+    function sh(ty,s){ const o=gl.createShader(ty); gl.shaderSource(o,s); gl.compileShader(o); return gl.getShaderParameter(o,gl.COMPILE_STATUS)?o:null; }
+    const vs=sh(gl.VERTEX_SHADER,VERT), fs=sh(gl.FRAGMENT_SHADER, mode===0?F_AURORA:F_TUNNEL);
     if(!vs||!fs){ glOK=false; return false; }
-    prog = gl.createProgram(); gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
+    prog=gl.createProgram(); gl.attachShader(prog,vs); gl.attachShader(prog,fs); gl.linkProgram(prog);
     if(!gl.getProgramParameter(prog,gl.LINK_STATUS)){ glOK=false; return false; }
     gl.useProgram(prog);
     const b=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,b);
     gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
     const lp=gl.getAttribLocation(prog,"p"); gl.enableVertexAttribArray(lp); gl.vertexAttribPointer(lp,2,gl.FLOAT,false,0,0);
-    uni = { r:gl.getUniformLocation(prog,"u_r"), t:gl.getUniformLocation(prog,"u_t"),
-            a:gl.getUniformLocation(prog,"u_a"), b:gl.getUniformLocation(prog,"u_b"), c:gl.getUniformLocation(prog,"u_c") };
-    glMode = mode; return true;
+    uni={r:gl.getUniformLocation(prog,"u_r"),t:gl.getUniformLocation(prog,"u_t"),
+         a:gl.getUniformLocation(prog,"u_a"),b:gl.getUniformLocation(prog,"u_b"),c:gl.getUniformLocation(prog,"u_c")};
+    glMode=mode; return true;
   }
-  function rgb(hex){ const n=parseInt(hex.slice(1),16); return [((n>>16)&255)/255,((n>>8)&255)/255,(n&255)/255]; }
-  function drawShader(mode, t, T){
-    if(!glOK || !gl){ drawVerlauf(t,T); return; }
-    if(!useShader(mode)){ drawVerlauf(t,T); return; }
+  function drawShader(mode,t){
+    if(!glOK||!gl||!useShader(mode)){ drawVerlauf(t); return; }
     gl.viewport(0,0,W,H);
     gl.uniform2f(uni.r,W,H); gl.uniform1f(uni.t,t);
-    const A=rgb(T.a),B=rgb(T.b),C=rgb(T.c);
+    const A=rgb(farbe.a),B=rgb(farbe.b),C=rgb(farbe.c);
     gl.uniform3f(uni.a,A[0],A[1],A[2]); gl.uniform3f(uni.b,B[0],B[1],B[2]); gl.uniform3f(uni.c,C[0],C[1],C[2]);
     gl.drawArrays(gl.TRIANGLES,0,3);
     ctx.drawImage(gcv,0,0,W,H);
   }
-
-  function drawBG(t, T){
-    if(bgIdx===0) drawParticles(t,T);
-    else if(bgIdx===1) drawShader(0,t,T);
-    else if(bgIdx===2) drawShader(1,t,T);
-    else if(bgIdx===3) drawVerlauf(t,T);
-    else { ctx.fillStyle=T.base; ctx.fillRect(0,0,W,H); }
-    // Abdunkeln für Textlesbarkeit
-    const g = ctx.createLinearGradient(0,0,0,H);
+  function drawBG(t){
+    if(bgIdx===0) drawParticles();
+    else if(bgIdx===1) drawShader(0,t);
+    else if(bgIdx===2) drawShader(1,t);
+    else if(bgIdx===3) drawVerlauf(t);
+    else { ctx.fillStyle=farbe.base; ctx.fillRect(0,0,W,H); }
+    const g=ctx.createLinearGradient(0,0,0,H);
     g.addColorStop(0,"rgba(0,0,0,0.32)"); g.addColorStop(.5,"rgba(0,0,0,0.18)"); g.addColorStop(1,"rgba(0,0,0,0.45)");
     ctx.fillStyle=g; ctx.fillRect(0,0,W,H);
   }
 
-  /* ---------- Text-Helfer ---------- */
-  function fitLines(text, maxW, startPx, weight, maxLines){
-    let px = startPx;
-    for(let k=0;k<24;k++){
-      ctx.font = weight+" "+px+"px "+SANS;
-      const lines = wrap(text, maxW);
-      if(lines.length <= maxLines) return { px, lines };
-      px *= 0.93;
-    }
-    ctx.font = weight+" "+px+"px "+SANS;
-    return { px, lines: wrap(text, maxW) };
+  /* ---------- Text ---------- */
+  function wrap(text,maxW){
+    const words=String(text).split(/\s+/).filter(Boolean); const lines=[]; let cur="";
+    for(const w of words){ const test=cur?cur+" "+w:w;
+      if(ctx.measureText(test).width>maxW&&cur){ lines.push(cur); cur=w; } else cur=test; }
+    if(cur) lines.push(cur); return lines.length?lines:[""];
   }
-  function wrap(text, maxW){
-    const words = String(text).split(/\s+/).filter(Boolean);
-    const lines=[]; let cur="";
-    for(const w of words){
-      const test = cur ? cur+" "+w : w;
-      if(ctx.measureText(test).width > maxW && cur){ lines.push(cur); cur=w; }
-      else cur=test;
-    }
-    if(cur) lines.push(cur);
-    return lines.length?lines:[""];
+  function fitLines(text,maxW,startPx,weight,maxLines){
+    let px=startPx;
+    for(let k=0;k<24;k++){ ctx.font=weight+" "+px+"px "+SANS;
+      const lines=wrap(text,maxW); if(lines.length<=maxLines) return {px,lines}; px*=0.93; }
+    ctx.font=weight+" "+px+"px "+SANS; return {px,lines:wrap(text,maxW)};
   }
-  function ease(x){ return 1-Math.pow(1-Math.min(Math.max(x,0),1),3); }
-  function grad(x0,y0,x1,y1,T){ const g=ctx.createLinearGradient(x0,y0,x1,y1); g.addColorStop(0,T.a); g.addColorStop(1,T.b); return g; }
 
-  /* ---------- Templates ---------- */
+  /* ---------- Vorlagen ---------- */
   const DRAW = {
-    hook(t,T){
-      const M = W*0.10, maxW = W-2*M;
-      const { px, lines } = fitLines(val("t1"), maxW, Math.min(W*0.135, H*0.12), "800", 4);
-      const lh = px*1.12, total = lines.length*lh;
-      let y = H/2 - total/2 + lh*0.72;
+    hook(t,d){
+      const M=W*.10, maxW=W-2*M;
+      const {px,lines}=fitLines(d.t1,maxW,Math.min(W*.135,H*.12),"800",4);
+      const lh=px*1.12; let y=H/2-(lines.length*lh)/2+lh*.72;
       lines.forEach((ln,i)=>{
-        const p = ease((t - i*0.13)/0.55);
-        ctx.save();
-        ctx.globalAlpha = p;
-        ctx.translate(W/2, y + (1-p)*px*0.35);
-        ctx.font = "800 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="alphabetic";
-        ctx.shadowColor="rgba(0,0,0,.55)"; ctx.shadowBlur=px*0.3; ctx.shadowOffsetY=px*0.04;
-        ctx.fillStyle = T.ink; ctx.fillText(ln, 0, 0);
-        ctx.restore();
-        y += lh;
+        const p=ease((t-i*.13)/.55);
+        ctx.save(); ga(p); ctx.translate(W/2,y+(1-p)*px*.35);
+        ctx.font="800 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="alphabetic";
+        ctx.shadowColor="rgba(0,0,0,.55)"; ctx.shadowBlur=px*.3;
+        ctx.fillStyle="#fff"; ctx.fillText(ln,0,0); ctx.restore(); y+=lh;
       });
-      // Akzentlinie
-      const lp = ease((t-0.45)/0.6);
-      if(lp>0){
-        const lw = maxW*0.28*lp;
-        ctx.fillStyle = grad(W/2-lw/2, 0, W/2+lw/2, 0, T);
-        ctx.fillRect(W/2-lw/2, y+px*0.25, lw, Math.max(2,W*0.006));
-      }
+      const lp=ease((t-.45)/.6);
+      if(lp>0){ const lw=maxW*.28*lp; ctx.save(); ga(1);
+        ctx.fillStyle=grad(W/2-lw/2,0,W/2+lw/2,0); ctx.fillRect(W/2-lw/2,y+px*.25,lw,Math.max(2,W*.006)); ctx.restore(); }
     },
-    lower(t,T){
-      const M = W*0.08;
-      const baseY = H*0.80;
-      const p = ease(t/0.6), p2 = ease((t-0.2)/0.6);
-      const namePx = Math.min(W*0.075, H*0.075);
-      const rolePx = namePx*0.42;
-      // Balkenlinie
-      const barW = W*0.012, barH = (namePx+rolePx*1.5)*p;
-      ctx.fillStyle = grad(M,baseY-barH,M,baseY+rolePx*0.6,T);
-      ctx.fillRect(M, baseY - barH + rolePx*0.4, barW, barH);
-      ctx.save(); ctx.globalAlpha = p;
-      ctx.translate(M + barW + W*0.03 + (1-p)*W*0.03, 0);
-      ctx.textAlign="left"; ctx.textBaseline="alphabetic";
-      ctx.shadowColor="rgba(0,0,0,.6)"; ctx.shadowBlur=namePx*0.3;
-      ctx.font = "800 "+namePx+"px "+SANS; ctx.fillStyle = T.ink;
-      ctx.fillText(val("t1"), 0, baseY);
+    liste(t,d){
+      const M=W*.10, maxW=W-2*M;
+      const hp=ease(t/.5);
+      const {px:hpx,lines:hl}=fitLines(d.t1,maxW,Math.min(W*.085,H*.075),"800",2);
+      let y=H*.30;
+      ctx.save(); ga(hp);
+      hl.forEach(ln=>{ ctx.font="800 "+hpx+"px "+SANS; ctx.textAlign="left"; ctx.textBaseline="middle";
+        ctx.shadowColor="rgba(0,0,0,.55)"; ctx.shadowBlur=hpx*.3; ctx.fillStyle="#fff";
+        ctx.fillText(ln,M,y+(1-hp)*hpx*.3); y+=hpx*1.18; });
       ctx.restore();
-      ctx.save(); ctx.globalAlpha = p2;
-      ctx.translate(M + barW + W*0.03 + (1-p2)*W*0.03, 0);
-      ctx.textAlign="left"; ctx.font = "500 "+rolePx+"px "+MONO;
-      ctx.fillStyle = T.a; ctx.shadowColor="rgba(0,0,0,.6)"; ctx.shadowBlur=rolePx*0.5;
-      ctx.fillText(String(val("t2")).toUpperCase(), 0, baseY + rolePx*1.5);
-      ctx.restore();
+      y += hpx*.5;
+      [d.t2,d.t3,d.t4].forEach((txt,i)=>{
+        if(!txt) return;
+        const p=ease((t-.35-i*.22)/.55);
+        const ipx=hpx*.62;
+        ctx.save(); ga(p); ctx.translate((1-p)*W*.05,0);
+        ctx.font="600 "+ipx+"px "+SANS; ctx.textAlign="left"; ctx.textBaseline="middle";
+        const num=String(i+1).padStart(2,"0");
+        ctx.font="700 "+(ipx*.55)+"px "+MONO; ctx.fillStyle=farbe.a;
+        ctx.fillText(num,M,y);
+        const nw=ctx.measureText(num).width+ipx*.5;
+        ctx.font="600 "+ipx+"px "+SANS; ctx.fillStyle="#fff";
+        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=ipx*.4;
+        const ls=wrap(txt,maxW-nw);
+        let yy=y;
+        ls.forEach(l=>{ ctx.fillText(l,M+nw,yy); yy+=ipx*1.16; });
+        ctx.restore();
+        y += ipx*1.16*Math.max(1,wrap(txt,maxW-nw).length) + ipx*.5;
+      });
     },
-    zitat(t,T){
-      const M = W*0.12, maxW = W-2*M;
-      const { px, lines } = fitLines("„"+val("t1")+"“", maxW, Math.min(W*0.085,H*0.08), "700", 6);
-      const lh = px*1.28, total = lines.length*lh;
-      let y = H/2 - total/2;
+    lower(t,d){
+      const M=W*.08, baseY=H*.80;
+      const p=ease(t/.6), p2=ease((t-.2)/.6);
+      const npx=Math.min(W*.075,H*.075), rpx=npx*.42;
+      const barW=W*.012, barH=(npx+rpx*1.5)*p;
+      ctx.save(); ga(1); ctx.fillStyle=grad(M,baseY-barH,M,baseY+rpx*.6);
+      ctx.fillRect(M,baseY-barH+rpx*.4,barW,barH); ctx.restore();
+      ctx.save(); ga(p); ctx.translate(M+barW+W*.03+(1-p)*W*.03,0);
+      ctx.textAlign="left"; ctx.textBaseline="alphabetic"; ctx.shadowColor="rgba(0,0,0,.6)"; ctx.shadowBlur=npx*.3;
+      ctx.font="800 "+npx+"px "+SANS; ctx.fillStyle="#fff"; ctx.fillText(d.t1,0,baseY); ctx.restore();
+      ctx.save(); ga(p2); ctx.translate(M+barW+W*.03+(1-p2)*W*.03,0);
+      ctx.textAlign="left"; ctx.font="500 "+rpx+"px "+MONO; ctx.fillStyle=farbe.a;
+      ctx.shadowColor="rgba(0,0,0,.6)"; ctx.shadowBlur=rpx*.5;
+      ctx.fillText(String(d.t2).toUpperCase(),0,baseY+rpx*1.5); ctx.restore();
+    },
+    zitat(t,d){
+      const M=W*.12, maxW=W-2*M;
+      const {px,lines}=fitLines("„"+d.t1+"“",maxW,Math.min(W*.085,H*.08),"700",6);
+      const lh=px*1.28; let y=H/2-(lines.length*lh)/2;
       lines.forEach((ln,i)=>{
-        const p = ease((t - i*0.1)/0.7);
-        ctx.save(); ctx.globalAlpha=p;
-        ctx.font="700 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*0.35;
-        ctx.fillStyle=T.ink; ctx.fillText(ln, W/2, y + (1-p)*px*0.25);
-        ctx.restore(); y += lh;
+        const p=ease((t-i*.1)/.7);
+        ctx.save(); ga(p); ctx.font="700 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="middle";
+        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*.35; ctx.fillStyle="#fff";
+        ctx.fillText(ln,W/2,y+(1-p)*px*.25); ctx.restore(); y+=lh;
       });
-      const p2 = ease((t-0.7)/0.6);
+      const p2=ease((t-.7)/.6);
+      if(p2>0){ const q=px*.38; ctx.save(); ga(p2);
+        ctx.font="600 "+q+"px "+MONO; ctx.textAlign="center"; ctx.textBaseline="middle";
+        ctx.fillStyle=farbe.a; ctx.fillText("— "+d.t2,W/2,y+q*.8); ctx.restore(); }
+    },
+    zahl(t,d){
+      const target=parseFloat(String(d.t1).replace(",","."))||0;
+      const p=ease(t/1.1);
+      const shown=(target%1===0)?Math.round(target*p):(target*p).toFixed(1).replace(".",",");
+      const npx=Math.min(W*.34,H*.3), numY=H*.5, txt=String(shown)+(d.t2||"");
+      ctx.save(); ga(1);
+      ctx.font="800 "+npx+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="alphabetic";
+      ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=npx*.2;
+      const wTxt=ctx.measureText(txt).width;
+      ctx.fillStyle=grad(W/2-wTxt/2,numY-npx,W/2+wTxt/2,numY);
+      ctx.fillText(txt,W/2,numY); ctx.restore();
+      const p2=ease((t-.55)/.7);
       if(p2>0){
-        const qpx = px*0.38;
-        ctx.save(); ctx.globalAlpha=p2;
-        ctx.font="600 "+qpx+"px "+MONO; ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.fillStyle=T.a; ctx.fillText("— "+val("t2"), W/2, y + qpx*0.8);
+        const M=W*.12, maxW=W-2*M;
+        const {px,lines}=fitLines(d.t3,maxW,npx*.19,"600",3);
+        let y=numY+npx*.42; ctx.save(); ga(p2);
+        lines.forEach(ln=>{ ctx.font="600 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="middle";
+          ctx.shadowColor="rgba(0,0,0,.55)"; ctx.shadowBlur=px*.4; ctx.fillStyle="#fff";
+          ctx.fillText(ln,W/2,y); y+=px*1.3; });
         ctx.restore();
       }
     },
-    zahl(t,T){
-      const target = parseFloat(String(val("t1")).replace(",",".")) || 0;
-      const p = ease(t/1.1);
-      const shown = (target % 1 === 0) ? Math.round(target*p) : (target*p).toFixed(1).replace(".",",");
-      const numPx = Math.min(W*0.34, H*0.3);
-      ctx.save();
-      ctx.font="800 "+numPx+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="alphabetic";
-      const numY = H*0.5;
-      const txt = String(shown) + (val("t2")||"");
-      ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=numPx*0.2;
-      const wTxt = ctx.measureText(txt).width;
-      ctx.fillStyle = grad(W/2-wTxt/2, numY-numPx, W/2+wTxt/2, numY, T);
-      ctx.fillText(txt, W/2, numY);
-      ctx.restore();
-      const p2 = ease((t-0.55)/0.7);
-      if(p2>0){
-        const M=W*0.12, maxW=W-2*M;
-        const { px, lines } = fitLines(val("t3"), maxW, numPx*0.19, "600", 3);
-        let y = numY + numPx*0.42;
-        ctx.save(); ctx.globalAlpha=p2;
-        lines.forEach(ln=>{
-          ctx.font="600 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="middle";
-          ctx.shadowColor="rgba(0,0,0,.55)"; ctx.shadowBlur=px*0.4;
-          ctx.fillStyle=T.ink; ctx.fillText(ln, W/2, y); y += px*1.3;
-        });
-        ctx.restore();
-      }
-    },
-    titel(t,T){
-      const M=W*0.09, maxW=W-2*M;
-      const title = String(val("t1"));
-      const { px } = fitLines(title, maxW, Math.min(W*0.17,H*0.16), "800", 1);
+    titel(t,d){
+      const M=W*.09, maxW=W-2*M, title=String(d.t1);
+      const {px}=fitLines(title,maxW,Math.min(W*.17,H*.16),"800",1);
       ctx.font="800 "+px+"px "+SANS; ctx.textAlign="left"; ctx.textBaseline="middle";
-      const chars=[...title];
-      const widths = chars.map(c=>ctx.measureText(c).width);
-      const totalW = widths.reduce((a,b)=>a+b,0);
-      let x = W/2 - totalW/2; const y = H*0.47;
+      const chars=[...title], widths=chars.map(c=>ctx.measureText(c).width);
+      const totalW=widths.reduce((a,b)=>a+b,0);
+      let x=W/2-totalW/2; const y=H*.47;
       chars.forEach((ch,i)=>{
-        const p = ease((t - i*0.045)/0.5);
-        ctx.save(); ctx.globalAlpha=p;
-        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*0.25;
-        ctx.fillStyle = T.ink;
-        ctx.fillText(ch, x, y + (1-p)*px*0.28);
-        ctx.restore();
-        x += widths[i];
+        const p=ease((t-i*.045)/.5);
+        ctx.save(); ga(p); ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*.25;
+        ctx.fillStyle="#fff"; ctx.fillText(ch,x,y+(1-p)*px*.28); ctx.restore(); x+=widths[i];
       });
-      const p2 = ease((t-0.6)/0.7);
+      const p2=ease((t-.6)/.7);
       if(p2>0){
-        const lw = totalW*0.5*p2;
-        ctx.fillStyle = grad(W/2-lw/2,0,W/2+lw/2,0,T);
-        ctx.fillRect(W/2-lw/2, y+px*0.62, lw, Math.max(2,W*0.005));
-        const spx = px*0.2;
-        ctx.save(); ctx.globalAlpha=p2;
+        const lw=totalW*.5*p2;
+        ctx.save(); ga(1); ctx.fillStyle=grad(W/2-lw/2,0,W/2+lw/2,0);
+        ctx.fillRect(W/2-lw/2,y+px*.62,lw,Math.max(2,W*.005)); ctx.restore();
+        const spx=px*.2; ctx.save(); ga(p2);
         ctx.font="500 "+spx+"px "+MONO; ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.fillStyle=T.a;
-        ctx.fillText(String(val("t2")).toUpperCase(), W/2, y+px*0.95);
-        ctx.restore();
+        ctx.fillStyle=farbe.a; ctx.fillText(String(d.t2).toUpperCase(),W/2,y+px*.95); ctx.restore();
       }
     },
-    cta(t,T){
-      const p = ease(t/0.6), pulse = 1 + Math.sin(t*2.6)*0.02;
-      const M=W*0.1, maxW=W-2*M;
-      const { px, lines } = fitLines(val("t1"), maxW, Math.min(W*0.11,H*0.1), "800", 2);
-      let y = H*0.44 - (lines.length-1)*px*0.6;
-      ctx.save(); ctx.globalAlpha=p; ctx.translate(W/2,0); ctx.scale(pulse,pulse); ctx.translate(-W/2,0);
-      lines.forEach(ln=>{
-        ctx.font="800 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*0.3;
-        ctx.fillStyle=T.ink; ctx.fillText(ln, W/2, y); y += px*1.2;
-      });
+    count(t,d){
+      const start=Math.max(1,Math.min(9,parseInt(d.t1)||3));
+      const step=Math.floor(t);
+      const npx=Math.min(W*.42,H*.38);
+      ctx.save();
+      ctx.textAlign="center"; ctx.textBaseline="middle";
+      if(step<start){
+        const n=start-step, lokal=t-step;
+        const s=1+(1-ease(lokal/.35))*0.35, a=1-Math.max(0,(lokal-.72)/.28);
+        ga(a); ctx.font="800 "+(npx*s)+"px "+SANS;
+        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=npx*.2;
+        const txt=String(n), wT=ctx.measureText(txt).width;
+        ctx.fillStyle=grad(W/2-wT/2,H/2-npx/2,W/2+wT/2,H/2+npx/2);
+        ctx.fillText(txt,W/2,H/2);
+        ctx.beginPath(); ctx.arc(W/2,H/2,npx*.72,-Math.PI/2,-Math.PI/2+TAU*(1-lokal));
+        ctx.strokeStyle=farbe.a; ctx.lineWidth=Math.max(2,W*.008); ctx.lineCap="round"; ctx.stroke();
+      } else {
+        const lokal=t-start, p=ease(lokal/.5);
+        const {px}=fitLines(d.t2,W*.8,npx*.62,"800",1);
+        ga(p); ctx.font="800 "+px+"px "+SANS;
+        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*.3;
+        ctx.fillStyle="#fff"; ctx.fillText(d.t2,W/2,H/2+(1-p)*px*.2);
+      }
       ctx.restore();
-      const p2 = ease((t-0.35)/0.6);
+    },
+    cta(t,d){
+      const p=ease(t/.6), pulse=1+Math.sin(t*2.6)*.02;
+      const M=W*.1, maxW=W-2*M;
+      const {px,lines}=fitLines(d.t1,maxW,Math.min(W*.11,H*.1),"800",2);
+      let y=H*.44-(lines.length-1)*px*.6;
+      ctx.save(); ga(p); ctx.translate(W/2,0); ctx.scale(pulse,pulse); ctx.translate(-W/2,0);
+      lines.forEach(ln=>{ ctx.font="800 "+px+"px "+SANS; ctx.textAlign="center"; ctx.textBaseline="middle";
+        ctx.shadowColor="rgba(0,0,0,.5)"; ctx.shadowBlur=px*.3; ctx.fillStyle="#fff";
+        ctx.fillText(ln,W/2,y); y+=px*1.2; });
+      ctx.restore();
+      const p2=ease((t-.35)/.6);
       if(p2>0){
-        const hpx = px*0.42, pad = hpx*0.9;
+        const hpx=px*.42, pad=hpx*.9;
         ctx.font="700 "+hpx+"px "+MONO;
-        const tw = ctx.measureText(val("t2")).width;
-        const bw = tw+pad*2, bh = hpx*2.1, bx = W/2-bw/2, by = y + hpx*0.6;
-        ctx.save(); ctx.globalAlpha=p2;
-        ctx.fillStyle = grad(bx,by,bx+bw,by+bh,T);
-        const r = bh/2;
+        const tw=ctx.measureText(d.t2).width, bw=tw+pad*2, bh=hpx*2.1, bx=W/2-bw/2, by=y+hpx*.6, r=bh/2;
+        ctx.save(); ga(p2); ctx.fillStyle=grad(bx,by,bx+bw,by+bh);
         ctx.beginPath();
         ctx.moveTo(bx+r,by); ctx.lineTo(bx+bw-r,by); ctx.quadraticCurveTo(bx+bw,by,bx+bw,by+r);
         ctx.lineTo(bx+bw,by+bh-r); ctx.quadraticCurveTo(bx+bw,by+bh,bx+bw-r,by+bh);
         ctx.lineTo(bx+r,by+bh); ctx.quadraticCurveTo(bx,by+bh,bx,by+bh-r);
         ctx.lineTo(bx,by+r); ctx.quadraticCurveTo(bx,by,bx+r,by); ctx.closePath(); ctx.fill();
         ctx.fillStyle="#06060F"; ctx.textAlign="center"; ctx.textBaseline="middle";
-        ctx.fillText(val("t2"), W/2, by+bh/2);
-        ctx.restore();
+        ctx.fillText(d.t2,W/2,by+bh/2); ctx.restore();
       }
     }
   };
 
   /* ---------- Schleife ---------- */
-  let t0 = performance.now();
+  let zeit = 0;
   function frame(now){
-    const T = THEMEN[thIdx];
-    const t = (now - t0)/1000;
-    drawBG(t, T);
-    DRAW[TEMPLATES[tplIdx].id](t, T);
-    // dezente Marke
-    ctx.save();
-    ctx.font = "600 "+Math.max(9,W*0.014)+"px "+MONO;
+    const ges = total();
+    if(playing) zeit = ((now - tStart)/1000) % ges;
+    const { i, lokal } = szeneBei(zeit);
+    const sz = szenen[i];
+    FADE = 1;
+    const rest = sz.dur - lokal;
+    if(rest < FADE_OUT && szenen.length > 1) FADE = rest / FADE_OUT;
+    if(lokal < 0.18) FADE = Math.min(FADE, lokal/0.18);
+
+    drawBG(now/1000);
+    ctx.globalAlpha = 1;
+    (DRAW[sz.tpl] || DRAW.hook)(lokal, sz.data);
+
+    ctx.save(); ctx.globalAlpha=1;
+    ctx.font="600 "+Math.max(9,W*.014)+"px "+MONO;
     ctx.textAlign="right"; ctx.textBaseline="alphabetic";
     ctx.fillStyle="rgba(255,255,255,0.32)";
-    ctx.fillText("khanmotari", W-W*0.035, H-W*0.035);
+    ctx.fillText(marke, W-W*.035, H-W*.035);
     ctx.restore();
+
+    updateTimeline(i, lokal);
     requestAnimationFrame(frame);
   }
 
   /* ---------- UI ---------- */
+  const $ = id => document.getElementById(id);
+  const toastEl=$("toast"); let tT;
+  function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>toastEl.classList.remove("show"),2200); }
+
   function chips(host, arr, label, onPick, active){
     host.innerHTML="";
     arr.forEach((it,i)=>{
@@ -489,77 +548,157 @@
       host.appendChild(b);
     });
   }
+
+  let tlSegs=[];
+  function buildTimeline(){
+    const host=$("timeline"); host.innerHTML=""; tlSegs=[];
+    const ges=total();
+    szenen.forEach((s,i)=>{
+      const d=document.createElement("div");
+      d.className="tlseg"+(i===sel?" sel":"");
+      d.style.flexGrow = s.dur;
+      d.innerHTML='<div class="fill"></div><span>'+TPL[s.tpl].n+'</span>';
+      d.addEventListener("click",()=>{ sel=i; springeZu(i); syncPanel(); buildTimeline(); });
+      host.appendChild(d); tlSegs.push(d.querySelector(".fill"));
+    });
+    $("dauerGes").textContent = ges.toFixed(1).replace(".",",")+" s gesamt";
+  }
+  function updateTimeline(cur, lokal){
+    tlSegs.forEach((f,i)=>{
+      f.style.width = i<cur ? "100%" : (i===cur ? (lokal/szenen[i].dur*100)+"%" : "0%");
+    });
+  }
+  function springeZu(i){
+    let acc=0; for(let k=0;k<i;k++) acc+=szenen[k].dur;
+    tStart = performance.now() - acc*1000; zeit = acc;
+  }
+
+  function buildSzenenChips(){
+    const host=$("szenen"); host.innerHTML="";
+    szenen.forEach((s,i)=>{
+      const b=document.createElement("button");
+      b.className="chip"+(i===sel?" on":"");
+      b.textContent=(i+1)+" · "+TPL[s.tpl].n;
+      b.addEventListener("click",()=>{ sel=i; springeZu(i); syncPanel(); });
+      host.appendChild(b);
+    });
+  }
   function buildFields(){
-    const host=document.getElementById("fields"); host.innerHTML="";
-    TEMPLATES[tplIdx].f.forEach(([k,lab])=>{
+    const host=$("fields"); host.innerHTML="";
+    const sz=szenen[sel];
+    TPL[sz.tpl].f.forEach(([k,lab])=>{
       const d=document.createElement("div"); d.className="fld";
       const id="f_"+k;
       d.innerHTML='<label for="'+id+'">'+lab+'</label>';
-      const inp=document.createElement("input"); inp.id=id; inp.type="text"; inp.value=val(k);
-      inp.addEventListener("input",()=>{ daten[TEMPLATES[tplIdx].id+"_"+k]=inp.value; });
+      const inp=document.createElement("input"); inp.type="text"; inp.id=id; inp.value=sz.data[k]||"";
+      inp.addEventListener("input",()=>{ sz.data[k]=inp.value; });
       d.appendChild(inp); host.appendChild(d);
     });
   }
+  function syncPanel(){
+    buildSzenenChips(); buildTimeline(); buildFields();
+    const sz=szenen[sel];
+    chips($("tpl"), TEMPLATES, t=>t.n, i=>{
+      const t=TEMPLATES[i];
+      const alt=sz.data; sz.tpl=t.id;
+      const nd={}; t.f.forEach(([k,,v])=>nd[k]= alt[k]!==undefined?alt[k]:v);
+      sz.data=nd; buildFields(); buildSzenenChips(); buildTimeline(); springeZu(sel);
+    }, TEMPLATES.findIndex(t=>t.id===sz.tpl));
+    $("dauer").value = sz.dur; $("dauerVal").textContent = sz.dur.toFixed(1).replace(".",",")+" s";
+  }
 
-  chips(document.getElementById("tpl"), TEMPLATES, t=>t.n, i=>{ tplIdx=i; buildFields(); t0=performance.now(); }, 0);
-  chips(document.getElementById("fmt"), FORMATE, f=>f.n, i=>{ fmtIdx=i; setSize(); initParts(); t0=performance.now(); }, 0);
-  chips(document.getElementById("bg"), BGS, b=>b, i=>{ bgIdx=i; t0=performance.now(); }, 0);
-  const thHost=document.getElementById("theme");
+  chips($("fmt"), FORMATE, f=>f.n, i=>{ fmtIdx=i; setSize(); }, 0);
+  chips($("bg"), BGS, b=>b, i=>{ bgIdx=i; }, 0);
+
+  const thHost=$("theme");
   THEMEN.forEach((T,i)=>{
     const s=document.createElement("i"); s.title=T.n; s.className=i===0?"on":"";
     s.style.background="linear-gradient(135deg,"+T.a+","+T.b+")";
-    s.addEventListener("click",()=>{ thIdx=i; [...thHost.children].forEach(c=>c.classList.toggle("on",c===s)); });
+    s.addEventListener("click",()=>{
+      thIdx=i; farbe={a:T.a,b:T.b,c:T.c,base:T.base};
+      $("cA").value=T.a; $("cB").value=T.b; $("cC").value=T.c;
+      [...thHost.children].forEach(c=>c.classList.toggle("on",c===s));
+    });
     thHost.appendChild(s);
   });
-  buildFields();
+  ["cA","cB","cC"].forEach((id,k)=>{
+    $(id).addEventListener("input",e=>{
+      farbe[["a","b","c"][k]] = e.target.value;
+      [...thHost.children].forEach(c=>c.classList.remove("on"));
+    });
+  });
+  $("cA").value=farbe.a; $("cB").value=farbe.b; $("cC").value=farbe.c;
 
-  const toastEl=document.getElementById("toast"); let tT;
-  function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>toastEl.classList.remove("show"),2200); }
+  $("mark").value = marke;
+  $("mark").addEventListener("input",e=>{ marke = e.target.value; });
+  $("save").addEventListener("click",()=>{
+    try { localStorage.setItem("km_marke", JSON.stringify({farbe, marke})); toast("Marke gespeichert — gilt beim nächsten Besuch"); }
+    catch(e){ toast("Speichern nicht möglich"); }
+  });
 
-  document.getElementById("replay").addEventListener("click", ()=>{ t0=performance.now(); });
-  document.getElementById("png").addEventListener("click", ()=>{
+  $("dauer").addEventListener("input",e=>{
+    szenen[sel].dur = parseFloat(e.target.value);
+    $("dauerVal").textContent = szenen[sel].dur.toFixed(1).replace(".",",")+" s";
+    buildTimeline();
+  });
+
+  $("add").addEventListener("click",()=>{ szenen.splice(sel+1,0,neueSzene("hook")); sel++; syncPanel(); springeZu(sel); });
+  $("dup").addEventListener("click",()=>{
+    const s=szenen[sel]; szenen.splice(sel+1,0,{tpl:s.tpl,data:Object.assign({},s.data),dur:s.dur});
+    sel++; syncPanel(); springeZu(sel);
+  });
+  $("del").addEventListener("click",()=>{
+    if(szenen.length<=1){ toast("Mindestens eine Szene"); return; }
+    szenen.splice(sel,1); sel=Math.max(0,sel-1); syncPanel(); springeZu(sel);
+  });
+  $("links").addEventListener("click",()=>{ if(sel===0) return; const s=szenen[sel]; szenen[sel]=szenen[sel-1]; szenen[sel-1]=s; sel--; syncPanel(); });
+  $("rechts").addEventListener("click",()=>{ if(sel>=szenen.length-1) return; const s=szenen[sel]; szenen[sel]=szenen[sel+1]; szenen[sel+1]=s; sel++; syncPanel(); });
+
+  $("play").addEventListener("click",()=>{
+    playing=!playing;
+    if(playing) tStart = performance.now() - zeit*1000;
+    $("play").textContent = playing ? "⏸ Pause" : "⏵ Abspielen";
+  });
+  $("png").addEventListener("click",()=>{
     const a=document.createElement("a"); a.href=cv.toDataURL("image/png");
-    a.download="khanmotari-"+TEMPLATES[tplIdx].id+"-"+FORMATE[fmtIdx].n.replace(":","x")+".png"; a.click();
+    a.download="khanmotari-"+szenen[sel].tpl+"-"+FORMATE[fmtIdx].n.replace(":","x")+".png"; a.click();
     toast("Bild gespeichert");
   });
 
-  // Video-Aufnahme
-  const vidBtn=document.getElementById("vid"), vidNote=document.getElementById("vidnote");
-  const canRec = typeof MediaRecorder !== "undefined" && typeof cv.captureStream === "function";
-  let mime = "";
-  if(canRec){
-    ["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm","video/mp4"].some(m=>{
-      if(MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)){ mime=m; return true; } return false;
-    });
-  }
-  if(!canRec || !mime){
-    vidBtn.disabled = true;
-    vidNote.textContent = "Video-Aufnahme wird von diesem Browser nicht unterstützt (auf iPhone/iPad häufig). Am Rechner in Chrome, Edge oder Firefox funktioniert sie. Das PNG geht überall.";
+  const vidBtn=$("vid"), vidNote=$("vidnote");
+  const canRec = typeof MediaRecorder!=="undefined" && typeof cv.captureStream==="function";
+  let mime="";
+  if(canRec){ ["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm","video/mp4"].some(m=>{
+    if(MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(m)){ mime=m; return true; } return false; }); }
+  if(!canRec||!mime){
+    vidBtn.disabled=true;
+    vidNote.textContent="Video-Aufnahme wird von diesem Browser nicht unterstützt (auf iPhone/iPad häufig). Am Rechner in Chrome, Edge oder Firefox funktioniert sie — das Bild geht überall.";
   } else {
-    vidNote.textContent = "Nimmt 5 Sekunden ab Animationsstart auf ("+(mime.indexOf("mp4")>-1?"MP4":"WebM")+"). Direkt in CapCut, Premiere oder DaVinci importierbar.";
+    vidNote.textContent="Nimmt die gesamte Sequenz einmal komplett auf ("+(mime.indexOf("mp4")>-1?"MP4":"WebM")+") — direkt in CapCut, Premiere oder DaVinci importierbar.";
   }
-  vidBtn.addEventListener("click", ()=>{
+  vidBtn.addEventListener("click",()=>{
     if(vidBtn.disabled) return;
-    const stream = cv.captureStream(30);
+    const ges=total();
+    if(ges>60){ toast("Sequenz zu lang — maximal 60 Sekunden"); return; }
     let rec;
-    try { rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8000000 }); }
+    try { rec=new MediaRecorder(cv.captureStream(30),{mimeType:mime,videoBitsPerSecond:9000000}); }
     catch(e){ toast("Aufnahme nicht möglich"); return; }
     const chunks=[];
-    rec.ondataavailable = e => { if(e.data && e.data.size) chunks.push(e.data); };
-    rec.onstop = () => {
-      const blob = new Blob(chunks, { type: mime });
+    rec.ondataavailable=e=>{ if(e.data&&e.data.size) chunks.push(e.data); };
+    rec.onstop=()=>{
+      const blob=new Blob(chunks,{type:mime});
       const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
-      a.download = "khanmotari-"+TEMPLATES[tplIdx].id+(mime.indexOf("mp4")>-1?".mp4":".webm"); a.click();
-      vidBtn.textContent="● Video aufnehmen"; vidBtn.disabled=false;
-      toast("Video gespeichert");
+      a.download="khanmotari-sequenz"+(mime.indexOf("mp4")>-1?".mp4":".webm"); a.click();
+      vidBtn.textContent="● Sequenz aufnehmen"; vidBtn.disabled=false; toast("Video gespeichert");
     };
-    t0 = performance.now();
-    vidBtn.disabled = true; vidBtn.textContent="Nimmt auf …";
+    playing=true; $("play").textContent="⏸ Pause";
+    tStart=performance.now(); zeit=0;
+    vidBtn.disabled=true; vidBtn.textContent="Nimmt auf …";
     rec.start();
-    setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, 5000);
+    setTimeout(()=>{ try{ rec.stop(); }catch(e){} }, ges*1000+120);
   });
 
-  setSize(); initParts();
+  setSize(); syncPanel();
   requestAnimationFrame(frame);
 })();
 </script>
