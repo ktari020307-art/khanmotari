@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Personal-Brand-Cockpit</title>
+<style>
+  :root { --bg:#0A0B12; --g2:#12131F; --g3:#171A28; --ink:#F3F4FB; --muted:#9BA0BE; --faint:#565C82; --line:rgba(255,255,255,0.12);
+    --cyan:#38E0FF; --violet:#B36BFF; --gold:#FFC24B; --mint:#4ADE9B; --coral:#FF6A3D; --red:#FF5D6C;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace; --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:radial-gradient(130% 80% at 50% -8%, #171a30, var(--bg) 56%); color:var(--ink);
+    font-family:var(--sans); -webkit-font-smoothing:antialiased; min-height:100dvh; line-height:1.55; }
+  a { color:inherit; }
+
+  .top { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; }
+  .brand { font-weight:800; font-size:18px; letter-spacing:-0.02em; }
+  .brand b { background:linear-gradient(100deg,var(--cyan),var(--violet),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .back { font-family:var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);
+    border:1px solid var(--line); border-radius:40px; padding:9px 15px; text-decoration:none; transition:.2s; }
+  .back:hover { color:var(--ink); border-color:var(--cyan); }
+
+  .wrap { max-width:1020px; margin:0 auto; padding:6px 22px 80px; }
+  .head { text-align:center; margin-bottom:34px; }
+  .head .label { font-family:var(--mono); font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cyan); }
+  .head h1 { font-size:clamp(26px,5.4vw,44px); font-weight:800; letter-spacing:-0.03em; margin-top:10px; line-height:1.04; }
+  .head h1 span { background:linear-gradient(100deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .head p { color:var(--muted); font-size:16.5px; margin:16px auto 0; max-width:60ch; }
+  .head .src { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:14px; letter-spacing:0.04em; }
+
+  /* fragebogen */
+  .q { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:20px 22px; margin-bottom:12px; }
+  .q .qt { font-size:15.5px; font-weight:600; margin-bottom:12px; }
+  .q .qt i { font-family:var(--mono); font-style:normal; font-size:11px; color:var(--cyan); letter-spacing:0.12em; margin-right:9px; }
+  .opts { display:flex; gap:8px; flex-wrap:wrap; }
+  .chip { font-family:var(--mono); font-size:12.5px; color:var(--muted); background:rgba(255,255,255,0.045);
+    border:1px solid var(--line); border-radius:30px; padding:9px 15px; cursor:pointer; transition:.18s; }
+  .chip:hover { color:var(--ink); }
+  .chip.on { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border-color:transparent; font-weight:700; }
+
+  .actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:26px 0 30px; }
+  .btn { font-family:var(--mono); font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:40px; padding:14px 20px; cursor:pointer; transition:.2s; }
+  .btn:hover { color:var(--ink); border-color:rgba(255,255,255,0.3); }
+  .btn.primary { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border:none; font-weight:700; font-size:13px; padding:15px 26px; }
+
+  /* dossier */
+  .sec { margin-top:34px; }
+  .sech { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+  .sech h2 { font-size:clamp(20px,3.4vw,27px); font-weight:750; letter-spacing:-0.02em; }
+  .sech .n { font-family:var(--mono); font-size:11px; letter-spacing:0.16em; color:var(--faint); }
+  .lead { color:var(--muted); font-size:15.5px; max-width:70ch; margin-bottom:16px; }
+
+  .card { position:relative; background:var(--g2); border:1px solid var(--line); border-radius:16px; padding:20px 22px; margin-bottom:12px; overflow:hidden; }
+  .card::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--c,var(--cyan)); }
+  .card h3 { font-size:17.5px; font-weight:700; letter-spacing:-0.015em; margin-bottom:7px; }
+  .card h3 em { font-family:var(--mono); font-style:normal; font-size:11px; color:var(--c,var(--cyan)); letter-spacing:0.12em; margin-right:9px; }
+  .card p { color:var(--muted); font-size:14.5px; }
+  .card .do { margin-top:11px; padding-top:11px; border-top:1px dashed rgba(255,255,255,0.11); font-size:14px; color:var(--ink); }
+  .card .do b { display:block; font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); margin-bottom:5px; font-weight:500; }
+  .tagrow { display:flex; gap:6px; flex-wrap:wrap; margin-top:10px; }
+  .tag { font-family:var(--mono); font-size:10.5px; color:var(--muted); border:1px solid var(--line); border-radius:20px; padding:4px 10px; }
+
+  .kbox { border:1px solid rgba(255,194,75,0.32); background:linear-gradient(100deg, rgba(255,194,75,0.08), rgba(179,107,255,0.06));
+    border-radius:18px; padding:22px 24px; }
+  .kbox .kl { font-family:var(--mono); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:9px; }
+  .kbox .kt { font-size:clamp(17px,2.9vw,23px); font-weight:700; letter-spacing:-0.015em; line-height:1.3; }
+  .kbox .ks { color:var(--muted); font-size:14.5px; margin-top:10px; }
+
+  .warn { border-color:rgba(255,93,108,0.4); }
+  .warn::before { background:var(--red); }
+  .warn h3 em { color:var(--red); }
+
+  table { width:100%; border-collapse:collapse; font-size:14px; }
+  .tw { overflow-x:auto; border:1px solid var(--line); border-radius:14px; background:var(--g2); }
+  th, td { text-align:left; padding:11px 14px; border-bottom:1px solid rgba(255,255,255,0.07); vertical-align:top; }
+  th { font-family:var(--mono); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); font-weight:500; white-space:nowrap; }
+  td { color:var(--muted); }
+  td b { color:var(--ink); font-weight:600; }
+  tr:last-child td { border-bottom:none; }
+  td.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
+
+  /* rechner */
+  .calc { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:22px; }
+  .crow { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:14px; }
+  .crow label { font-size:14px; color:var(--muted); flex:1; min-width:210px; }
+  .crow input { width:130px; font-family:var(--mono); font-size:15px; color:var(--ink); background:rgba(255,255,255,0.05);
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px; outline:none; text-align:right; }
+  .crow input:focus { border-color:var(--cyan); }
+  .out { margin-top:16px; padding-top:16px; border-top:1px solid var(--line); display:grid; gap:10px; }
+  .oline { display:flex; justify-content:space-between; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .oline span { color:var(--muted); font-size:14px; }
+  .oline b { font-size:19px; font-weight:750; font-variant-numeric:tabular-nums; color:var(--ink); }
+  .oline b.hi { background:linear-gradient(100deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .note { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:12px; line-height:1.6; }
+
+  .disc { margin-top:34px; border:1px dashed rgba(255,255,255,0.16); border-radius:14px; padding:18px 20px; }
+  .disc b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:0.14em; text-transform:uppercase; color:var(--coral); margin-bottom:7px; }
+  .disc p { color:var(--muted); font-size:13.5px; }
+
+  .hidden { display:none; }
+  .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); font-family:var(--mono); font-size:12px;
+    color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); padding:11px 20px; border-radius:40px;
+    opacity:0; transition:opacity .25s; pointer-events:none; z-index:9; }
+  .toast.show { opacity:1; }
+  .follow { text-align:center; margin-top:44px; }
+  .follow a { font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
+    text-decoration:none; border:1px solid var(--line); border-radius:40px; padding:11px 18px; transition:.2s; }
+  .follow a:hover { color:var(--ink); border-color:var(--violet); }
+
+  @media print {
+    body { background:#fff; color:#000; }
+    .top,.head,.q,.actions,.follow,.toast,.calc { display:none !important; }
+    .card,.kbox,.tw,.disc { border:1px solid #ccc; background:#fff; page-break-inside:avoid; }
+    .card p,td,.lead,.kbox .ks { color:#444; }
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">khan<b>motari</b></div>
+    <a class="back" href="../index.html">‹ Zurück</a>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <div class="label">Personal-Brand-Cockpit</div>
+      <h1>78 Seiten Deep Research —<br>in vier Klicks <span>auf dich zugeschnitten</span>.</h1>
+      <p>Kein Kurs, keine Checkliste zum Abarbeiten. Vier Angaben, und du bekommst die Mechaniken, die für deinen Fall belegt funktionieren — mit echten Zahlen, den Rechtsfallen und dem, was du ausdrücklich lassen sollst.</p>
+      <div class="src">Datenbasis · Deep-Research-Studie „Personal Brands 2026“ · rund 120 Marken in vier Segmenten · Stand 11.08.2026</div>
+    </div>
+
+    <div id="fragen"></div>
+
+    <div class="actions">
+      <button id="go" class="btn primary">Dossier erstellen</button>
+      <button id="copy" class="btn">Kopieren</button>
+      <button id="print" class="btn">Als PDF</button>
+    </div>
+
+    <div id="dossier" class="hidden"></div>
+
+    <div class="follow"><a href="../index.html#connect">khanmotari folgen ›</a></div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ WISSENSBASIS (aus der Studie) ============ */
+
+  const FRAGEN = [
+    { k:"stand", t:"Wo stehst du gerade?", o:[
+      { v:"start",     l:"Netzwerk, aber keine Reichweite", d:"Fachtiefe und Kontakte vorhanden, öffentlich kaum sichtbar." },
+      { v:"aufbau",    l:"Erste Reichweite im Aufbau",      d:"Es wird publiziert, aber ohne System und ohne Ertrag." },
+      { v:"etabliert", l:"Reichweite vorhanden",            d:"Sichtbarkeit da — die Monetarisierung hinkt hinterher." }
+    ]},
+    { k:"modell", t:"Womit verdienst du Geld — oder willst du es?", o:[
+      { v:"mandate", l:"Beratung / Mandate", d:"Projektgeschäft, Tages- oder Wertsätze." },
+      { v:"coaching",l:"Coaching / Begleitung", d:"1:1 oder Gruppen, laufende Betreuung." },
+      { v:"kurse",   l:"Kurse / digitale Produkte", d:"Aufgezeichnete Programme, Mitgliedschaften." },
+      { v:"offen",   l:"Noch offen", d:"Das Modell steht noch nicht fest." }
+    ]},
+    { k:"zahler", t:"Wer bezahlt am Ende?", o:[
+      { v:"firma",  l:"Firmenbudget",  d:"Unternehmen kaufen ein." },
+      { v:"privat", l:"Privatpersonen",d:"Einzelne zahlen aus eigener Tasche." },
+      { v:"beides", l:"Beides",        d:"Gemischt." }
+    ]},
+    { k:"ziel", t:"Was soll am Ende dabei herauskommen?", o:[
+      { v:"marge", l:"Hohes Einkommen, schlanke Struktur", d:"Marge, Freiheit, wenig Overhead." },
+      { v:"exit",  l:"Etwas Verkäufliches aufbauen",       d:"Ein Unternehmenswert, der ohne dich funktioniert." }
+    ]}
+  ];
+
+  // Die zehn Mechaniken (Studie, Teil 6.2) — nach Übertragbarkeit sortiert
+  const MECHANIKEN = [
+    { id:1, t:"20–40 Podcast-Gastauftritte pro Jahr", vorbild:"Codie Sanchez (100+)", aufwand:"niedrig",
+      wirkung:"10.000 Newsletter-Abonnenten in 30 Tagen",
+      d:"Der am stärksten unterschätzte Kanal der Studie: fremde Reichweite nutzen statt eigene aufbauen. Sanchez erreichte ihre erste Liste über bestehende Kontakte und systematische Gastauftritte — vor nennenswerter Social-Reichweite.",
+      do:"Liste mit 60–80 DACH-Wirtschafts-, Branchen- und Mittelstandspodcasts anlegen. Jeweils mit einer spezifischen These anfragen, nie mit einer Selbstvorstellung. Ziel: 2–3 Auftritte pro Monat. Kosten: null.",
+      fit:{ stand:["start","aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"] }, prio:1 },
+    { id:2, t:"Educational Email Course statt Whitepaper", vorbild:"Dickie Bush / Nicolas Cole", aufwand:"ein Wochenende",
+      wirkung:"Geschäft vervierfacht, 100.000 Durchläufer",
+      d:"Eine fünf- bis siebenteilige automatisierte E-Mail-Serie, die einen abgeschlossenen Lernprozess liefert — kein PDF, das heruntergeladen und nie geöffnet wird. Laut Studie die konkreteste, sofort umsetzbare Taktik überhaupt.",
+      do:"Ein abgeschlossenes Ergebnis in fünf Tagen versprechen — Prozess, kein Resultat. Muster: „In fünf Tagen zu einer belastbaren Deckungsbeitragsrechnung.“ Ein Wochenende Arbeit, danach dauerhaft wirksam.",
+      fit:{ stand:["start","aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"] }, prio:2 },
+    { id:3, t:"Ein benanntes Framework + ein seriöses Buch", vorbild:"Sinek, Peters, Ritson", aufwand:"6–18 Monate",
+      wirkung:"Ritson-Exit 19 Mio. GBP",
+      d:"Der deutsche B2B-Markt liebt Systematik — das ist ein Heimvorteil. Sineks Golden Circle sind drei Kreise, die jeder in 20 Sekunden nachzeichnet. Peters' 7-S-Framework hat eine ganze Beraterkarriere getragen.",
+      do:"Prüfkriterium: in 30 Sekunden erklärbar und auf einer Serviette zeichenbar. Wenn du drei Sätze brauchst, ist es noch kein Framework. Buch bei einem Fachverlag (Campus, Vahlen, Springer Gabler) — nicht wegen der Tantiemen (2.000–8.000 €), sondern wegen des Speaking-Tier-Aufstiegs.",
+      fit:{ stand:["aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"] }, prio:3 },
+    { id:4, t:"Kohortenprogramm an Firmenbudgets", vorbild:"Ritson MiniMBA", aufwand:"mittel",
+      wirkung:"72 % Abschlussquote (Selbstlernkurse: 5–15 %)",
+      d:"Live und kohortenbasiert statt aufgezeichnet. Die Studie zeigt eine seltene Konstellation: Das rechtlich sicherere Format ist zugleich das pädagogisch wirksamere und das besser bezahlte.",
+      do:"2 Kohorten à 15 Teilnehmende, 2.500–5.000 € pro Person → 75.000–150.000 € im Jahr. Firmenfinanziert anbieten, nicht an Privatpersonen.",
+      fit:{ stand:["aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"], zahler:["firma","beides"] }, prio:4 },
+    { id:5, t:"Eigener Podcast als Zugangsinstrument", vorbild:"Bartlett, Ferriss", aufwand:"mittel",
+      wirkung:"Dealflow-Generator",
+      d:"Der Ertrag ist nicht die Hörerschaft, sondern der legitime Anlass, mit jedem Entscheider zu sprechen. Bartletts Podcast speist einen 100-Mio.-Dollar-Fonds.",
+      do:"Gäste nach Zielkunden auswählen, nicht nach Reichweite. Jede Folge ist ein Erstgespräch mit Aufnahmegerät.",
+      fit:{ stand:["aufbau","etabliert"], modell:["mandate","coaching","offen"] }, prio:5 },
+    { id:6, t:"Peer-Group mit wiederkehrendem Umsatz", vorbild:"Pat Flynn, Chris Do", aufwand:"mittel",
+      wirkung:"~1.100 USD pro Mitglied und Jahr (Do, in einem zahlungsschwachen Markt)",
+      d:"Laut Studie der ökonomisch interessanteste Baustein: wiederkehrender Umsatz, hohe Bindung, beste Abschlussquoten, geringstes Rechtsrisiko. Im deutschen B2B mit Geschäftsführern sind 6.000–12.000 € pro Jahr realistisch — Faktor 6 bis 10 gegenüber Do.",
+      do:"20 Mitglieder à 6.000–12.000 € = 120.000–240.000 € wiederkehrend. Als Beirat/Peer-Group mit Diskussionsformat aufsetzen, nicht als Kurs.",
+      fit:{ stand:["aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"], zahler:["firma","beides"] }, prio:6 },
+    { id:7, t:"Wöchentlicher Essay auf eigener Domain", vorbild:"Godin, Welsh", aufwand:"dauerhaft niedrig",
+      wirkung:"plattformunabhängiges Asset",
+      d:"Justin Welsh nennt LinkedIn ausdrücklich „gemietetes Land“. Instagram −31 %, LinkedIn −23 % organische Reichweite im Jahresvergleich. Die eigene Domain und die E-Mail-Liste sind das Einzige, was dir gehört.",
+      do:"Wöchentlich ein Essay auf der eigenen Domain, nicht auf LinkedIn. Zielwert: 100+ Essays nach zwei Jahren. LinkedIn wird zur Verteilung genutzt, nicht zur Lagerung.",
+      fit:{ stand:["start","aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"] }, prio:7 },
+    { id:8, t:"Lehrbeauftragung an einer Hochschule", vorbild:"Galloway, Grant, Ritson", aufwand:"niedrig",
+      wirkung:"Legitimationsanker",
+      d:"In DACH gilt: Institution vor Reichweite. Die stabilsten Marken sitzen auf einem Amt, einer Redaktion, einem Verband oder einem Lehrstuhl — Reichweite ist dort Folge, nicht Voraussetzung.",
+      do:"Lehrauftrag an einer FH oder in der Executive Education anfragen. Geringer Aufwand, dauerhafter Legitimationsgewinn.",
+      fit:{ stand:["start","aufbau","etabliert"], modell:["mandate","coaching","offen"] }, prio:8 },
+    { id:9, t:"Eigene jährliche Branchenerhebung", vorbild:"Galloway", aufwand:"mittel",
+      wirkung:"zitierfähige Assets",
+      d:"Belegte Erstdaten sind laut Studie eines von nur drei Dingen, die ein Sprachmodell nicht simulieren kann (neben Zugang und persönlichem Reputationseinsatz). Alles andere geht im Preis gegen null.",
+      do:"Einmal jährlich eine eigene Erhebung in deiner Branche — auch klein. Eigene Zahlen erzeugen Presse, Zitate und Verhandlungsmacht.",
+      fit:{ stand:["aufbau","etabliert"], modell:["mandate","coaching","kurse","offen"] }, prio:9 },
+    { id:10, t:"Zertifizierung der eigenen Methode", vorbild:"Brené Brown", aufwand:"hoch",
+      wirkung:"Skalierung ohne Personenbindung",
+      d:"Der einzige Weg von personaler zu institutioneller Marke: ein benanntes System, das andere zertifiziert anwenden dürfen. Voraussetzung für Verkäuflichkeit.",
+      do:"Nur relevant, wenn du auf Exit-Wert baust. Methode benennen, dokumentieren, Lizenz- und Zertifizierungsstruktur aufsetzen.",
+      fit:{ stand:["etabliert"], modell:["mandate","coaching","kurse","offen"], ziel:["exit"] }, prio:10 }
+  ];
+
+  const ANTI = [
+    { t:"Nicht täglich posten.", d:"Das dokumentierte LinkedIn-Optimum liegt bei 2–3 Posts pro Woche. Alles darüber ist im Beratungskontext Zeitinvestition ohne belegten Zusatznutzen — und geht direkt von der Mandatszeit ab." },
+    { t:"Keinen 1.500-Euro-Selbstlernkurs bauen.", d:"Gleichzeitig der margenschwächste (Preis-Barbell-Lücke), wirkungsloseste (5–15 % Abschlussquote) und rechtlich riskanteste Bereich (FernUSG) des gesamten Marktes." },
+    { t:"Keine Ergebnisversprechen formulieren.", d:"„So verdoppeln Sie Ihren Umsatz in 90 Tagen“ ist im deutschen Rechtsraum ein konkretes Abmahn- und Haftungsrisiko nach §§ 5, 5a UWG. Prozessversprechen statt Ergebnisversprechen — im DACH-Markt ohnehin glaubwürdiger." },
+    { t:"Keine US-Rhetorik importieren.", d:"Der Hustle-Ton erzeugt außerhalb der bereits konvertierten Zielgruppe reflexhafte Ablehnung. Die übertragbare Version von „Document, don't create“ ist der nüchterne Feldbericht: „Was ich diese Woche in einem Produktionsbetrieb mit 400 Mitarbeitern gesehen habe.“" },
+    { t:"Keine öffentliche Einkommensoffenlegung.", d:"Was in den USA Glaubwürdigkeit erzeugt, wirkt im deutschen B2B als Warnzeichen. Die deutsche Variante von Transparenz ist die Offenlegung von Projektzahlen: anonymisierte Fallzahlen, echte Vorher-Nachher-Werte, ehrliche Angaben zu dem, was nicht funktioniert hat." },
+    { t:"Nicht auf gemietetem Land bauen.", d:"Instagram −31 %, LinkedIn −23 % organische Reichweite in einem Jahr. Wenn mehr als 50 % deines Zugangs zur Zielgruppe bei einer Plattform liegt, ist das dein größtes operatives Risiko." }
+  ];
+
+  const PRUEF = [
+    "Was ist das Asset hinter dem Content? Lautet die Antwort „mehr Content“ oder „mehr Reichweite“, gibt es kein Geschäftsmodell.",
+    "Wem gehört die Distribution? Über 50 % Plattformabhängigkeit ist das größte operative Risiko.",
+    "Ist mein Content substituierbar? Kann ein Sprachmodell dasselbe in 30 Sekunden schreiben, ist der Preis bereits null.",
+    "Zahlt eine Person oder ein Budget? Firmenbudgets: 72 % Abschlussquote statt 15 %, höhere Preise, weniger Rechtsrisiko.",
+    "Was passiert, wenn ich sechs Monate ausfalle? Geht der Umsatz auf null, hast du Einkommen — kein Vermögen.",
+    "Wo ist mein Interessenkonflikt, und ist er offengelegt? Die erfolgreichen Modelle legen ihn proaktiv offen. Die gescheiterten haben gewartet."
+  ];
+
+  /* ============ LOGIK ============ */
+
+  const antw = { stand:"start", modell:"mandate", zahler:"firma", ziel:"marge" };
+
+  const fragenEl = document.getElementById("fragen");
+  FRAGEN.forEach((f,fi) => {
+    const box = document.createElement("div"); box.className = "q";
+    box.innerHTML = '<div class="qt"><i>'+String(fi+1).padStart(2,"0")+'</i>'+f.t+'</div>';
+    const opts = document.createElement("div"); opts.className = "opts";
+    f.o.forEach((o,oi) => {
+      const b = document.createElement("button");
+      b.className = "chip" + (oi===0 ? " on" : ""); b.textContent = o.l; b.title = o.d;
+      b.addEventListener("click", () => { antw[f.k] = o.v; [...opts.children].forEach(c=>c.classList.toggle("on", c===b)); });
+      opts.appendChild(b);
+    });
+    box.appendChild(opts); fragenEl.appendChild(box);
+  });
+
+  function passt(m) {
+    if (m.fit.stand && m.fit.stand.indexOf(antw.stand) === -1) return false;
+    if (m.fit.modell && m.fit.modell.indexOf(antw.modell) === -1) return false;
+    if (m.fit.zahler && m.fit.zahler.indexOf(antw.zahler) === -1) return false;
+    if (m.fit.ziel && m.fit.ziel.indexOf(antw.ziel) === -1) return false;
+    return true;
+  }
+
+  function weichenstellung() {
+    if (antw.ziel === "exit") return {
+      t:"Institutionelle Marke — die Marke muss sich früh von dir lösen.",
+      s:"Verkäuflichkeit erfordert, dass das Geschäft ohne dich funktioniert. Alex Lieberman verkaufte Morning Brew für 75 Mio. USD, weil die Marke nicht an ihm hing. Ben Thompson verdient wahrscheinlich mehr pro Jahr — kann aber nichts verkaufen, weil er das Unternehmen ist. Die Konsequenz: niedrigere Marge, langsamerer und kapitalintensiverer Aufbau, geringeres Preispremium. Diese Entscheidung muss am Anfang fallen, nicht nachträglich."
+    };
+    return {
+      t:"Personale Marke — Marge ist der Punkt, nicht der Exit.",
+      s:"Für die allermeisten Berater ist das die richtige Antwort, weil das Beratungsgeschäft ohnehin personal ist. Benchmarks: Justin Welsh 12,5 Mio. USD Lebensumsatz seit 2019 bei 86–90 % Marge mit einem Teilzeit-Assistenten. Dan Koe rund 2,5 Mio. USD im Jahr bei 97–98 % Bruttomarge, null Mitarbeiter. Preis: praktisch keine Verkäuflichkeit — und jedes private Fehlverhalten schlägt voll durch."
+    };
+  }
+
+  function risiken() {
+    const R = [];
+    if (antw.modell === "kurse" || antw.modell === "coaching") {
+      R.push({ t:"FernUSG — das juristische Erdbeben", d:"BGH, 12.06.2025 (III ZR 109/24): Strukturiertes Online-Mentoring mit aufgezeichneten Videomodulen und Lernerfolgskontrolle — schon einfaches Chat-Feedback genügt — ist zulassungspflichtiger Fernunterricht. Ohne ZFU-Zulassung ist der Vertrag nichtig (§ 7 FernUSG), mit vollständiger Rückzahlungspflicht, auch nach Kursabschluss. Das gilt ausdrücklich auch gegenüber Unternehmern — die Schutzbehauptung „meine Kunden sind Selbstständige“ ist erledigt. Ausweitung am 02.10.2025 (III ZR 173/24) auf Videomodule plus Coaching-Calls.",
+        do:"Riskant: standardisierte Videomodule mit Lernkontrolle · „Mentoring-Programm“ mit Chat-Feedback · 12-Wochen-Kurs mit Modulfreischaltung · alles mit „Ausbildung“ im Namen. Vermutlich sicherer: Live-Workshops ohne aufgezeichnete Lernpfade · klassische Beratungsmandate · Peer-Group mit Diskussionsformat · hochindividualisiertes 1:1 · firmenfinanzierte Inhouse-Formate." });
+    }
+    if (antw.zahler === "privat" || antw.zahler === "beides") {
+      R.push({ t:"Privatkunden erhöhen dein Risiko und senken deinen Preis", d:"Firmenfinanzierte Formate erreichen 72 % Abschlussquote, Selbstlernkurse 5–15 %. Sie tragen höhere Preispunkte und sind rechtlich deutlich weniger exponiert. Wer an Privatpersonen verkauft, sitzt im am stärksten umkämpften und margenschwächsten Segment des Marktes.",
+        do:"Wo immer möglich das Format so aufsetzen, dass ein Firmenbudget zahlt — Inhouse, Kohorte, Beirat statt Einzelverkauf." });
+    }
+    R.push({ t:"EU AI Act, Artikel 50 — seit 02.08.2026 in Kraft", d:"Öffentlichkeitsorientierte KI-generierte Informationstexte müssen als KI-generiert markiert werden, wenn kein Mensch redaktionelle Verantwortung übernommen hat. Das trifft das gängigste Muster im Personal Branding direkt: KI-erstellte LinkedIn-Posts und Newsletter. Bußgeld bis 15 Mio. € oder 3 % des weltweiten Jahresumsatzes. Ausgenommen sind Grammatik- und Stilkorrektur.",
+      do:"Redaktionelle Verantwortung tatsächlich übernehmen: prüfen, verantworten, unter eigenem Namen veröffentlichen. Rechtlich nicht abschließend geklärt — vor einer Skalierung anwaltlich prüfen lassen." });
+    R.push({ t:"Werbekennzeichnung", d:"BGH-Trilogie vom 09.09.2021: Kennzeichnungspflicht besteht, sobald eine Gegenleistung fließt — Geld oder Sachleistung (Gratisprodukte, Reisen). Ohne Gegenleistung keine Pflicht, auch bei großer Reichweite. Die Urteile haben aber keine vollständige Klarheit geschaffen; rund um „übertrieben werblich“ wirkende Inhalte bleibt eine Grauzone und damit ein strukturelles Abmahnrisiko.",
+      do:"Jede Gegenleistung kennzeichnen, auch Sachleistungen. Interessenkonflikte proaktiv im Content offenlegen." });
+    R.push({ t:"Der Beruf macht messbar krank", d:"Drei methodisch unabhängige Studien: 52 %, 62 % und 62 % Burnout-Rate unter professionellen Creators. 10 % berichten Suizidgedanken, 90 % haben keinen Zugang zu spezialisierter Versorgung. Der Gradient nach Kanal ist aufschlussreich: TikTok 68 % · Instagram 61 % · YouTube 59 % · Podcast 52 % · Newsletter 48 %.",
+      do:"Owned-Audience-Modelle (Newsletter, eigene Domain) sind nicht nur die bessere Geschäftsstrategie, sondern auch die bessere Gesundheitsstrategie." });
+    return R;
+  }
+
+  function pfad() {
+    const rows = [
+      ["Jahr 1–2 · Autoritätsaufbau", [
+        ["LinkedIn", "2–3 Posts pro Woche (dokumentiertes Optimum)", "—"],
+        ["Podcast-Gastauftritte", "20–30 pro Jahr", "—"],
+        ["Eigene Domain", "wöchentlicher Essay, nicht auf LinkedIn", "100+ Essays nach 2 Jahren"],
+        ["Lead-Magnet", "5-teiliger Educational Email Course", "—"],
+        ["Newsletter", "wöchentlich oder zweiwöchentlich", "3.000–8.000 qualifizierte Abonnenten"],
+        ["Legitimation", "Lehrauftrag FH / Executive Education", "—"]
+      ], "Erwarteter direkter Umsatz: nahe null. Das ist der Punkt — diese Phase ist Kundenakquisitionskosten, keine Ertragsphase. Der Ertrag ist die Adressliste und die Positionierung."],
+      ["Jahr 2–3 · Produktisierung", [
+        ["Tripwire-Produkt", "Workshop, Analyse-Template · 49–199 €", "5.000–20.000 €"],
+        ["Kohortenprogramm", "2 Kohorten à 15 TN · 2.500–5.000 € p. P.", "75.000–150.000 €"],
+        ["Buch bei einem Fachverlag", "Campus, Vahlen, Springer Gabler", "~5.000 € direkt, Tier-Aufstieg indirekt"],
+        ["Newsletter-Sponsoring", "500–2.000 € pro Platzierung", "10.000–50.000 €"]
+      ], "Das Buch ist der entscheidende Hebel — nicht wegen der Tantiemen (2.000–8.000 €), sondern wegen des Speaking-Tier-Aufstiegs von Tier 2 auf Tier 3: plus 7.500–22.500 USD pro Auftritt, plus Preisankerwirkung bei Mandatsverhandlungen."],
+      ["Jahr 3–5 · Hebel", [
+        ["Peer-Group / Beirat", "20 Mitglieder · 6.000–12.000 € p. a.", "120.000–240.000 € wiederkehrend"],
+        ["Keynotes", "5.000–15.000 € pro Auftritt", "50.000–300.000 € bei 10–20 Auftritten"],
+        ["Kernmandate", "40.000–150.000 €", "3–6 Mandate"],
+        ["Eigene Branchenerhebung", "jährlich", "Content-Asset + Pressehebel"]
+      ], "Zielbild nach fünf Jahren: nicht ein großes Publikum, sondern drei bis fünf Erlösströme mit unterschiedlicher Zyklik, von denen mindestens einer wiederkehrend ist. Drei oder mehr Erlösströme bedeuten rund 75.000 USD Mehrumsatz — und nur 25 % der Vollzeit-Creator haben sie."]
+    ];
+    return rows;
+  }
+
+  /* ============ RENDER ============ */
+
+  function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+
+  function render() {
+    const W = weichenstellung();
+    const mechs = MECHANIKEN.filter(passt).slice(0, 6);
+    const R = risiken();
+    const P = pfad();
+
+    let h = "";
+
+    h += '<div class="sec"><div class="sech"><span class="n">01</span><h2>Die eine Aussage</h2></div>' +
+      '<div class="kbox"><div class="kl">Wenn nur eine bliebe</div>' +
+      '<div class="kt">Eine Personal Brand ist kein Publikum. Sie ist ein Vertriebskanal, der einem Asset vorgeschaltet ist.</div>' +
+      '<div class="ks">Die entscheidende Frage lautet nie „Wie bekomme ich mehr Reichweite?“, sondern: Was steht hinter der Reichweite, das Geld verdient, wenn ich schlafe — und wem gehört es? Die drei wertvollsten Positionen im gesamten untersuchten Feld sind Eigentumspositionen, keine Vertragspositionen.</div></div></div>';
+
+    h += '<div class="sec"><div class="sech"><span class="n">02</span><h2>Deine Weichenstellung</h2></div>' +
+      '<p class="lead">Diese Entscheidung kommt vor allen anderen — und sie lässt sich später nur teuer korrigieren.</p>' +
+      '<div class="card" style="--c:var(--gold)"><h3>'+W.t+'</h3><p>'+W.s+'</p></div>' +
+      '<div class="tw"><table><tr><th></th><th>Personale Marke</th><th>Institutionelle Marke</th></tr>' +
+      '<tr><td><b>Marge</b></td><td>86–98 %</td><td>deutlich niedriger</td></tr>' +
+      '<tr><td><b>Aufbau</b></td><td>schnell, kapitalarm</td><td>langsam, kapitalintensiv</td></tr>' +
+      '<tr><td><b>Preispremium</b></td><td>hoch</td><td>niedriger</td></tr>' +
+      '<tr><td><b>Verkäuflichkeit</b></td><td>praktisch null</td><td>hoch</td></tr>' +
+      '<tr><td><b>Reputationsrisiko</b></td><td>jedes private Fehlverhalten schlägt durch</td><td>auf Inhalte begrenzt</td></tr></table></div></div>';
+
+    h += '<div class="sec"><div class="sech"><span class="n">03</span><h2>Deine Mechaniken</h2><span class="n">'+mechs.length+' von 10 · nach Übertragbarkeit</span></div>' +
+      '<p class="lead">Aus den zehn belegten Mechaniken der Studie sind das die, die zu deiner Ausgangslage passen — in der Reihenfolge, in der du sie angehen solltest.</p>';
+    mechs.forEach((m,i) => {
+      const col = ["var(--cyan)","var(--violet)","var(--mint)","var(--gold)","var(--coral)","var(--cyan)"][i%6];
+      h += '<div class="card" style="--c:'+col+'"><h3><em>'+String(i+1).padStart(2,"0")+'</em>'+esc(m.t)+'</h3>' +
+        '<p>'+m.d+'</p>' +
+        '<div class="do"><b>Konkret</b>'+m.do+'</div>' +
+        '<div class="tagrow"><span class="tag">Vorbild: '+esc(m.vorbild)+'</span><span class="tag">Aufwand: '+esc(m.aufwand)+'</span><span class="tag">Belegt: '+esc(m.wirkung)+'</span></div></div>';
+    });
+
+    h += '<div class="sec"><div class="sech"><span class="n">04</span><h2>Dein Pfad, mit realistischen Zahlen</h2></div>' +
+      '<p class="lead">Modellrechnung, abgeleitet aus den belegten Benchmarks der Studie — ausdrücklich keine Prognose.</p>';
+    P.forEach(([titel, rows, note]) => {
+      h += '<div class="card" style="--c:var(--violet)"><h3>'+titel+'</h3>' +
+        '<div class="tw" style="margin-top:12px;background:transparent;border:none;"><table>' +
+        '<tr><th>Baustein</th><th>Konkret</th><th>Zielwert</th></tr>' +
+        rows.map(r=>'<tr><td><b>'+r[0]+'</b></td><td>'+r[1]+'</td><td class="num">'+r[2]+'</td></tr>').join("") +
+        '</table></div><div class="do"><b>Der Punkt dabei</b>'+note+'</div></div>';
+    });
+
+    h += '<div class="sec"><div class="sech"><span class="n">05</span><h2>Deine roten Flaggen</h2></div>' +
+      '<p class="lead">Auf deinen Fall zugeschnitten. Kein Kapitel der Studie ist für eine nüchterne Entscheidung wichtiger.</p>';
+    R.forEach((r,i) => {
+      h += '<div class="card warn"><h3><em>'+String(i+1).padStart(2,"0")+'</em>'+esc(r.t)+'</h3><p>'+r.d+'</p>' +
+        (r.do ? '<div class="do"><b>Was daraus folgt</b>'+r.do+'</div>' : '') + '</div>';
+    });
+
+    h += '<div class="sec"><div class="sech"><span class="n">06</span><h2>Was du ausdrücklich lassen sollst</h2></div>';
+    ANTI.forEach((a,i) => {
+      h += '<div class="card" style="--c:var(--coral)"><h3><em>'+String(i+1).padStart(2,"0")+'</em>'+esc(a.t)+'</h3><p>'+a.d+'</p></div>';
+    });
+    h += '</div>';
+
+    h += '<div class="sec"><div class="sech"><span class="n">07</span><h2>Die sechs Prüffragen</h2></div>' +
+      '<p class="lead">So formuliert, dass eine unbequeme Antwort etwas bedeutet.</p><div class="tw"><table>' +
+      PRUEF.map((p,i)=>'<tr><td class="num" style="width:38px;"><b>'+String(i+1).padStart(2,"0")+'</b></td><td>'+p+'</td></tr>').join("") +
+      '</table></div></div>';
+
+    h += '<div class="sec"><div class="sech"><span class="n">08</span><h2>Die ehrliche Erwartung</h2></div>' +
+      '<div class="kbox"><div class="kl">Kein Aufstiegsversprechen</div>' +
+      '<div class="kt">Zwei Jahre ohne nennenswerten direkten Umsatz — danach ein Geschäft, das von Zeitabrechnung auf Mandate, wiederkehrende Formate und Autoritätshonorare umstellt.</div>' +
+      '<div class="ks">Der Median-Speaker verdient 2.500 USD pro Auftritt; nur 5 % erreichen 20.000. Nur 6 % der Berater haben Projekte über 100.000 USD, 70 % gewinnen weniger als 60 % ihrer Angebote. Justin Welsh brauchte sieben Jahre täglichen Publizierens, Seth Godin 10.000 Blogposts, Codie Sanchez über 100 Podcast-Auftritte — alle drei in einem Markt mit deutlich weniger Wettbewerb. Bei −23 % organischer LinkedIn-Reichweite und +47 % Content-Volumen braucht ein Neustarter heute das Drei- bis Fünffache der Zeit.<br><br>Der Ertrag ist nicht Reichweite. Der Ertrag ist Preissetzungsmacht: 51 % der wertbasiert kalkulierenden Berater haben Projekte über 10.000 USD, gegenüber 39 % bei Stundensätzen. Eine Marke ist genau dann stark genug, wenn der Kunde einer Erfolgsbeteiligung zustimmt.</div></div></div>';
+
+    // Rechner
+    h += '<div class="sec"><div class="sech"><span class="n">09</span><h2>Der Realitäts-Rechner</h2></div>' +
+      '<p class="lead">Rechnet mit den belegten Median-Werten der Studie, nicht mit Wunschannahmen.</p>' +
+      '<div class="calc">' +
+      '<div class="crow"><label>Qualifizierte Newsletter-Abonnenten</label><input id="cAbo" type="number" value="5000" min="0"></div>' +
+      '<div class="crow"><label>Durchschnittliches Mandatsvolumen (€)</label><input id="cMandat" type="number" value="60000" min="0"></div>' +
+      '<div class="crow"><label>Peer-Group: Mitglieder × Jahresbeitrag (€)</label><input id="cPeerN" type="number" value="20" min="0" style="width:80px;"><input id="cPeerP" type="number" value="8000" min="0" style="width:110px;"></div>' +
+      '<div class="out" id="cOut"></div>' +
+      '<div class="note">Mandate: 0,05 % Konversion — der Wert, den die Studie für hochpreisige B2B-Dienstleistungen ansetzt (nicht die 0,62 % Newsletter-Median-Konversion, die für Abos gilt). Paid-Abo: 0,62 % Median × 10 USD/Monat abzüglich ~13 % Gebühren. Werbung: B2B-CPM 25–80 USD auf geöffnete Ausgaben (Annahme 41 % Öffnungsrate), wöchentliche Frequenz.</div>' +
+      '</div></div>';
+
+    // Benchmarks
+    h += '<div class="sec"><div class="sech"><span class="n">10</span><h2>Die Benchmarks zum Nachschlagen</h2></div>' +
+      '<div class="tw"><table><tr><th>Kennzahl</th><th>Wert</th></tr>' +
+      [["LinkedIn: persönliches Profil vs. Unternehmensseite","8× Engagement, 5,6× Reichweite"],
+       ["Optimale LinkedIn-Frequenz","2–3 Posts pro Woche"],
+       ["Optimale LinkedIn-Videolänge","90 Sekunden"],
+       ["Beste Zeitfenster","Dienstag bis Donnerstag, 7–8 Uhr lokal"],
+       ["LinkedIn-Anteil an B2B-Social-Leads","80 %"],
+       ["LinkedIn-Newsletter Öffnungsrate","42 % (E-Mail-Durchschnitt 21,5 %)"],
+       ["Organische Reichweite Instagram / LinkedIn","−31 % / −23 % im Jahresvergleich"],
+       ["YouTube Views pro Video","+30 %"],
+       ["Kursabschluss Selbstlernen vs. Kohorte","5–15 % vs. 72 %"],
+       ["Newsletter Free-to-Paid, Median","0,62 % (Top-Dezil Wirtschaft: 30,8 %)"],
+       ["Newsletter-Werbe-CPM B2B","25–80 USD"],
+       ["Median-Speaking-Honorar","2.500 USD (90. Perzentil 10.000)"],
+       ["YouTube-RPM Deutschland","6,20 USD (USA 10,81)"],
+       ["YouTube-RPM Finance vs. Gaming","16,50 vs. 3,30 USD"],
+       ["Sponsoring LinkedIn-Nano (5.000 Follower)","500–2.000 USD (Instagram: 50–300)"],
+       ["Median-Zahlung pro Creator und Jahr","3.000 USD (−14 % seit 2023)"],
+       ["Creator unter 15.000 USD Jahreseinkommen","über 50 %"],
+       ["Insularität Deutschland (Edelman 2026)","81 % — dritthöchster Wert nach Japan"],
+       ["Vertrauen „mein Arbeitgeber“ vs. „Regierung“","78 % vs. 53 %"],
+       ["Burnout unter professionellen Creators","52–62 % (drei unabhängige Studien)"]
+      ].map(r=>'<tr><td><b>'+r[0]+'</b></td><td class="num">'+r[1]+'</td></tr>').join("") +
+      '</table></div></div>';
+
+    h += '<div class="disc"><b>Wichtiger Hinweis</b><p>Dieses Dossier fasst die Deep-Research-Studie „Personal Brands 2026“ zusammen und wendet sie auf deine Angaben an. Die Zahlen sind Benchmarks und Modellrechnungen, keine Prognose für deinen Fall. Aussagen zu Rechtsfragen ersetzen keine Rechtsberatung — insbesondere FernUSG, Werbekennzeichnung und EU AI Act sollten vor jeder Skalierung anwaltlich geprüft werden. Recherchestand der Studie: 11. August 2026.</p></div>';
+
+    const el = document.getElementById("dossier");
+    el.innerHTML = h; el.classList.remove("hidden");
+    bindCalc();
+    el.scrollIntoView({ behavior:"smooth", block:"start" });
+  }
+
+  function fmt(n){ return Math.round(n).toLocaleString("de-DE"); }
+
+  function bindCalc() {
+    const abo = document.getElementById("cAbo"), man = document.getElementById("cMandat"),
+          pn = document.getElementById("cPeerN"), pp = document.getElementById("cPeerP"),
+          out = document.getElementById("cOut");
+    if(!abo) return;
+    function calc() {
+      const A = Math.max(0, +abo.value||0), M = Math.max(0, +man.value||0),
+            PN = Math.max(0, +pn.value||0), PP = Math.max(0, +pp.value||0);
+      const mandate = A * 0.0005;                       // 0,05 % Konversion (Studie)
+      const mandUms = mandate * M;
+      const paid = A * 0.0062 * 10 * 12 * 0.87;         // Median-Konversion, 10 USD/Monat, ~13 % Gebühren
+      const opens = A * 0.41;                            // 41 % Öffnungsrate
+      const werbLo = (opens/1000) * 25 * 52, werbHi = (opens/1000) * 80 * 52;
+      const peer = PN * PP;
+      const gesamt = mandUms + peer;
+      out.innerHTML =
+        '<div class="oline"><span>Mandate pro Jahr bei 0,05 % Konversion</span><b>'+mandate.toFixed(1)+'</b></div>' +
+        '<div class="oline"><span>Umsatz aus Mandaten</span><b>'+fmt(mandUms)+' €</b></div>' +
+        '<div class="oline"><span>Peer-Group, wiederkehrend</span><b>'+fmt(peer)+' €</b></div>' +
+        '<div class="oline"><span>Newsletter als Paid-Abo (Median-Konversion)</span><b>'+fmt(paid)+' USD</b></div>' +
+        '<div class="oline"><span>Newsletter als Werbeplatz (wöchentlich, B2B-CPM)</span><b>'+fmt(werbLo)+'–'+fmt(werbHi)+' USD</b></div>' +
+        '<div class="oline"><span>Mandate + Peer-Group zusammen</span><b class="hi">'+fmt(gesamt)+' €</b></div>';
+    }
+    [abo,man,pn,pp].forEach(i=>i.addEventListener("input", calc));
+    calc();
+  }
+
+  const toastEl = document.getElementById("toast"); let tT;
+  function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>toastEl.classList.remove("show"),1700); }
+
+  document.getElementById("go").addEventListener("click", render);
+  document.getElementById("print").addEventListener("click", ()=>{
+    if(document.getElementById("dossier").classList.contains("hidden")) { toast("Erst Dossier erstellen"); return; }
+    window.print();
+  });
+  document.getElementById("copy").addEventListener("click", ()=>{
+    const el = document.getElementById("dossier");
+    if(el.classList.contains("hidden")) { toast("Erst Dossier erstellen"); return; }
+    const t = el.innerText.replace(/\n{3,}/g,"\n\n");
+    if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Dossier kopiert ✓"),()=>toast("Kopieren nicht möglich"));
+    else toast("Kopieren wird hier nicht unterstützt");
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

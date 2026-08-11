@@ -106,6 +106,7 @@ khanmotari/
 ├── index.html            # Portfolio-Startseite (Hero, Über-mich, Studio, Arbeiten, Connect)
 ├── studio.html           # Brand-Kit Studio: Namen-Generator mit Palette, Fonts & Bild-Export
 ├── tools/
+│   ├── brand-cockpit.html # Personal-Brand-Cockpit: Deep-Research-Wissen → personalisiertes Strategie-Dossier
 │   ├── blueprint.html    # Drehplan-Generator: Thema → fertiger, sekundengenauer Drehplan
 │   ├── kreativ-engine.html # Kreativ-Engine: generiert Video-Konzepte aus 6 Bausteinen + Kreativ-Zwang
 │   ├── monogram.html     # Monogramm-Generator: Initialen → Logo (PNG + SVG)
