@@ -104,6 +104,7 @@ pro Pixel, jeden Frame, auf der GPU.
 ```
 khanmotari/
 ├── index.html            # Portfolio-Startseite (Hero, Über-mich, Studio, Arbeiten, Connect)
+├── kurs.html             # 5-Tage-Kurs (Educational Email Course, Mechanik 2 der Studie)
 ├── studio.html           # Brand-Kit Studio: Namen-Generator mit Palette, Fonts & Bild-Export
 ├── tools/
 │   ├── brand-cockpit.html # Personal-Brand-Cockpit: Deep-Research-Wissen → personalisiertes Strategie-Dossier

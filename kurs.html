@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — In fünf Tagen zu einer Marke, die nicht klingt wie alle anderen</title>
+<style>
+  :root { --bg:#0A0B12; --g2:#12131F; --ink:#F3F4FB; --muted:#9BA0BE; --faint:#565C82; --line:rgba(255,255,255,0.12);
+    --cyan:#38E0FF; --violet:#B36BFF; --gold:#FFC24B; --mint:#4ADE9B; --coral:#FF6A3D;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace; --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:radial-gradient(130% 80% at 50% -8%, #171a30, var(--bg) 56%); color:var(--ink);
+    font-family:var(--sans); -webkit-font-smoothing:antialiased; min-height:100dvh; line-height:1.6; }
+  a { color:inherit; }
+
+  .top { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; }
+  .brand { font-weight:800; font-size:18px; letter-spacing:-0.02em; }
+  .brand b { background:linear-gradient(100deg,var(--cyan),var(--violet),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .back { font-family:var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);
+    border:1px solid var(--line); border-radius:40px; padding:9px 15px; text-decoration:none; transition:.2s; }
+  .back:hover { color:var(--ink); border-color:var(--cyan); }
+
+  .wrap { max-width:760px; margin:0 auto; padding:6px 22px 80px; }
+
+  .head { text-align:center; margin-bottom:38px; }
+  .head .label { font-family:var(--mono); font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cyan); }
+  .head h1 { font-size:clamp(27px,5.6vw,44px); font-weight:800; letter-spacing:-0.03em; margin-top:12px; line-height:1.06; }
+  .head h1 span { background:linear-gradient(100deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .head p { color:var(--muted); font-size:17px; margin:16px auto 0; max-width:56ch; }
+
+  .promise { background:var(--g2); border:1px solid var(--line); border-radius:18px; padding:24px; margin-bottom:14px; }
+  .promise b { font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--mint); display:block; margin-bottom:12px; }
+  .promise ul { list-style:none; display:grid; gap:9px; }
+  .promise li { color:var(--muted); font-size:15px; padding-left:24px; position:relative; }
+  .promise li::before { content:"→"; position:absolute; left:0; color:var(--mint); font-family:var(--mono); }
+  .promise li i { font-style:normal; color:var(--ink); font-weight:600; }
+
+  .actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:22px 0 34px; }
+  .btn { font-family:var(--mono); font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:40px; padding:13px 19px; cursor:pointer; transition:.2s; }
+  .btn:hover { color:var(--ink); border-color:rgba(255,255,255,0.3); }
+  .btn.primary { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border:none; font-weight:700; }
+
+  .tag { position:relative; background:var(--g2); border:1px solid var(--line); border-radius:18px; margin-bottom:14px; overflow:hidden; }
+  .tag::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--c); }
+  .th { display:flex; align-items:center; gap:14px; padding:20px 22px; cursor:pointer; user-select:none; }
+  .th .d { font-family:var(--mono); font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--c); flex:0 0 auto; }
+  .th h2 { font-size:18px; font-weight:700; letter-spacing:-0.015em; flex:1; }
+  .th .x { font-family:var(--mono); font-size:18px; color:var(--faint); transition:transform .2s; }
+  .tag.open .th .x { transform:rotate(45deg); }
+  .tb { display:none; padding:0 22px 22px; }
+  .tag.open .tb { display:block; }
+  .subj { font-family:var(--mono); font-size:12.5px; color:var(--muted); border-top:1px dashed rgba(255,255,255,0.12);
+    padding-top:14px; margin-bottom:16px; }
+  .subj b { color:var(--ink); font-weight:600; }
+  .tb p { font-size:15.5px; margin-bottom:13px; color:var(--ink); }
+  .tb p.m { color:var(--muted); }
+  .tb .zahl { border-left:2px solid var(--c); padding:2px 0 2px 14px; margin:16px 0; color:var(--muted); font-size:14.5px; }
+  .tb .zahl b { color:var(--ink); font-weight:600; }
+  .auf { margin-top:18px; border:1px dashed rgba(255,255,255,0.18); border-radius:14px; padding:16px 18px; }
+  .auf b { display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+  .auf p { font-size:15px; margin:0; }
+  .auf .zeit { font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:8px; }
+  .naechst { margin-top:14px; font-size:14px; color:var(--faint); font-style:italic; }
+
+  .schluss { margin-top:30px; border:1px solid rgba(255,194,75,0.32); border-radius:18px; padding:24px;
+    background:linear-gradient(100deg, rgba(255,194,75,0.07), rgba(179,107,255,0.05)); }
+  .schluss b { font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); display:block; margin-bottom:10px; }
+  .schluss h3 { font-size:19px; font-weight:700; letter-spacing:-0.015em; margin-bottom:10px; }
+  .schluss p { color:var(--muted); font-size:15px; }
+
+  .quelle { margin-top:26px; font-family:var(--mono); font-size:11px; color:var(--faint); text-align:center; line-height:1.7; }
+
+  .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); font-family:var(--mono); font-size:12px;
+    color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); padding:11px 20px; border-radius:40px;
+    opacity:0; transition:opacity .25s; pointer-events:none; z-index:9; }
+  .toast.show { opacity:1; }
+  .follow { text-align:center; margin-top:40px; }
+  .follow a { font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
+    text-decoration:none; border:1px solid var(--line); border-radius:40px; padding:11px 18px; transition:.2s; }
+  .follow a:hover { color:var(--ink); border-color:var(--violet); }
+
+  @media print {
+    body{background:#fff;color:#000;} .top,.actions,.follow,.toast,.th .x{display:none!important;}
+    .tb{display:block!important;} .tag,.promise,.schluss{border:1px solid #ccc;background:#fff;page-break-inside:avoid;}
+    .tb p,.promise li,.schluss p,.tb .zahl{color:#333;}
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">khan<b>motari</b></div>
+    <a class="back" href="index.html">‹ Zurück</a>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <div class="label">Kostenloser 5-Tage-Kurs</div>
+      <h1>In fünf Tagen zu einer Marke,<br>die nicht klingt <span>wie alle anderen</span>.</h1>
+      <p>Fünf Lektionen, je zehn Minuten, je eine Aufgabe. Am Ende hast du kein Wissen gesammelt, sondern Entscheidungen getroffen.</p>
+    </div>
+
+    <div class="promise">
+      <b>Was du am fünften Tag hast</b>
+      <ul>
+        <li><i>Einen Satz</i>, der benennt, was deine Reichweite eigentlich verkauft.</li>
+        <li><i>Eine Nische</i>, geprüft an Zahlungsbereitschaft statt an Leidenschaft.</li>
+        <li><i>Ein Framework</i>, das auf eine Serviette passt.</li>
+        <li><i>Einen Kanal</i>, der dir gehört — und eine Liste, die ihn füllt.</li>
+        <li><i>Ein Format</i> mit Preis, Zahler und einem Datum.</li>
+      </ul>
+    </div>
+
+    <div class="actions">
+      <button id="alle" class="btn">Alle Tage öffnen</button>
+      <button id="copy" class="btn primary">Kurs mitnehmen</button>
+      <button id="print" class="btn">Als PDF</button>
+    </div>
+
+    <div id="tage"></div>
+
+    <div class="schluss">
+      <b>Die ehrliche Erwartung</b>
+      <h3>Zwei Jahre ohne nennenswerten direkten Umsatz — und trotzdem ist es der bessere Weg.</h3>
+      <p>Justin Welsh brauchte sieben Jahre täglichen Publizierens. Seth Godin 10.000 Blogposts. Codie Sanchez über 100 Podcast-Auftritte. Alle drei starteten in einem Markt mit weniger Wettbewerb, als heute besteht. Der Ertrag am Ende ist nicht Reichweite, sondern Preissetzungsmacht: 51 % der wertbasiert kalkulierenden Berater haben Projekte über 10.000 USD, gegenüber 39 % bei Stundensätzen. Eine Marke ist genau dann stark genug, wenn der Kunde einer Erfolgsbeteiligung zustimmt.</p>
+    </div>
+
+    <div class="quelle">
+      Alle Zahlen aus der Deep-Research-Studie „Personal Brands 2026“ · rund 120 Marken in vier Segmenten · Recherchestand 11.08.2026.<br>
+      Aussagen zu Rechtsfragen ersetzen keine Rechtsberatung.
+    </div>
+
+    <div class="follow"><a href="index.html#connect">khanmotari folgen ›</a></div>
+  </div>
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const TAGE = [
+    { c:"var(--cyan)", d:"Tag 1",
+      t:"Die Frage, an der die meisten scheitern",
+      subj:"Was verkauft deine Reichweite eigentlich?",
+      pre:"Die falsche Frage kostet dich Jahre.",
+      body:[
+        ["p","Fast alle, die anfangen, stellen dieselbe Frage: <em>Wie bekomme ich mehr Reichweite?</em> Das ist die falsche Frage — und sie ist teuer, weil man sie jahrelang beantworten kann, ohne je Geld zu verdienen."],
+        ["p","Die richtige Frage lautet: Was steht hinter der Reichweite, das Geld verdient, wenn ich schlafe — und wem gehört es?"],
+        ["p","Eine Personal Brand ist kein Publikum. Sie ist ein Vertriebskanal, der einem Asset vorgeschaltet ist. MrBeast hat Feastables. Steven Bartlett hat einen Fonds. Gary Vaynerchuk hat eine Agentur. Ihre Inhalte sind Marketing, nicht das Produkt."],
+        ["zahl","Der Beleg: MrBeasts Medienarm verlor 2024 bei 250 Mio. USD Umsatz rund <b>80 Mio. USD</b> — damit die Schokoladenmarke Feastables <b>520 Mio. USD</b> Handelsumsatz machen konnte. Wer Content als Produkt betreibt, landet im Hamsterrad. Wer Content als Distribution für ein Asset betreibt, baut Vermögen."],
+        ["p","Und die Reichweite selbst? Codie Sanchez verdient mit 10 Millionen Followern 31 Mio. USD. Charli D'Amelio verdient mit 209,8 Millionen Followern 18 Mio. USD. Faktor 65 Unterschied in der Monetarisierung pro Follower. Die Korrelation zwischen Reichweite und Einkommen ist schwach. Die Korrelation zwischen Zahlungsbereitschaft der Nische und Einkommen ist stark."]
+      ],
+      auf:"Schreib genau einen Satz auf: „Meine Reichweite verkauft ______.“ Wenn du die Lücke nicht füllen kannst — oder wenn dort „mehr Content“ oder „mehr Reichweite“ steht — ist das der wichtigste Befund dieser Woche. Dann gibt es noch kein Geschäftsmodell, nur ein Hobby mit Aufwand.",
+      zeit:"5 Minuten",
+      next:"Morgen: warum die Wahl deines Themas mehr über deinen Umsatz entscheidet als jede Followerzahl." },
+
+    { c:"var(--violet)", d:"Tag 2",
+      t:"Die Nische entscheidet mehr als die Reichweite",
+      subj:"Warum 10.000 die richtigen Leute mehr wert sind als 100.000 falsche",
+      pre:"Faktor zwölf. Bei einem Zehntel der Reichweite.",
+      body:[
+        ["p","Gestern ging es um das Asset. Heute um die Frage, wer dafür bezahlt — und wie viel er bezahlen kann."],
+        ["p","Die Nischenwahl beeinflusst den Umsatz pro Reichweiteneinheit stärker als die Reichweite selbst. Das ist keine Meinung, das ist die klarste quantitative Aussage der Datenlage."],
+        ["zahl","YouTube-Werbeerlöse pro tausend Abrufe: Finance bis <b>16,50 USD</b>, Gaming bis <b>3,30 USD</b> — Faktor 5. Newsletter-Konversion von kostenlos zu zahlend: Median <b>0,62 %</b>, Top-Dezil Wirtschaft <b>30,8 %</b> — Faktor 50. Gerechnet: Ein Finance-Newsletter mit 10.000 Abonnenten im Top-Dezil schlägt einen Lifestyle-Newsletter mit 100.000 Abonnenten <b>um den Faktor zwölf</b>."],
+        ["p","Für die Themenwahl gibt es drei Filterfragen. Sie sind unbequem, und genau deshalb funktionieren sie:"],
+        ["p","<b>1. Zahlt eine Person oder ein Firmenbudget?</b> Firmenfinanzierte Formate erreichen 72 % Abschlussquote, Selbstlernangebote 5–15 %. Firmenbudgets tragen höhere Preise und sind rechtlich weniger exponiert."],
+        ["p","<b>2. Wie hoch ist der finanzielle Nutzen pro Kontakt?</b> Ein Thema, bei dem eine richtige Entscheidung dem Kunden 500.000 Euro bringt, trägt ein völlig anderes Preisniveau als eines, bei dem es um 5.000 Euro geht."],
+        ["p","<b>3. Ist das Thema identitätsgebunden oder situativ?</b> Beruf und Gesundheit sind Identitätsthemen — die Verweildauer ist lang. Finanznachrichten sind situativ: 16,67 % monatliche Abwanderung. Wähl ein Thema, das zur beruflichen Identität deiner Zielgruppe gehört, nicht zu ihrer aktuellen Sorge."]
+      ],
+      auf:"Beantworte die drei Fragen für dein Thema — schriftlich, in je einem Satz. Wenn zwei von drei Antworten schwach ausfallen, ist nicht deine Umsetzung das Problem, sondern die Themenwahl. Das ist eine gute Nachricht: Ein Thema zu wechseln kostet einen Nachmittag. Zwei Jahre auf dem falschen Thema kosten zwei Jahre.",
+      zeit:"10 Minuten",
+      next:"Morgen: der Serviettentest — und warum der deutsche B2B-Markt dir dabei in die Hände spielt." },
+
+    { c:"var(--mint)", d:"Tag 3",
+      t:"Der Serviettentest",
+      subj:"Wenn du drei Sätze brauchst, ist es noch kein Framework",
+      pre:"Systematik ist im deutschen Markt ein Heimvorteil.",
+      body:[
+        ["p","Simon Sineks Golden Circle sind drei Kreise, die jeder in zwanzig Sekunden nachzeichnen kann. Tom Peters' 7-S-Framework hat eine ganze Beraterkarriere getragen. Mark Ritson verkaufte seinen MiniMBA für bis zu 19 Millionen Pfund — der Kern war ein benanntes System."],
+        ["p","Ein benanntes Framework macht drei Dinge gleichzeitig: Es macht dich zitierfähig, es macht deine Arbeit vergleichbar teurer, und es ist das Einzige, was später überhaupt verkäuflich sein könnte."],
+        ["p","Das Kriterium ist hart und einfach: <b>Es muss in 30 Sekunden erklärbar und auf einer Serviette zeichenbar sein.</b> Wenn du drei Sätze brauchst, ist es noch kein Framework — dann ist es eine Methodenbeschreibung."],
+        ["zahl","Der deutsche B2B-Markt liebt Systematik. Was in anderen Märkten als trocken gilt, ist hier ein <b>Heimvorteil</b> — nutz ihn, statt US-Rhetorik zu importieren."],
+        ["p","Ein Hinweis zur Verwechslungsgefahr: Ein Framework ist keine Liste deiner Leistungen und kein Prozessdiagramm mit zwölf Kästchen. Es ist die eine Struktur, die erklärt, warum du zu anderen Ergebnissen kommst als andere. Drei bis fünf Elemente. Mehr merkt sich niemand."]
+      ],
+      auf:"Nimm ein Blatt Papier — kein Tool, kein Whiteboard. Zeichne deine Methode in maximal fünf Elementen. Dann zeig sie jemandem, der dein Fachgebiet nicht kennt, und lass ihn erklären, was er sieht. Wenn er es nicht kann, ist es noch nicht fertig. Das ist normal; die meisten brauchen mehrere Anläufe.",
+      zeit:"15 Minuten",
+      next:"Morgen: warum dein wichtigster Kanal nicht der ist, an den du gerade denkst." },
+
+    { c:"var(--gold)", d:"Tag 4",
+      t:"Gemietetes Land",
+      subj:"Dir gehört weniger, als du denkst",
+      pre:"Und der unterschätzteste Kanal kostet null Euro.",
+      body:[
+        ["p","Justin Welsh nennt LinkedIn ausdrücklich „gemietetes Land“. Er hat recht, und die Zahlen sind unangenehm deutlich."],
+        ["zahl","Organische Reichweite im Jahresvergleich: Instagram <b>−31 %</b>, LinkedIn-Impressionen <b>−23 %</b>, X-Link-Klicks <b>−28 %</b>. Gleichzeitig <b>+47 %</b> Content-Volumen auf LinkedIn. Übersetzt: Reichweite wird billiger, Aufmerksamkeit wird teurer."],
+        ["p","Trotzdem bleibt LinkedIn für B2B alternativlos — mit einem entscheidenden Detail: <b>Persönliche Profile erzielen achtmal mehr Engagement und 5,6-mal mehr organische Reichweite als Unternehmensseiten.</b> 80 % der B2B-Social-Leads kommen von dort. Die Investition in die Sichtbarkeit von Personen schlägt jede Investition in die Firmenseite, und zwar nicht knapp."],
+        ["p","Aber: nicht täglich posten. Das dokumentierte Optimum liegt bei <b>2–3 Posts pro Woche</b>, dienstags bis donnerstags, 7–8 Uhr, Videos um 90 Sekunden. Alles darüber ist Zeitinvestition ohne belegten Zusatznutzen."],
+        ["p","Und jetzt der Kanal, den fast alle übersehen: <b>Podcast-Gastauftritte.</b> Codie Sanchez erreichte 10.000 Newsletter-Abonnenten in 30 Tagen, bevor sie nennenswerte eigene Reichweite hatte — über bestehende Kontakte und systematische Gastauftritte. Kosten: null. Nebenertrag: Beziehungen zu vierzig Formatbetreibern."],
+        ["p","Der Ort, an dem das alles landen muss, ist nicht LinkedIn. Es ist deine E-Mail-Liste und deine eigene Domain. Das ist das Einzige, was dir gehört."]
+      ],
+      auf:"Erstell eine Liste mit zwanzig Podcasts in deinem Feld — Branche, Mittelstand, Wirtschaft. Schreib heute genau einen davon an. Wichtig: mit einer <b>spezifischen These</b>, nicht mit einer Selbstvorstellung. „Ich würde gern über X sprechen, weil in Y gerade Z passiert“ schlägt jedes Profil-PDF.",
+      zeit:"20 Minuten",
+      next:"Morgen: das eine Format, das rechtlich sicherer, pädagogisch wirksamer und besser bezahlt ist — gleichzeitig." },
+
+    { c:"var(--coral)", d:"Tag 5",
+      t:"Das Format, das dreifach funktioniert",
+      subj:"Warum der Onlinekurs die schlechteste aller Optionen ist",
+      pre:"Und was stattdessen funktioniert — auch juristisch.",
+      body:[
+        ["p","Der Reflex nach vier Tagen Aufbau lautet fast immer: „Dann baue ich jetzt einen Onlinekurs.“ Genau das ist im deutschen Markt die schwächste aller Entscheidungen — aus drei Gründen gleichzeitig."],
+        ["p","<b>Ökonomisch:</b> Der klassische Kurs zwischen 1.000 und 3.000 Euro liegt in der Lücke der Preis-Barbell — dem am stärksten umkämpften und margenschwächsten Bereich des Marktes. <b>Pädagogisch:</b> Selbstlernkurse erreichen 5–15 % Abschlussquote, Kohortenprogramme 72 %."],
+        ["zahl","<b>Juristisch:</b> Der BGH hat am 12. Juni 2025 entschieden, dass strukturiertes Online-Mentoring mit aufgezeichneten Modulen und Lernerfolgskontrolle — schon einfaches Chat-Feedback genügt — zulassungspflichtiger Fernunterricht ist. Ohne ZFU-Zulassung ist der Vertrag <b>nichtig</b>, mit vollständiger Rückzahlungspflicht, auch nach Kursabschluss und <b>auch gegenüber Unternehmern</b>. Am 2. Oktober 2025 wurde das ausgeweitet."],
+        ["p","Jetzt die gute Nachricht, und sie ist selten: Die vom Recht begünstigten Formate sind exakt dieselben, die auch die besten Abschlussquoten und Preise haben. Live statt aufgezeichnet. Kohorte statt Selbstlernen. Firmenfinanziert statt privat. Individualisiert statt standardisiert."],
+        ["p","Zwei Formate, die beides erfüllen:"],
+        ["p","<b>Kohortenprogramm an Firmenbudgets.</b> Zwei Kohorten à 15 Teilnehmende, 2.500–5.000 Euro pro Person — 75.000 bis 150.000 Euro im Jahr."],
+        ["p","<b>Peer-Group oder Beirat.</b> Ökonomisch der interessanteste Baustein überhaupt: 20 Mitglieder à 6.000–12.000 Euro im Jahr ergeben 120.000 bis 240.000 Euro <b>wiederkehrend</b> — mit hoher Bindung, den besten Abschlussquoten und dem geringsten Rechtsrisiko."],
+        ["p","Was du dagegen unbedingt lassen solltest: Ergebnisversprechen. „So verdoppeln Sie Ihren Umsatz in 90 Tagen“ ist im deutschen Rechtsraum ein konkretes Abmahn- und Haftungsrisiko nach §§ 5, 5a UWG. Prozessversprechen statt Ergebnisversprechen — und das ist hier ohnehin glaubwürdiger."]
+      ],
+      auf:"Entscheide dich für <b>ein</b> Format für die nächsten zwölf Monate. Schreib drei Dinge auf: den Preis, wer bezahlt (Person oder Firmenbudget), und ein Datum für den ersten Durchlauf. Ein Format mit Datum schlägt drei Formate ohne.",
+      zeit:"10 Minuten",
+      next:"Das war Tag 5. Was jetzt kommt, steht unten." }
+  ];
+
+  const host = document.getElementById("tage");
+  TAGE.forEach((t,i) => {
+    const el = document.createElement("div");
+    el.className = "tag" + (i===0 ? " open" : "");
+    el.style.setProperty("--c", t.c);
+    const body = t.body.map(([k,v]) => k==="zahl" ? '<div class="zahl">'+v+'</div>' : '<p>'+v+'</p>').join("");
+    el.innerHTML =
+      '<div class="th"><span class="d">'+t.d+'</span><h2>'+t.t+'</h2><span class="x">+</span></div>' +
+      '<div class="tb">' +
+        '<div class="subj"><b>Betreff:</b> '+t.subj+' &nbsp;·&nbsp; <b>Vorschau:</b> '+t.pre+'</div>' +
+        body +
+        '<div class="auf"><b>Deine Aufgabe</b><p>'+t.auf+'</p><div class="zeit">Zeitaufwand: '+t.zeit+'</div></div>' +
+        '<div class="naechst">'+t.next+'</div>' +
+      '</div>';
+    el.querySelector(".th").addEventListener("click", () => el.classList.toggle("open"));
+    host.appendChild(el);
+  });
+
+  const toastEl = document.getElementById("toast"); let tT;
+  function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>toastEl.classList.remove("show"),1700); }
+
+  document.getElementById("alle").addEventListener("click", () => {
+    const tags = [...document.querySelectorAll(".tag")];
+    const alleOffen = tags.every(t => t.classList.contains("open"));
+    tags.forEach(t => t.classList.toggle("open", !alleOffen));
+    document.getElementById("alle").textContent = alleOffen ? "Alle Tage öffnen" : "Alle Tage schließen";
+  });
+
+  document.getElementById("print").addEventListener("click", () => window.print());
+
+  document.getElementById("copy").addEventListener("click", () => {
+    const L = [];
+    L.push("IN FÜNF TAGEN ZU EINER MARKE, DIE NICHT KLINGT WIE ALLE ANDEREN");
+    L.push("Ein Kurs von khanmotari\n");
+    TAGE.forEach(t => {
+      L.push("──────────────────────────────");
+      L.push(t.d.toUpperCase() + " — " + t.t);
+      L.push("Betreff: " + t.subj);
+      L.push("Vorschautext: " + t.pre + "\n");
+      t.body.forEach(([,v]) => L.push(v.replace(/<[^>]+>/g,"") + "\n"));
+      L.push("AUFGABE (" + t.zeit + "): " + t.auf.replace(/<[^>]+>/g,"") + "\n");
+      L.push(t.next + "\n");
+    });
+    L.push("──────────────────────────────");
+    L.push("Alle Zahlen aus der Deep-Research-Studie „Personal Brands 2026“, Recherchestand 11.08.2026.");
+    L.push("Aussagen zu Rechtsfragen ersetzen keine Rechtsberatung.");
+    const txt = L.join("\n");
+    if(navigator.clipboard) navigator.clipboard.writeText(txt).then(()=>toast("Kurs kopiert ✓"),()=>toast("Kopieren nicht möglich"));
+    else toast("Kopieren wird hier nicht unterstützt");
+  });
+})();
+</script>
+</body>
+</html>
