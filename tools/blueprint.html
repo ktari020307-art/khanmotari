@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>khanmotari — Fertiger Drehplan</title>
+<style>
+  :root { --bg:#0A0B12; --ground-2:#12131F; --ink:#F3F4FB; --muted:#9BA0BE; --faint:#565C82; --line:rgba(255,255,255,0.12);
+    --cyan:#38E0FF; --violet:#B36BFF; --gold:#FFC24B; --mint:#4ADE9B; --coral:#FF6A3D;
+    --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace; --sans: system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,sans-serif; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:radial-gradient(130% 90% at 50% -10%, #16182c, var(--bg) 58%); color:var(--ink);
+    font-family:var(--sans); -webkit-font-smoothing:antialiased; min-height:100dvh; line-height:1.5; }
+
+  .top { display:flex; justify-content:space-between; align-items:center; padding:20px 24px; }
+  .brand { font-weight:800; font-size:18px; letter-spacing:-0.02em; }
+  .brand b { background:linear-gradient(100deg,var(--cyan),var(--violet),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .back { font-family:var(--mono); font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted);
+    border:1px solid var(--line); border-radius:40px; padding:9px 15px; text-decoration:none; transition:.2s; }
+  .back:hover { color:var(--ink); border-color:var(--cyan); }
+
+  .wrap { max-width:1000px; margin:0 auto; padding:6px 22px 70px; }
+  .head { text-align:center; margin-bottom:26px; }
+  .head .label { font-family:var(--mono); font-size:11px; letter-spacing:0.26em; text-transform:uppercase; color:var(--cyan); }
+  .head h1 { font-size:clamp(26px,5.4vw,42px); font-weight:800; letter-spacing:-0.03em; margin-top:10px; line-height:1.05; }
+  .head h1 span { background:linear-gradient(100deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .head p { color:var(--muted); font-size:16px; margin:14px auto 0; max-width:54ch; }
+
+  .form { background:var(--ground-2); border:1px solid var(--line); border-radius:18px; padding:20px; display:flex; flex-direction:column; gap:14px; }
+  .frow { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .cap { font-family:var(--mono); font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--faint); width:74px; flex:0 0 74px; }
+  .form input { flex:1; min-width:200px; font-family:var(--sans); font-size:16px; color:var(--ink);
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:12px; padding:13px 15px; outline:none; transition:border-color .2s; }
+  .form input:focus { border-color:var(--cyan); }
+  .form input::placeholder { color:var(--faint); }
+  .chip { font-family:var(--mono); font-size:12px; color:var(--muted); background:rgba(255,255,255,0.045);
+    border:1px solid var(--line); border-radius:30px; padding:8px 14px; cursor:pointer; transition:.18s; white-space:nowrap; }
+  .chip:hover { color:var(--ink); }
+  .chip.on { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border-color:transparent; font-weight:700; }
+
+  .actions { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:24px 0 26px; }
+  .btn { font-family:var(--mono); font-size:12.5px; letter-spacing:0.05em; text-transform:uppercase; color:var(--muted);
+    background:rgba(255,255,255,0.05); border:1px solid var(--line); border-radius:40px; padding:14px 20px; cursor:pointer; transition:.2s; }
+  .btn:hover { color:var(--ink); border-color:rgba(255,255,255,0.3); }
+  .btn.primary { color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); border:none; font-weight:700; font-size:13px; padding:15px 26px; }
+
+  .plan { display:none; }
+  .plan.show { display:block; }
+  .planhead { border:1px solid rgba(255,194,75,0.32); border-radius:18px; padding:22px 24px; margin-bottom:18px;
+    background:linear-gradient(100deg, rgba(255,194,75,0.08), rgba(179,107,255,0.06)); }
+  .planhead .pl { font-family:var(--mono); font-size:10.5px; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+  .planhead h2 { font-size:clamp(19px,3.2vw,27px); font-weight:750; letter-spacing:-0.02em; line-height:1.24; }
+  .planhead .meta { color:var(--muted); font-size:14px; margin-top:10px; font-family:var(--mono); letter-spacing:0.04em; }
+
+  .beat { position:relative; background:var(--ground-2); border:1px solid var(--line); border-radius:16px;
+    padding:20px 22px; margin-bottom:12px; overflow:hidden; }
+  .beat::before { content:""; position:absolute; inset:0 auto 0 0; width:3px; background:var(--c); }
+  .btop { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+  .btime { font-family:var(--mono); font-size:13px; font-weight:700; color:var(--c); letter-spacing:0.04em; font-variant-numeric:tabular-nums; }
+  .brole { font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--faint); }
+  .lines { display:grid; gap:9px; }
+  .line { display:grid; grid-template-columns:74px 1fr; gap:12px; align-items:start; }
+  .line .k { font-family:var(--mono); font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--faint); padding-top:3px; }
+  .line .v { font-size:15px; }
+  .line .v.q { color:var(--ink); font-weight:600; }
+  .line .v.m { color:var(--muted); }
+
+  .foot { margin-top:22px; padding:20px 22px; border:1px dashed rgba(255,255,255,0.16); border-radius:16px; }
+  .foot b { font-family:var(--mono); font-size:10.5px; letter-spacing:0.16em; text-transform:uppercase; color:var(--coral); display:block; margin-bottom:8px; }
+  .foot p { color:var(--muted); font-size:14.5px; }
+
+  .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); font-family:var(--mono); font-size:12px;
+    color:#06060F; background:linear-gradient(100deg,var(--cyan),var(--violet)); padding:11px 20px; border-radius:40px;
+    opacity:0; transition:opacity .25s; pointer-events:none; z-index:9; }
+  .toast.show { opacity:1; }
+
+  .follow { text-align:center; margin-top:38px; }
+  .follow a { font-family:var(--mono); font-size:12px; letter-spacing:0.06em; text-transform:uppercase; color:var(--muted);
+    text-decoration:none; border:1px solid var(--line); border-radius:40px; padding:11px 18px; transition:.2s; }
+  .follow a:hover { color:var(--ink); border-color:var(--violet); }
+
+  @media (max-width:560px){ .cap{width:100%;flex-basis:100%;} .line{grid-template-columns:1fr;gap:2px;} }
+
+  @media print {
+    body { background:#fff; color:#000; }
+    .top,.head,.form,.actions,.follow,.toast { display:none !important; }
+    .beat,.planhead,.foot { border:1px solid #ccc; background:#fff; page-break-inside:avoid; }
+    .btime,.foot b { color:#000; }
+    .line .v.m,.line .k,.brole,.planhead .meta { color:#444; }
+  }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">khan<b>motari</b></div>
+    <a class="back" href="../index.html">‹ Zurück</a>
+  </div>
+
+  <div class="wrap">
+    <div class="head">
+      <div class="label">Drehplan-Generator</div>
+      <h1>Ein Thema rein.<br>Ein <span>fertiger Drehplan</span> raus.</h1>
+      <p>Kein Briefing zum Weiterdenken — ein sekundengenauer Plan: was zu sehen ist, was im Bild steht, was zu hören ist, wo geschnitten wird. Zum Abdrehen.</p>
+    </div>
+
+    <div class="form">
+      <div class="frow"><span class="cap">Thema</span>
+        <input id="thema" type="text" value="unser neues Produkt" placeholder="Worum geht es im Video?" autocomplete="off"></div>
+      <div class="frow"><span class="cap">Für wen</span>
+        <input id="ziel" type="text" value="" placeholder="Zielgruppe (optional, z. B. Handwerksbetriebe)" autocomplete="off"></div>
+      <div class="frow"><span class="cap">Format</span><div id="formats" style="display:flex;gap:8px;flex-wrap:wrap;"></div></div>
+    </div>
+
+    <div class="actions">
+      <button id="gen" class="btn primary">⚡ Drehplan erstellen</button>
+      <button id="copy" class="btn">Plan kopieren</button>
+      <button id="print" class="btn">Als PDF / drucken</button>
+    </div>
+
+    <div class="plan" id="plan"></div>
+    <div class="follow"><a href="../index.html#connect">khanmotari folgen ›</a></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  const FORMATE = [
+    { n:"Reel 30 Sek.",  sec:30, beats:5, note:"vertikal 9:16 · Ton oft aus · Text im Bild trägt mit" },
+    { n:"Reel 45 Sek.",  sec:45, beats:6, note:"vertikal 9:16 · mehr Raum für eine Wendung" },
+    { n:"Werbespot 30",  sec:30, beats:5, note:"eine Botschaft, kompromisslos zugespitzt" },
+    { n:"Brand-Film 60", sec:60, beats:6, note:"Haltung vor Produkt · Bilder vor Text" },
+    { n:"YouTube-Intro", sec:20, beats:4, note:"Einstieg vor dem Vorspann · Versprechen setzen" }
+  ];
+
+  // Jeder Baustein liefert fertige Anweisungen. {t} = Thema, {z} = Zielgruppen-Zusatz.
+  const HOOKS = [
+    { name:"Kalter Einstieg",
+      bild:"Mitten in der Handlung: {t} ist bereits in vollem Gange. Kein Logo, kein Vorspann, kein Aufbau.",
+      text:"Kein Text. Das Bild muss allein tragen.",
+      ton:"Originalton ab dem ersten Frame, ungefiltert und laut.",
+      cut:"Harter Einstieg ohne Blende. Erste Einstellung maximal 2 Sekunden stehen lassen." },
+    { name:"Das Ende zuerst",
+      bild:"Das fertige Ergebnis von {t} in einer ruhigen, sauberen Einstellung. Alles ist schon vorbei.",
+      text:"„So sieht es am Ende aus.“",
+      ton:"Fast still. Nur ein einzelnes Raumgeräusch.",
+      cut:"Nach 2 Sek. harter Schnitt auf Schwarz, dann zurück an den Anfang." },
+    { name:"Extremer Close-up",
+      bild:"Detail von {t}, so nah, dass niemand es einordnen kann. Sehr langsame Kamerabewegung.",
+      text:"Kein Text. Die Irritation ist der Hook.",
+      ton:"Nur Raumklang, ein Geräusch bewusst hervorgehoben.",
+      cut:"Erst nach 3 Sek. auf die Totale zurückziehen — nicht früher." },
+    { name:"Der sichtbare Fehler",
+      bild:"Der misslungene Versuch rund um {t}: etwas geht schief, ungeschnitten und ungeschönt.",
+      text:"„Versuch 1.“",
+      ton:"Originalton inklusive Reaktion. Nichts wegmischen.",
+      cut:"Nicht wegschneiden, bevor der Moment ausgespielt ist." },
+    { name:"Eine Sekunde Stille",
+      bild:"Ruhiges, klares Bild zu {t}. Nichts passiert. Absolute Stille.",
+      text:"Kein Text in der Stille.",
+      ton:"Eine volle Sekunde ohne jeden Ton, dann ein harter erster Laut.",
+      cut:"Der erste Schnitt fällt exakt auf den ersten Ton." },
+    { name:"Die falsche Fährte",
+      bild:"Ein Bild, das eine völlig andere Geschichte verspricht — erst der Schwenk zeigt, dass es um {t} geht.",
+      text:"Kein Text, sonst verrät er die Auflösung.",
+      ton:"Ton passt zur falschen Fährte, nicht zum echten Thema.",
+      cut:"Die Auflösung kommt in einer Bewegung, nicht im Schnitt." },
+    { name:"Die Zahl ohne Erklärung",
+      bild:"Leere Fläche oder Schwarzbild. Eine einzige konkrete Zahl zu {t} steht allein.",
+      text:"Nur die Zahl. Groß. Ohne Einheit, ohne Satz.",
+      ton:"Ein kurzer, trockener Ton auf dem Erscheinen der Zahl.",
+      cut:"Zahl 1,5 Sek. halten, dann harter Schnitt." },
+    { name:"Direkte Enttarnung",
+      bild:"Frontal, ruhig, direkt in die Kamera. Kein Schnickschnack im Bild.",
+      text:"„Du wolltest gerade weiterwischen.“",
+      ton:"Trockene Stimme, kein Musikbett.",
+      cut:"Kein Schnitt in den ersten 4 Sekunden." }
+  ];
+
+  const SETUPS = [
+    { name:"Der Widerspruch",
+      bild:"Zwei Bilder direkt gegeneinander geschnitten: wie {t} aussehen soll — und wie es tatsächlich läuft.",
+      text:"Zwei Worte, je eines pro Bild.",
+      ton:"Ton läuft durch, nur das Bild wechselt.",
+      cut:"Beide Einstellungen exakt gleich lang. Die Symmetrie erzeugt den Punkt." },
+    { name:"Die Behauptung",
+      bild:"Eine Person spricht {z}direkt an — aber die Kamera zeigt dabei die Hände, nicht das Gesicht.",
+      text:"Der Kernsatz zu {t} als Einblendung, maximal 6 Wörter.",
+      ton:"Stimme leiser als üblich. Der Zuschauer muss sich hineinlehnen.",
+      cut:"Ein einziger Jump-Cut mitten im Satz." },
+    { name:"Der Alltag davor",
+      bild:"Die banale Situation, in der {t} überhaupt relevant wird. Ungeschönt, echt, aus der Hüfte.",
+      text:"Kein Text. Der Alltag erklärt sich selbst.",
+      ton:"Nur Originalton der Situation.",
+      cut:"Drei kurze Einstellungen, je 1 Sek., schnell hintereinander." },
+    { name:"Die Bestandsaufnahme",
+      bild:"Statische Totale. Alles, worum es bei {t} geht, liegt gleichzeitig im Bild.",
+      text:"Kein Text — das Bild ist die Aufzählung.",
+      ton:"Ein wiederkehrendes Geräusch setzt hier zum ersten Mal ein.",
+      cut:"Bewusst lange stehen lassen, mindestens 4 Sekunden." }
+  ];
+
+  const KERNE = [
+    { name:"Der Beweis",
+      bild:"{t} wird live gezeigt, nicht behauptet. Eine durchgehende Einstellung, kein Schnitt im entscheidenden Moment.",
+      text:"Kein Text während des Beweises.",
+      ton:"Originalton dominiert. Musik, falls vorhanden, geht hier runter.",
+      cut:"Der Moment darf nicht geschnitten werden — sonst wirkt er getrickst." },
+    { name:"Die Eskalation",
+      bild:"Drei Situationen zu {t}, jede eine Stufe extremer als die vorige.",
+      text:"Je ein kurzes Wort pro Stufe, gleiche Position im Bild.",
+      ton:"Mit jeder Stufe wird der Ton dichter.",
+      cut:"Die Schnitte werden von Stufe zu Stufe kürzer." },
+    { name:"Die zwei Zeitebenen",
+      bild:"Vorher und Nachher zu {t} im Wechsel — nicht nacheinander, sondern verschränkt.",
+      text:"Nur zwei Marker: „vorher“ / „jetzt“, sparsam eingesetzt.",
+      ton:"Jede Zeitebene hat ihre eigene Klangfarbe.",
+      cut:"Immer am gleichen Bildpunkt schneiden, damit die Ebenen aufeinanderliegen." },
+    { name:"Nur Hände",
+      bild:"Alles zu {t} passiert über Hände und Objekte. Kein Gesicht im Bild.",
+      text:"Kurze Zwischentitel statt Erklärung.",
+      ton:"Jede Handlung hat ihr eigenes Geräusch, betont abgemischt.",
+      cut:"Match-Cut zwischen zwei Handbewegungen." },
+    { name:"Die Gegenüberstellung",
+      bild:"Zwei Wege mit {t} laufen parallel im Split-Screen — ohne dass einer kommentiert wird.",
+      text:"Zwei feste Labels, links und rechts, ändern sich nie.",
+      ton:"Ein durchgehender Ton für beide Seiten.",
+      cut:"Erst am Ende dieses Abschnitts verschmelzen beide Hälften zu einem Bild." },
+    { name:"Der Ablauf ohne Worte",
+      bild:"Der komplette Vorgang rund um {t} in klaren, ruhigen Einstellungen. Nichts wird erklärt.",
+      text:"Kein Text. Wer es nicht versteht, war nicht gemeint.",
+      ton:"Alltagsgeräusche werden rhythmisch geschnitten und ersetzen die Musik.",
+      cut:"Jeder Schnitt sitzt auf einem Geräusch, nicht auf dem Takt." },
+    { name:"Das eine Requisit",
+      bild:"Ein einziger Gegenstand steht stellvertretend für {t} und ist in jeder Einstellung sichtbar.",
+      text:"Kein Text. Der Gegenstand ist die Klammer.",
+      ton:"Das Geräusch des Gegenstands ist das Leitmotiv.",
+      cut:"Der Gegenstand ist immer an derselben Bildposition — Schnitte werden dadurch unsichtbar." }
+  ];
+
+  const WENDUNGEN = [
+    { name:"Die Regel bricht",
+      bild:"Der bis hier durchgehaltene Stil kippt: anderes Licht, andere Kameraführung, anderer Ort.",
+      text:"Ein einziger Satz, der das Vorherige infrage stellt.",
+      ton:"Musik oder Grundton setzt hier komplett aus.",
+      cut:"Ein harter Schnitt ohne Übergang. Kein Effekt." },
+    { name:"Der zweite Blick",
+      bild:"Ein Detail, das die ganze Zeit im Bild war, wird jetzt isoliert gezeigt.",
+      text:"„War die ganze Zeit da.“",
+      ton:"Ein Geräusch von früher kehrt wieder.",
+      cut:"Rückgriff auf ein Bild vom Anfang, identischer Ausschnitt." },
+    { name:"Die Auflösung",
+      bild:"Was am Anfang unklar war, wird jetzt in der Totale aufgelöst. {t} ist vollständig sichtbar.",
+      text:"Kein Text. Die Auflösung braucht keine Beschriftung.",
+      ton:"Der Ton öffnet sich, wird weiter und offener.",
+      cut:"Langsame Rückwärtsbewegung der Kamera statt Schnitt." },
+    { name:"Der Perspektivwechsel",
+      bild:"Dieselbe Szene zu {t}, aber aus der Sicht der Gegenseite gefilmt.",
+      text:"Kein Text — der Wechsel muss visuell tragen.",
+      ton:"Der Ton wechselt hörbar die Position im Raum.",
+      cut:"Achsensprung bewusst zulassen. Er markiert den Wechsel." }
+  ];
+
+  const SCHLUESSE = [
+    { name:"Offenes Ende",
+      bild:"Ruhiges Schlussbild zu {t}. Die Handlung ist nicht abgeschlossen.",
+      text:"Kein Call-to-Action. Kein Logo-Screen.",
+      ton:"Der Ton läuft weiter und wird abgeblendet, während das Bild schon steht.",
+      cut:"Nicht auf Schwarz schneiden — auf dem Bild enden lassen." },
+    { name:"Der Loop",
+      bild:"Das Schlussbild ist identisch mit dem allerersten Bild.",
+      text:"Kein Text.",
+      ton:"Der letzte Ton geht nahtlos in den ersten über.",
+      cut:"Exakt gleicher Bildausschnitt wie in Sekunde 0 — dadurch läuft es rund." },
+    { name:"Die Frage zurück",
+      bild:"Frontal, ruhig, letzter Blick in die Kamera.",
+      text:"Eine echte Frage {z}— keine Aufforderung zu liken.",
+      ton:"Nur Stimme. Alles andere ist weg.",
+      cut:"Nach der Frage noch 1 Sek. Bild stehen lassen, bevor es endet." },
+    { name:"Der Cliffhanger",
+      bild:"Etwas beginnt, das nicht mehr gezeigt wird. Die Handlung bricht ab.",
+      text:"Kein erklärender Text.",
+      ton:"Abrupter Tonabbruch mitten in der Bewegung.",
+      cut:"Harter Cut mitten in der Handlung — bewusst zu früh." }
+  ];
+
+  const ZWAENGE = [
+    "Kein einziges gesprochenes Wort im ganzen Video.",
+    "Maximal drei Einstellungen insgesamt.",
+    "Das Wichtigste passiert außerhalb des Bildes.",
+    "Kein Text im Bild — alles über Bild und Ton.",
+    "Alles an einem einzigen Ort gedreht.",
+    "Keine Kamerabewegung. Bewegung nur im Bild.",
+    "Kein Gesicht frontal zeigen.",
+    "Kein Musikbett. Nur Originalton."
+  ];
+
+  const T = { hook:"var(--cyan)", setup:"var(--violet)", kern:"var(--mint)", wendung:"var(--gold)", schluss:"var(--coral)" };
+
+  function rnd(a){ return a[Math.floor(Math.random()*a.length)]; }
+  function fill(s, thema, ziel){
+    return s.replace(/\{t\}/g, thema).replace(/\{z\}/g, ziel ? "an " + ziel + " " : "");
+  }
+  function mmss(sec){ const m=Math.floor(sec/60), s=Math.round(sec%60); return m+":"+String(s).padStart(2,"0"); }
+
+  let fmtIdx = 0, current = null;
+
+  function buildPlan(){
+    const thema = (document.getElementById("thema").value || "").trim() || "unser Thema";
+    const ziel  = (document.getElementById("ziel").value || "").trim();
+    const F = FORMATE[fmtIdx];
+
+    // Beat-Gerüst je nach Format-Länge
+    const roles = ["hook","setup","kern","kern","wendung","schluss"];
+    const use = F.beats >= 6 ? roles : (F.beats === 5 ? ["hook","setup","kern","wendung","schluss"] : ["hook","kern","wendung","schluss"]);
+    const weights = { hook:0.14, setup:0.18, kern:0.26, wendung:0.20, schluss:0.14 };
+    const pools = { hook:HOOKS, setup:SETUPS, kern:KERNE, wendung:WENDUNGEN, schluss:SCHLUESSE };
+    const names = { hook:"Aufhänger", setup:"Aufbau", kern:"Kern", wendung:"Wendung", schluss:"Schluss" };
+
+    const totalW = use.reduce((s,r)=>s+weights[r],0);
+    let t = 0; const beats = []; const usedKern = [];
+    use.forEach(role => {
+      let item;
+      if (role === "kern") { do { item = rnd(KERNE); } while (usedKern.indexOf(item.name) !== -1 && usedKern.length < KERNE.length); usedKern.push(item.name); }
+      else item = rnd(pools[role]);
+      const dur = F.sec * (weights[role] / totalW);
+      beats.push({ role, name:names[role], item, from:t, to:t+dur });
+      t += dur;
+    });
+
+    current = { thema, ziel, F, beats, zwang: rnd(ZWAENGE) };
+    renderPlan();
+  }
+
+  function renderPlan(){
+    const p = current, el = document.getElementById("plan");
+    const rows = p.beats.map(b => {
+      const it = b.item;
+      return '<div class="beat" style="--c:'+T[b.role]+'">' +
+        '<div class="btop"><span class="btime">'+mmss(b.from)+' – '+mmss(b.to)+'</span>' +
+        '<span class="brole">'+b.name+' · '+it.name+'</span></div>' +
+        '<div class="lines">' +
+          '<div class="line"><span class="k">Bild</span><span class="v q">'+fill(it.bild,p.thema,p.ziel)+'</span></div>' +
+          '<div class="line"><span class="k">Text</span><span class="v m">'+fill(it.text,p.thema,p.ziel)+'</span></div>' +
+          '<div class="line"><span class="k">Ton</span><span class="v m">'+fill(it.ton,p.thema,p.ziel)+'</span></div>' +
+          '<div class="line"><span class="k">Schnitt</span><span class="v m">'+fill(it.cut,p.thema,p.ziel)+'</span></div>' +
+        '</div></div>';
+    }).join("");
+
+    el.innerHTML =
+      '<div class="planhead"><div class="pl">Drehplan · fertig zum Abdrehen</div>' +
+      '<h2>'+p.thema.charAt(0).toUpperCase()+p.thema.slice(1)+'</h2>' +
+      '<div class="meta">'+p.F.n+' · '+p.F.sec+' Sek. · '+p.beats.length+' Einstellungen · '+p.F.note+'</div></div>' +
+      rows +
+      '<div class="foot"><b>Eine Regel für den ganzen Dreh</b><p>'+p.zwang+'</p></div>';
+    el.classList.add("show");
+  }
+
+  function planText(){
+    const p = current; if(!p) return "";
+    const L = [];
+    L.push("DREHPLAN — " + p.thema.toUpperCase());
+    L.push(p.F.n + " · " + p.F.sec + " Sek. · " + p.beats.length + " Einstellungen");
+    if (p.ziel) L.push("Zielgruppe: " + p.ziel);
+    L.push("Regel für den ganzen Dreh: " + p.zwang);
+    L.push("");
+    p.beats.forEach(b => {
+      const it = b.item;
+      L.push("[" + mmss(b.from) + " – " + mmss(b.to) + "] " + b.name.toUpperCase() + " · " + it.name);
+      L.push("  BILD:    " + fill(it.bild, p.thema, p.ziel));
+      L.push("  TEXT:    " + fill(it.text, p.thema, p.ziel));
+      L.push("  TON:     " + fill(it.ton, p.thema, p.ziel));
+      L.push("  SCHNITT: " + fill(it.cut, p.thema, p.ziel));
+      L.push("");
+    });
+    L.push("— erstellt mit khanmotari");
+    return L.join("\n");
+  }
+
+  const toastEl = document.getElementById("toast"); let tT;
+  function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); clearTimeout(tT); tT=setTimeout(()=>toastEl.classList.remove("show"),1700); }
+
+  const fmtHost = document.getElementById("formats");
+  FORMATE.forEach((f,i)=>{
+    const b=document.createElement("button"); b.className="chip"+(i===0?" on":""); b.textContent=f.n; b.title=f.note;
+    b.addEventListener("click",()=>{ fmtIdx=i; [...fmtHost.children].forEach(c=>c.classList.toggle("on",c===b)); if(current) buildPlan(); });
+    fmtHost.appendChild(b);
+  });
+
+  document.getElementById("gen").addEventListener("click", buildPlan);
+  document.getElementById("thema").addEventListener("keydown", e => { if(e.key==="Enter") buildPlan(); });
+  document.getElementById("copy").addEventListener("click", ()=>{
+    if(!current){ toast("Erst einen Drehplan erstellen"); return; }
+    const t = planText();
+    if(navigator.clipboard) navigator.clipboard.writeText(t).then(()=>toast("Drehplan kopiert ✓"),()=>toast("Kopieren nicht möglich"));
+    else toast("Kopieren wird hier nicht unterstützt");
+  });
+  document.getElementById("print").addEventListener("click", ()=>{
+    if(!current){ toast("Erst einen Drehplan erstellen"); return; }
+    window.print();
+  });
+
+  buildPlan();
+})();
+</script>
+</body>
+</html>
